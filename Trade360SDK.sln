@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{4B1B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Feed.Console.Sample", "samples\Trade360SDK.Feed.Console.Sample\Trade360SDK.Feed.Console.Sample.csproj", "{670DA08D-E0FB-4C17-A868-A519273C34C7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F0DCAF3-56A7-4257-ACC6-9E6AA34195BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Feed", "src\Trade360SDK.Feed\Trade360SDK.Feed.csproj", "{296E9584-EDEF-41A2-B05E-115920DA8102}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{670DA08D-E0FB-4C17-A868-A519273C34C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{670DA08D-E0FB-4C17-A868-A519273C34C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{670DA08D-E0FB-4C17-A868-A519273C34C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296E9584-EDEF-41A2-B05E-115920DA8102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296E9584-EDEF-41A2-B05E-115920DA8102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296E9584-EDEF-41A2-B05E-115920DA8102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296E9584-EDEF-41A2-B05E-115920DA8102}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{670DA08D-E0FB-4C17-A868-A519273C34C7} = {4B1B4A02-54D9-4A35-96DF-46D86443D3CB}
+		{296E9584-EDEF-41A2-B05E-115920DA8102} = {2F0DCAF3-56A7-4257-ACC6-9E6AA34195BF}
 	EndGlobalSection
 EndGlobal

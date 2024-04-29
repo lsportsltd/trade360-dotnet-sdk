@@ -1,15 +1,19 @@
 ﻿using System.Configuration;
+using System.Text;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
-var rmqHost = ConfigurationManager.AppSettings["rmqHost"];
-var rmqUserName = ConfigurationManager.AppSettings["rmqUserName"];
-var rmqPassword = ConfigurationManager.AppSettings["rmqPassword"];
+var rmqHost = "frizzy-magenta-pronghorn.in.rmq4.cloudamqp.com";
+var username = ConfigurationManager.AppSettings["username"];
+var password = ConfigurationManager.AppSettings["password"];
+var packageId = ConfigurationManager.AppSettings["packageId"] ;
 
 ConnectionFactory connectionFactory = new()
 {
     HostName = rmqHost,
-    UserName = rmqUserName,
-    Password = rmqPassword,
+    Port = 5672,
+    UserName = username,
+    Password = password,
     VirtualHost = "StmInPlay",
     AutomaticRecoveryEnabled = true,
     RequestedHeartbeat = TimeSpan.FromSeconds(60),
@@ -17,7 +21,28 @@ ConnectionFactory connectionFactory = new()
 };
 
 using var connection = connectionFactory.CreateConnection();
+if (!connection.IsOpen)
+{
+    Console.WriteLine("Failed to connect");
+    return;
+}
 
-Console.WriteLine("connection status {0}", connection.IsOpen);
+using var channel = connection.CreateModel();
 
+EventingBasicConsumer consumer = new(channel);
+consumer.Received += (ch, ea) =>
+{
+    var bytes = ea.Body.ToArray();
+    var rawMessage = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+    Console.WriteLine(rawMessage);
+};
+var consumerTag = channel.BasicConsume(
+    queue: $"_{packageId}_",
+    autoAck: true,
+    consumer: consumer);
+
+Console.WriteLine("Click any key to stop message consumption");
+Console.ReadLine();
+
+channel.BasicCancel(consumerTag);
 connection.Close();

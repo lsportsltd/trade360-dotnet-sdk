@@ -27,6 +27,7 @@ namespace Trade360SDK.Feed
                 Port = 5672,
                 UserName = username,
                 Password = password,
+                DispatchConsumersAsync = true,
                 VirtualHost = "StmInPlay",
                 AutomaticRecoveryEnabled = true,
                 RequestedHeartbeat = TimeSpan.FromSeconds(60),

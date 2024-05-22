@@ -18,6 +18,7 @@ ConnectionFactory connectionFactory = new()
     AutomaticRecoveryEnabled = true,
     RequestedHeartbeat = TimeSpan.FromSeconds(60),
     NetworkRecoveryInterval = TimeSpan.FromSeconds(1),
+    DispatchConsumersAsync = true,
 };
 
 using var connection = connectionFactory.CreateConnection();
@@ -29,8 +30,8 @@ if (!connection.IsOpen)
 
 using var channel = connection.CreateModel();
 
-EventingBasicConsumer consumer = new(channel);
-consumer.Received += (ch, ea) =>
+AsyncEventingBasicConsumer consumer = new(channel);
+consumer.Received += async (ch, ea) =>
 {
     var bytes = ea.Body.ToArray();
     var rawMessage = Encoding.UTF8.GetString(bytes, 0, bytes.Length);

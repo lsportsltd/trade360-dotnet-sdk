@@ -5,11 +5,11 @@ namespace Trade360SDK.Feed.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     internal class Trade360EntityAttribute : Attribute
     {
-        private int _type;
+        public int EntityKey { get; }
 
-        public Trade360EntityAttribute(int type)
+        public Trade360EntityAttribute(int entityKey)
         {
-            _type = type;
+            EntityKey = entityKey;
         }
     }
 }

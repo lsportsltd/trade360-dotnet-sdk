@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using Trade360SDK.Feed.Attributes;
+using Trade360SDK.Feed.Handlers;
 using Trade360SDK.Feed.Interfaces;
 using Trade360SDK.Feed.Models;
 
@@ -41,6 +42,17 @@ namespace Trade360SDK.Feed.Consumers
             await bodyHandler.Process(wrappedMessage.Body);
         }
 
+        public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
+        {
+            var entityType = typeof(TEntity);
+            var entityAttribute = entityType.GetCustomAttribute<Trade360EntityAttribute>();
+            if (entityAttribute == null)
+            {
+                throw new InvalidOperationException($"{entityType.FullName} isn't trade360 entity. You should use only entities from Trade360SDK.Feed.Entities namespace");
+            }
 
+            var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
+            bodyHandlers.AddOrUpdate(entityAttribute.EntityKey, (_) => newBodyHandler, (_, __) => newBodyHandler);
+        }
     }
 }

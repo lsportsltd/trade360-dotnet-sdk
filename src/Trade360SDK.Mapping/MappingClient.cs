@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Trade360SDK.Common;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Mapping.Entities;
+using Trade360SDK.Mapping.Enums;
+using Trade360SDK.Mapping.Models;
 
 namespace Trade360SDK.Mapping
 {
@@ -30,14 +32,26 @@ namespace Trade360SDK.Mapping
             return sportsCollection.Sports ?? Enumerable.Empty<Sport>();
         }
 
-
-        public async Task<IEnumerable<Location>> GetLocationssync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Location>> GetLocationsAsync(CancellationToken cancellationToken)
         {
             var locationsCollection = await GetEntityAsync<LocationsCollection>(
                 "locations/get",
                 new Request(),
                 cancellationToken);
             return locationsCollection.Locations ?? Enumerable.Empty<Location>();
+        }
+
+        public async Task<IEnumerable<League>> GetLeaguesAsync(
+            IEnumerable<int> sportIds,
+            IEnumerable<int> locationIds,
+            SubscriptionStatus subscriptionStatus,
+            CancellationToken cancellationToken)
+        {
+            var leaguesCollection = await GetEntityAsync<LeaguesCollection>(
+                "leagues/get",
+                new LeaguesRequest(sportIds, locationIds, subscriptionStatus),
+                cancellationToken);
+            return leaguesCollection.Leagues ?? Enumerable.Empty<League>();
         }
     }
 }

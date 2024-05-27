@@ -16,18 +16,16 @@ namespace Trade360SDK.Subscription
         private readonly HttpClient _httpClient;
         private readonly Request _request;
 
-        private SubscriptionClient(int packageId, string username, string password)
-            => _request = new Request(packageId, username, password);
-
-        public SubscriptionClient(string url, int packageId, string username, string password) : this(packageId, username, password)
+        public SubscriptionClient(string url, int packageId, string username, string password)
         {
             _httpClient = new HttpClient() { BaseAddress = new Uri(url) };
             _request = new Request(packageId, username, password);
         }
 
-        public SubscriptionClient(HttpClient httpClient, int packageId, string username, string password) : this(packageId, username, password)
+        public SubscriptionClient(HttpClient httpClient, int packageId, string username, string password)
         {
             _httpClient = httpClient;
+            _request = new Request(packageId, username, password);
         }
 
         public async Task<PackageQuota> GetPackageQuotaAsync(CancellationToken cancelationToken)

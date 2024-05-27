@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Subscription.Models
+﻿namespace Trade360SDK.Common.Models
 {
     internal class Response<TBody>
         where TBody : class

@@ -1,36 +1,30 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Trade360SDK.Common;
+using Trade360SDK.Common.Models;
+using Trade360SDK.Mapping.Entities;
 
 namespace Trade360SDK.Mapping
 {
-    public class MappingClient : IDisposable
+    public class MappingClient : BaseHttpClient
     {
-        private readonly HttpClient _httpClient;
-        private readonly int _packageId;
-        private readonly string _username;
-        private readonly string _password;
-
         public MappingClient(string customerApi, int packageId, string username, string password)
+            : base(customerApi, packageId, username, password)
         {
-            _httpClient = new HttpClient() { BaseAddress = new Uri(customerApi) };
-
-            _packageId = packageId;
-            _username = username;
-            _password = password;
         }
 
         public MappingClient(HttpClient httpClient, int packageId, string username, string password)
+            : base(httpClient, packageId, username, password)
         {
-            _httpClient = httpClient;
-
-            _packageId = packageId;
-            _username = username;
-            _password = password;
         }
 
-        public void Dispose()
+        public async Task<IEnumerable<Sport>> GetSports(CancellationToken cancellationToken)
         {
-            _httpClient.Dispose();
+            var sportsCollection = await GetEntityAsync<SportsCollection>("sports/get", new Request(), cancellationToken);
+            return sportsCollection.Sports ?? Enumerable.Empty<Sport>();
         }
     }
 }

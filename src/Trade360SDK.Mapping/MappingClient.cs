@@ -21,10 +21,23 @@ namespace Trade360SDK.Mapping
         {
         }
 
-        public async Task<IEnumerable<Sport>> GetSports(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Sport>> GetSportsAsync(CancellationToken cancellationToken)
         {
-            var sportsCollection = await GetEntityAsync<SportsCollection>("sports/get", new Request(), cancellationToken);
+            var sportsCollection = await GetEntityAsync<SportsCollection>(
+                "sports/get",
+                new Request(),
+                cancellationToken);
             return sportsCollection.Sports ?? Enumerable.Empty<Sport>();
+        }
+
+
+        public async Task<IEnumerable<Location>> GetLocationssync(CancellationToken cancellationToken)
+        {
+            var locationsCollection = await GetEntityAsync<LocationsCollection>(
+                "locations/get",
+                new Request(),
+                cancellationToken);
+            return locationsCollection.Locations ?? Enumerable.Empty<Location>();
         }
     }
 }

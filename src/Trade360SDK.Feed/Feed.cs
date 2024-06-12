@@ -1,5 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
+using Trade360SDK.Common.Enums;
+using Trade360SDK.Feed.Consumers;
 
 namespace Trade360SDK.Feed
 {
@@ -10,6 +12,7 @@ namespace Trade360SDK.Feed
         private readonly ConnectionFactory _connectionFactory;
         private readonly int _packageId;
         private readonly int _prefetchCount;
+        private readonly MessageConsumer _consumer;
 
         private IConnection? _connection;
         private IModel? _channel;
@@ -18,8 +21,9 @@ namespace Trade360SDK.Feed
         public Feed(
             string rmqHost,
             string username, string password,
-            int packageId,
-            int prefetchCount, TimeSpan recoveryTime)
+            int packageId, PackageType packageType,
+            int prefetchCount, TimeSpan recoveryTime,
+            ILogger logger)
         {
             _connectionFactory = new ConnectionFactory
             {
@@ -28,7 +32,7 @@ namespace Trade360SDK.Feed
                 UserName = username,
                 Password = password,
                 DispatchConsumersAsync = true,
-                VirtualHost = "StmInPlay",
+                VirtualHost = packageType == PackageType.InPlay ? "StmInPlay" : "StmPreMatch",
                 AutomaticRecoveryEnabled = true,
                 RequestedHeartbeat = TimeSpan.FromSeconds(60),
                 NetworkRecoveryInterval = recoveryTime,
@@ -36,6 +40,13 @@ namespace Trade360SDK.Feed
 
             _packageId = packageId;
             _prefetchCount = prefetchCount;
+
+            _consumer = new MessageConsumer(logger);
+        }
+
+        public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
+        {
+            _consumer.RegisterEntityHandler(entityHandler);
         }
 
         public void Start()
@@ -46,11 +57,12 @@ namespace Trade360SDK.Feed
                 throw new Exception("Failed to connect");
             }
             _channel = _connection.CreateModel();
+            _consumer.Model = _channel;
 
             _consumerTag = _channel.BasicConsume(
                 queue: $"_{_packageId}_",
                 autoAck: true,
-                consumer: null);
+                _consumer);
         }
 
         public void Stop()

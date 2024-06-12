@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -17,7 +18,7 @@ namespace Trade360SDK.Feed.Consumers
         private readonly ConcurrentDictionary<int, IBodyHandler> bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
         private readonly ILogger? _logger;
 
-        public MessageConsumer(IModel model, ILogger? logger) : base(model)
+        public MessageConsumer(ILogger? logger)
         {
             _logger = logger;
         }
@@ -35,7 +36,16 @@ namespace Trade360SDK.Feed.Consumers
             var entityType = wrappedMessage.Header.Type;
             if (!bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
             {
-                _logger?.WriteWarning($"Handler for {entityType} not configured");
+                var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
+                    .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
+                if (missedEntityType != null)
+                {
+                    _logger?.WriteWarning($"Handler for {missedEntityType.FullName} is not configured");
+                }
+                else
+                {
+                    _logger?.WriteError($"Received unknown entity type {entityType}");
+                }
                 return;
             }
 

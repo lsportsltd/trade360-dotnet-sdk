@@ -20,7 +20,10 @@ namespace Trade360SDK.Common
 
         public BaseHttpClient(string customerApi, int packageId, string username, string password)
         {
-            _httpClient = new HttpClient() { BaseAddress = new Uri(customerApi) };
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(customerApi)
+            };
 
             _packageId = packageId;
             _username = username;

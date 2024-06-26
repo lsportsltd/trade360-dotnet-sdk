@@ -26,7 +26,19 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
         public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
         {
             var rawMessage = Encoding.UTF8.GetString(body.Span);
-            var wrappedMessage = JsonSerializer.Deserialize<WrappedMessage>(rawMessage);
+
+            var wrappedMessageJsonObject = JsonWrappedMessageJsonObjectConverter
+                .ConvertJsonToMessage(rawMessage);
+            
+            var header = JsonSerializer
+                .Deserialize<MessageHeader>(wrappedMessageJsonObject.Header);
+            
+            var wrappedMessage = new WrappedMessage
+            {
+                Header = header,
+                Body = wrappedMessageJsonObject.Body
+            };
+            
             if (wrappedMessage == null || wrappedMessage.Header == null)
             {
                 _logger?.WriteError("Invalid message format");
@@ -40,11 +52,11 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
                 if (missedEntityType != null)
                 {
-                    _logger?.WriteWarning($"Handler for {missedEntityType.FullName} is not configured");
+                    // _logger?.WriteWarning($"Handler for {missedEntityType.FullName} is not configured");
                 }
                 else
                 {
-                    _logger?.WriteError($"Received unknown entity type {entityType}");
+                    //_logger?.WriteError($"Received unknown entity type {entityType}");
                 }
                 return;
             }
@@ -64,5 +76,29 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
             bodyHandlers.AddOrUpdate(entityAttribute.EntityKey, (_) => newBodyHandler, (_, __) => newBodyHandler);
         }
+    }
+    
+    internal class JsonWrappedMessageJsonObjectConverter
+    {
+        public static WrappedMessageJsonObject ConvertJsonToMessage(string rawJson)
+        {
+            using (JsonDocument doc = JsonDocument.Parse(rawJson))
+            {
+                JsonElement root = doc.RootElement;
+                WrappedMessageJsonObject message = new WrappedMessageJsonObject
+                {
+                    Header = root.GetProperty("Header").ToString(),
+                    Body = root.GetProperty("Body").ToString()
+                };
+                return message;
+            }
+        }
+    }
+
+    internal class WrappedMessageJsonObject
+    {
+        public string Header { get; set; }
+        
+        public string Body { get; set; }
     }
 }

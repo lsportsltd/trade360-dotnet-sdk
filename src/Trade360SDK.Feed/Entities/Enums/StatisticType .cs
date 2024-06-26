@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace Trade360SDK.Feed.Entities.Enums
+﻿namespace Trade360SDK.Feed.Entities.Enums
 {
     public enum StatisticType
     {

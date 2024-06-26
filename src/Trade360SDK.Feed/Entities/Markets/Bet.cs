@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 using Trade360SDK.Feed.Entities.Enums;
 
 namespace Trade360SDK.Feed.Entities.Markets

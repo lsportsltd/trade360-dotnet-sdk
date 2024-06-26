@@ -1,6 +1,6 @@
 using Trade360SDK.Feed.Entities;
 
-namespace Trade360SDK.Feed.Console.Sample.Handlers;
+namespace Trade360SDK.Feed.Example.Handlers;
 
 public class LivescoreUpdateHandler: IEntityHandler<LivescoreUpdate>
 {

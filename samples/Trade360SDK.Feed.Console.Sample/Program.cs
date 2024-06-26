@@ -1,6 +1,5 @@
 ﻿using System.Configuration;
 using Trade360SDK.Common.Enums;
-using Trade360SDK.Feed;
 using Trade360SDK.Feed.Console.Sample;
 using Trade360SDK.Feed.Console.Sample.Handlers;
 using Trade360SDK.Feed.RabbitMQ;
@@ -16,7 +15,7 @@ if (username == null || password == null || !int.TryParse(packageIdValue, out in
     return;
 }
 
-using var rmqFeed = new RabbitMQFeed(rmqHost, username, password,
+using var rmqFeed = new RabbitMQFeed(customersApi, rmqHost, username, password,
     packageId, PackageType.InPlay,
     100, TimeSpan.FromSeconds(60),
     new ConsoleLogger());

@@ -16,4 +16,4 @@ namespace Trade360SDK.Feed.Entities.Livescores
         public IEnumerable<Result>? Results { get; set; }
     }
 }
-}
+

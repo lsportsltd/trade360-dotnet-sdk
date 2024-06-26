@@ -3,7 +3,7 @@
 namespace Trade360SDK.Feed.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
-    internal class Trade360EntityAttribute : Attribute
+    public class Trade360EntityAttribute : Attribute
     {
         public int EntityKey { get; }
 

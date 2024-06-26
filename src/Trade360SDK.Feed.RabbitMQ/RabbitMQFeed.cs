@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
+using Trade360SDK.Common;
 using Trade360SDK.Common.Enums;
-using Trade360SDK.Feed.Consumers;
+using Trade360SDK.Feed.RabbitMQ.Consumers;
 
-namespace Trade360SDK.Feed
+namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class Feed : IDisposable
+    public class RabbitMQFeed : BaseHttpClient, IFeed, IDisposable
     {
         private const int Port = 5672;
 
@@ -18,12 +22,40 @@ namespace Trade360SDK.Feed
         private IModel? _channel;
         private string? _consumerTag;
 
-        public Feed(
+        public RabbitMQFeed(
+            string customersApi,
             string rmqHost,
             string username, string password,
             int packageId, PackageType packageType,
             int prefetchCount, TimeSpan recoveryTime,
-            ILogger logger)
+            ILogger logger) : base(customersApi, packageId, username, password)
+        {
+            _connectionFactory = new ConnectionFactory
+            {
+                HostName = rmqHost,
+                Port = 5672,
+                UserName = username,
+                Password = password,
+                DispatchConsumersAsync = true,
+                VirtualHost = packageType == PackageType.InPlay ? "StmInPlay" : "StmPreMatch",
+                AutomaticRecoveryEnabled = true,
+                RequestedHeartbeat = TimeSpan.FromSeconds(60),
+                NetworkRecoveryInterval = recoveryTime,
+            };
+
+            _packageId = packageId;
+            _prefetchCount = prefetchCount;
+
+            _consumer = new MessageConsumer(logger);
+        }
+
+        public RabbitMQFeed(
+            HttpClient httpClient,
+            string rmqHost,
+            string username, string password,
+            int packageId, PackageType packageType,
+            int prefetchCount, TimeSpan recoveryTime,
+            ILogger logger) : base(httpClient, packageId, username, password)
         {
             _connectionFactory = new ConnectionFactory
             {
@@ -49,8 +81,10 @@ namespace Trade360SDK.Feed
             _consumer.RegisterEntityHandler(entityHandler);
         }
 
-        public void Start()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
+
+
             _connection = _connectionFactory.CreateConnection();
             if (!_connection.IsOpen)
             {
@@ -65,7 +99,7 @@ namespace Trade360SDK.Feed
                 _consumer);
         }
 
-        public void Stop()
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             _channel?.BasicCancel(_consumerTag);
             _connection?.Close();

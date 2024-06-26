@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Feed.Models
+﻿namespace Trade360SDK.Feed.RabbitMQ.Models
 {
     internal class WrappedMessage
     {

@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.Feed.Entities
 {
-    [Trade360Entity(32)]
+    [Trade360Entity(32, false)]
     public class Heartbeat
     {
     }

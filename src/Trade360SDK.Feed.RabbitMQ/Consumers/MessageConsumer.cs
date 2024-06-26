@@ -7,11 +7,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using Trade360SDK.Feed.Attributes;
-using Trade360SDK.Feed.Handlers;
-using Trade360SDK.Feed.Interfaces;
-using Trade360SDK.Feed.Models;
+using Trade360SDK.Feed.RabbitMQ.Handlers;
+using Trade360SDK.Feed.RabbitMQ.Interfaces;
+using Trade360SDK.Feed.RabbitMQ.Models;
 
-namespace Trade360SDK.Feed.Consumers
+namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
@@ -49,7 +49,7 @@ namespace Trade360SDK.Feed.Consumers
                 return;
             }
 
-            await bodyHandler.Process(wrappedMessage.Body);
+            await bodyHandler.ProcessAsync(wrappedMessage.Body);
         }
 
         public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Trade360SDK.Feed.Interfaces;
+using Trade360SDK.Feed.RabbitMQ.Interfaces;
 
-namespace Trade360SDK.Feed.Handlers
+namespace Trade360SDK.Feed.RabbitMQ.Handlers
 {
     internal class BodyHandler<T> : IBodyHandler
     {
@@ -16,7 +16,7 @@ namespace Trade360SDK.Feed.Handlers
             _logger = logger;
         }
 
-        public Task Process(string? body)
+        public Task ProcessAsync(string? body)
         {
             var entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
             if (entity == null)

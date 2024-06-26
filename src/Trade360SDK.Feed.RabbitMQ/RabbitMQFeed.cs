@@ -23,24 +23,35 @@ namespace Trade360SDK.Feed.RabbitMQ
         private string? _consumerTag;
 
         public RabbitMQFeed(
-            string customersApi,
             string rmqHost,
-            string username, string password,
-            int packageId, PackageType packageType,
-            int prefetchCount, TimeSpan recoveryTime,
-            ILogger logger) : base(customersApi, packageId, username, password)
+            string rmqVhost,
+            int rmqPort,
+            
+            string username,
+            string password,
+            
+            int prefetchCount, 
+            TimeSpan recoveryTime,
+            
+            int packageId,
+            string customersApi,
+            ILogger logger) 
+            : base(customersApi, packageId, username, password)
         {
             _connectionFactory = new ConnectionFactory
             {
                 HostName = rmqHost,
-                Port = 5672,
+                Port = rmqPort,
+                VirtualHost = rmqVhost,
+                
                 UserName = username,
                 Password = password,
-                DispatchConsumersAsync = true,
-                VirtualHost = packageType == PackageType.InPlay ? "StmInPlay" : "StmPreMatch",
-                AutomaticRecoveryEnabled = true,
+                
                 RequestedHeartbeat = TimeSpan.FromSeconds(60),
                 NetworkRecoveryInterval = recoveryTime,
+                
+                DispatchConsumersAsync = true,
+                AutomaticRecoveryEnabled = true,
             };
 
             _packageId = packageId;
@@ -83,20 +94,28 @@ namespace Trade360SDK.Feed.RabbitMQ
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-
-
-            _connection = _connectionFactory.CreateConnection();
+            // need to validate distribution status and activation status,
+            // in case fail to send request - package activation  - contact support, 
+            // in case the Distribution disabled, start distribution then connect.
+            
+            _connection = _connectionFactory
+                .CreateConnection();
+            
             if (!_connection.IsOpen)
             {
                 throw new Exception("Failed to connect");
             }
-            _channel = _connection.CreateModel();
+            
+            _channel = _connection
+                .CreateModel();
+            
             _consumer.Model = _channel;
 
-            _consumerTag = _channel.BasicConsume(
-                queue: $"_{_packageId}_",
-                autoAck: true,
-                _consumer);
+            _consumerTag = _channel
+                .BasicConsume(
+                    queue: $"_{_packageId}_",
+                    autoAck: true,
+                    _consumer);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

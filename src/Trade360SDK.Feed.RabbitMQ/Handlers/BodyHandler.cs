@@ -18,12 +18,24 @@ namespace Trade360SDK.Feed.RabbitMQ.Handlers
 
         public Task ProcessAsync(string? body)
         {
-            var entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
+            var entity = default(T);
+            
+            try
+            {
+                entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
+            }
+            catch (Exception e)
+            {
+                _logger.WriteWarning($"Failed to deserialize {typeof(T).Name} entity, Due to: {e.Message}");
+            }
+            
             if (entity == null)
             {
                 _logger?.WriteError($"Failed to deserialize {typeof(T).Name} entity");
+                
                 return Task.CompletedTask;
             }
+            
             return _entityHandler.ProcessAsync(entity);
         }
     }

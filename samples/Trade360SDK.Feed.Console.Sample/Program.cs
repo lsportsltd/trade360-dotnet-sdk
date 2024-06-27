@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Trade360SDK.Common.Enums;
 using Trade360SDK.Feed.Console.Sample;
 using Trade360SDK.Feed.Console.Sample.Handlers;
@@ -15,7 +16,18 @@ if (username == null || password == null || !int.TryParse(packageIdValue, out in
     return;
 }
 
-using var rmqFeed = new RabbitMQFeed(customersApi, rmqHost, username, password,
+var serviceProvider = new ServiceCollection()
+    .AddHttpClient()
+    .BuildServiceProvider();
+
+// HttpClientFactory optimizes connection pool usage (especially improtant for other SDKs that actively uses HTTP requests)
+var httpCLientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+var httpCLient = httpCLientFactory.CreateClient();
+httpCLient.BaseAddress = new Uri(customersApi);
+
+using var rmqFeed = new RabbitMQFeed(
+    httpCLient,
+    rmqHost, username, password,
     packageId, PackageType.InPlay,
     100, TimeSpan.FromSeconds(60),
     new ConsoleLogger());

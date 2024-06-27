@@ -4,7 +4,7 @@ namespace Trade360SDK.Feed.Console.Sample.Handlers
 {
     internal class HeartbeatHandler : IEntityHandler<Heartbeat>
     {
-        public Task ProcessAsync(Heartbeat entity)
+        public Task ProcessAsync(Heartbeat heartbeat)
         {
             System.Console.WriteLine("Heartbeat received");
             return Task.CompletedTask;

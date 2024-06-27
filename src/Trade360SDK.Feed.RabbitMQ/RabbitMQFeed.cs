@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using RabbitMQ.Client;
 using Trade360SDK.Common;
 using Trade360SDK.Common.Enums;
+using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
+using Trade360SDK.Feed.RabbitMQ.Models;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
@@ -15,7 +17,7 @@ namespace Trade360SDK.Feed.RabbitMQ
 
         private readonly ConnectionFactory _connectionFactory;
         private readonly int _packageId;
-        private readonly int _prefetchCount;
+        private readonly ushort _prefetchCount;
         private readonly MessageConsumer _consumer;
 
         private IConnection? _connection;
@@ -27,13 +29,13 @@ namespace Trade360SDK.Feed.RabbitMQ
             string rmqHost,
             string username, string password,
             int packageId, PackageType packageType,
-            int prefetchCount, TimeSpan recoveryTime,
+            ushort prefetchCount, TimeSpan recoveryTime,
             ILogger logger) : base(customersApi, packageId, username, password)
         {
             _connectionFactory = new ConnectionFactory
             {
                 HostName = rmqHost,
-                Port = 5672,
+                Port = Port,
                 UserName = username,
                 Password = password,
                 DispatchConsumersAsync = true,
@@ -54,7 +56,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             string rmqHost,
             string username, string password,
             int packageId, PackageType packageType,
-            int prefetchCount, TimeSpan recoveryTime,
+            ushort prefetchCount, TimeSpan recoveryTime,
             ILogger logger) : base(httpClient, packageId, username, password)
         {
             _connectionFactory = new ConnectionFactory
@@ -83,7 +85,12 @@ namespace Trade360SDK.Feed.RabbitMQ
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            await GetEntityAsync<DistributionMessage>(
+                "distribution/start",
+                new Request(),
+                cancellationToken);
 
+            await Task.Delay(TimeSpan.FromSeconds(5));
 
             _connection = _connectionFactory.CreateConnection();
             if (!_connection.IsOpen)
@@ -92,6 +99,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             }
             _channel = _connection.CreateModel();
             _consumer.Model = _channel;
+            _channel.BasicQos(0, _prefetchCount, false);
 
             _consumerTag = _channel.BasicConsume(
                 queue: $"_{_packageId}_",
@@ -103,10 +111,16 @@ namespace Trade360SDK.Feed.RabbitMQ
         {
             _channel?.BasicCancel(_consumerTag);
             _connection?.Close();
+
+            await GetEntityAsync<DistributionMessage>(
+                "distribution/stop",
+                new Request(),
+                cancellationToken);
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
+            base.Dispose();
             _connection?.Dispose();
             _channel?.Dispose();
         }

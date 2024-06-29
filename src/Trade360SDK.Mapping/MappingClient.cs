@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common;
 using Trade360SDK.Common.Models;
-using Trade360SDK.Mapping.Entities;
+using Trade360SDK.Api.Mapping;
 using Trade360SDK.Mapping.Enums;
 using Trade360SDK.Mapping.Models;
 

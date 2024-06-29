@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Mapping.Entities
+﻿namespace Trade360SDK.Api.Mapping
 {
     public class League
     {

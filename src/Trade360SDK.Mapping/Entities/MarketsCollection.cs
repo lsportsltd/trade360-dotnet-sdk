@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Trade360SDK.Mapping.Entities
+namespace Trade360SDK.Api.Mapping
 {
     internal class MarketsCollection
     {

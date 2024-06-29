@@ -1,11 +1,11 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Trade360SDK.Api.Subscription.Entities;
 using Trade360SDK.Common;
 using Trade360SDK.Common.Models;
-using Trade360SDK.Subscription.Entities;
 
-namespace Trade360SDK.Subscription
+namespace Trade360SDK.Api.Subscription
 {
     public class SubscriptionClient : BaseHttpClient
     {

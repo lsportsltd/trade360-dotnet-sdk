@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Trade360SDK.Subscription.Entities
+namespace Trade360SDK.Api.Subscription.Entities
 {
     public class PackageQuota
     {

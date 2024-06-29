@@ -1,90 +1,27 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using Trade360SDK.Common;
-using Trade360SDK.Common.Enums;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
+using Trade360SDK.Feed.RabbitMQ.Exceptions;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMQFeed : BaseHttpClient, IFeed, IDisposable
+    public class RabbitMQFeed : IRabbitMQFeed
     {
-        private const int Port = 5672;
-
-        private readonly ConnectionFactory _connectionFactory;
-        private readonly int _packageId;
-        private readonly int _prefetchCount;
         private readonly MessageConsumer _consumer;
-
+        private readonly ILogger _logger;
         private IConnection? _connection;
         private IModel? _channel;
         private string? _consumerTag;
+        private readonly RmqConnectionSettings _settings;
 
-        public RabbitMQFeed(
-            string rmqHost,
-            string rmqVhost,
-            int rmqPort,
-            
-            string username,
-            string password,
-            
-            int prefetchCount, 
-            TimeSpan recoveryTime,
-            
-            int packageId,
-            string customersApi,
-            ILogger logger) 
-            : base(customersApi, packageId, username, password)
+        public RabbitMQFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory)
         {
-            _connectionFactory = new ConnectionFactory
-            {
-                HostName = rmqHost,
-                Port = rmqPort,
-                VirtualHost = rmqVhost,
-                
-                UserName = username,
-                Password = password,
-                
-                RequestedHeartbeat = TimeSpan.FromSeconds(60),
-                NetworkRecoveryInterval = recoveryTime,
-                
-                DispatchConsumersAsync = true,
-                AutomaticRecoveryEnabled = true,
-            };
-
-            _packageId = packageId;
-            _prefetchCount = prefetchCount;
-
-            _consumer = new MessageConsumer(logger);
-        }
-
-        public RabbitMQFeed(
-            HttpClient httpClient,
-            string rmqHost,
-            string username, string password,
-            int packageId, PackageType packageType,
-            int prefetchCount, TimeSpan recoveryTime,
-            ILogger logger) : base(httpClient, packageId, username, password)
-        {
-            _connectionFactory = new ConnectionFactory
-            {
-                HostName = rmqHost,
-                Port = 5672,
-                UserName = username,
-                Password = password,
-                DispatchConsumersAsync = true,
-                VirtualHost = packageType == PackageType.InPlay ? "StmInPlay" : "StmPreMatch",
-                AutomaticRecoveryEnabled = true,
-                RequestedHeartbeat = TimeSpan.FromSeconds(60),
-                NetworkRecoveryInterval = recoveryTime,
-            };
-
-            _packageId = packageId;
-            _prefetchCount = prefetchCount;
-
-            _consumer = new MessageConsumer(logger);
+            _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
+            _consumer = new MessageConsumer(loggerFactory);
+            _settings = settings;
         }
 
         public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
@@ -94,40 +31,87 @@ namespace Trade360SDK.Feed.RabbitMQ
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            // need to validate distribution status and activation status,
-            // in case fail to send request - package activation  - contact support, 
-            // in case the Distribution disabled, start distribution then connect.
-            
-            _connection = _connectionFactory
-                .CreateConnection();
-            
-            if (!_connection.IsOpen)
+            try
             {
-                throw new Exception("Failed to connect");
-            }
-            
-            _channel = _connection
-                .CreateModel();
-            
-            _consumer.Model = _channel;
+                _connection = CreateConnection(_settings);
 
-            _consumerTag = _channel
-                .BasicConsume(
-                    queue: $"_{_packageId}_",
-                    autoAck: true,
+                if (!_connection.IsOpen)
+                {
+                    _logger.LogError("Failed to connect to RabbitMQ.");
+                    throw new InvalidOperationException("Failed to connect to RabbitMQ.");
+                }
+
+                _channel = _connection.CreateModel();
+                _channel.BasicQos(prefetchSize: 0, prefetchCount: _settings.PrefetchCount, global: false);
+
+                _consumer.Model = _channel;
+
+                _consumerTag = _channel.BasicConsume(
+                    queue: $"_{_settings.PackageId}_",
+                    autoAck: _settings.AutoAck,
                     _consumer);
+
+                _logger.LogInformation("Connected to RabbitMQ and started consuming.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error starting RabbitMQFeed.");
+                throw new RabbitMQFeedException("An error occurred while starting the RabbitMQ feed.", ex);
+            }
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            _channel?.BasicCancel(_consumerTag);
-            _connection?.Close();
+            try
+            {
+                if (_channel != null && !string.IsNullOrEmpty(_consumerTag))
+                {
+                    _channel.BasicCancel(_consumerTag);
+                }
+
+                _connection?.Close();
+                _logger.LogInformation("RabbitMQ connection closed.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error stopping RabbitMQFeed.");
+                throw new RabbitMQFeedException("An error occurred while stopping the RabbitMQ feed.", ex);
+            }
         }
 
         public void Dispose()
         {
-            _connection?.Dispose();
-            _channel?.Dispose();
+            try
+            {
+                _logger.LogInformation("Disposing RabbitMQ resources...");
+                _connection?.Dispose();
+                _channel?.Dispose();
+                _logger.LogInformation("RabbitMQFeed disposed successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while disposing RabbitMQFeed resources. Ensure that all resources are properly released.");
+                throw new RabbitMQFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
+            }
         }
+
+        private IConnection CreateConnection(RmqConnectionSettings settings)
+        {
+            var factory = new ConnectionFactory
+            {
+                HostName = settings.Host,
+                Port = settings.Port,
+                VirtualHost = settings.VirtualHost,
+                UserName = settings.UserName,
+                Password = settings.Password,
+                RequestedHeartbeat = TimeSpan.FromSeconds(settings.RequestedHeartbeatSeconds),
+                NetworkRecoveryInterval = TimeSpan.FromSeconds(settings.NetworkRecoveryInterval),
+                DispatchConsumersAsync = settings.DispatchConsumersAsync,
+                AutomaticRecoveryEnabled = settings.AutomaticRecoveryEnabled
+            };
+
+            return factory.CreateConnection();
+        }
+
     }
 }

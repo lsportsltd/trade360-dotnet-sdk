@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Feed.Attributes;
 using Trade360SDK.Feed.RabbitMQ.Handlers;
@@ -18,9 +19,9 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
         private readonly ConcurrentDictionary<int, IBodyHandler> bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
         private readonly ILogger? _logger;
 
-        public MessageConsumer(ILogger? logger)
+        public MessageConsumer(ILoggerFactory? loggerFactory)
         {
-            _logger = logger;
+            _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
         }
 
         public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
@@ -41,7 +42,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             
             if (wrappedMessage == null || wrappedMessage.Header == null)
             {
-                _logger?.WriteError("Invalid message format");
+                _logger?.LogError("Invalid message format");
                 return;
             }
 
@@ -52,11 +53,11 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
                 if (missedEntityType != null)
                 {
-                    // _logger?.WriteWarning($"Handler for {missedEntityType.FullName} is not configured");
+                     _logger?.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
                 }
                 else
                 {
-                    //_logger?.WriteError($"Received unknown entity type {entityType}");
+                    _logger?.LogWarning($"Received unknown entity type {entityType}");
                 }
                 return;
             }

@@ -6,7 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Common.Models;
+using Trade360SDK.Api.Common.Models.Requests.Base;
+using Trade360SDK.Api.Common.Models.Responses.Base;
 
 namespace Trade360SDK.Common
 {
@@ -18,30 +19,18 @@ namespace Trade360SDK.Common
         private readonly string _username;
         private readonly string _password;
 
-        public BaseHttpClient(string customerApi, int packageId, string username, string password)
-        {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(customerApi)
-            };
-
-            _packageId = packageId;
-            _username = username;
-            _password = password;
-        }
-
-        public BaseHttpClient(HttpClient httpClient, int packageId, string username, string password)
+        public BaseHttpClient(HttpClient httpClient, Trade360ApiSettings settings)
         {
             _httpClient = httpClient;
 
-            _packageId = packageId;
-            _username = username;
-            _password = password;
+            _packageId = settings.PackageId;
+            _username = settings.Username;
+            _password = settings.Password;
         }
 
         protected async Task<TEntity> GetEntityAsync<TEntity>(
             string uri,
-            Request request, CancellationToken cancelationToken) where TEntity : class
+            BaseRequest request, CancellationToken cancelationToken) where TEntity : class
         {
             request.PackageId = _packageId;
             request.UserName = _username;
@@ -54,7 +43,7 @@ namespace Trade360SDK.Common
             var httpResponse = await _httpClient.PostAsync(uri, content, cancelationToken);
             httpResponse.EnsureSuccessStatusCode();
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<Response<TEntity>>(rawResponse);
+            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
             if (response == null || response.Header == null)
             {
                 throw new InvalidOperationException("'Header' property is missed. Please, ensure that you use Trade360 url");

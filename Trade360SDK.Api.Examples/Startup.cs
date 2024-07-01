@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Trade360SDK.Common.Metadata.Requests;
 using Trade360SDK.CustomersApi.MetadataApi.Requests;
 using Trade360SDK.Metadata;
 

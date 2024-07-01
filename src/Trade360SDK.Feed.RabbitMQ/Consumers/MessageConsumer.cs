@@ -26,43 +26,52 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 
         public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
         {
-            var rawMessage = Encoding.UTF8.GetString(body.Span);
+            try
+            {
+                var rawMessage = Encoding.UTF8.GetString(body.Span);
 
-            var wrappedMessageJsonObject = JsonWrappedMessageJsonObjectConverter
-                .ConvertJsonToMessage(rawMessage);
-            
-            var header = JsonSerializer
-                .Deserialize<MessageHeader>(wrappedMessageJsonObject.Header);
-            
-            var wrappedMessage = new WrappedMessage
-            {
-                Header = header,
-                Body = wrappedMessageJsonObject.Body
-            };
-            
-            if (wrappedMessage == null || wrappedMessage.Header == null)
-            {
-                _logger?.LogError("Invalid message format");
-                return;
-            }
+                var wrappedMessageJsonObject = JsonWrappedMessageJsonObjectConverter.ConvertJsonToMessage(rawMessage);
 
-            var entityType = wrappedMessage.Header.Type;
-            if (!bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
-            {
-                var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
-                    .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
-                if (missedEntityType != null)
+                var header = JsonSerializer.Deserialize<MessageHeader>(wrappedMessageJsonObject.Header);
+
+                var wrappedMessage = new WrappedMessage
                 {
-                     _logger?.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
-                }
-                else
-                {
-                    _logger?.LogWarning($"Received unknown entity type {entityType}");
-                }
-                return;
-            }
+                    Header = header,
+                    Body = wrappedMessageJsonObject.Body
+                };
 
-            await bodyHandler.ProcessAsync(wrappedMessage.Body);
+                if (wrappedMessage == null || wrappedMessage.Header == null)
+                {
+                    _logger?.LogError("Invalid message format");
+                    return;
+                }
+
+                var entityType = wrappedMessage.Header.Type;
+                if (!bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
+                {
+                    var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
+                        .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
+                    if (missedEntityType != null)
+                    {
+                        _logger?.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
+                    }
+                    else
+                    {
+                        _logger?.LogWarning($"Received unknown entity type {entityType}");
+                    }
+                    return;
+                }
+
+                await bodyHandler.ProcessAsync(wrappedMessage.Body);
+            }
+            catch (JsonException jsonEx)
+            {
+                _logger?.LogError(jsonEx, "JSON processing error");
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error handling message delivery");
+            }
         }
 
         public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
@@ -89,7 +98,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 WrappedMessageJsonObject message = new WrappedMessageJsonObject
                 {
                     Header = root.GetProperty("Header").ToString(),
-                    Body = root.GetProperty("Body").ToString()
+                    Body = root.TryGetProperty("Body", out JsonElement bodyElement) ? bodyElement.ToString() : null
                 };
                 return message;
             }

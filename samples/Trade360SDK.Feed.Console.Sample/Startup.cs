@@ -2,20 +2,22 @@
 using Microsoft.Extensions.Logging;
 using Trade360SDK.Feed.Example.Handlers; // Using custom handlers for the example feed
 using Trade360SDK.Feed.RabbitMQ; // Using RabbitMQ related classes from the SDK
-using Microsoft.Extensions.Options; 
+using Microsoft.Extensions.Options;
+using Trade360SDK.Feed.Example.Handlers.Inplay;
+using Trade360SDK.Feed.Example.Handlers.Prematch;
 
 namespace Trade360SDK.Feed.Example
 {
     public class Startup : IHostedService
     {
         private readonly ILogger<Startup> _logger;
-        private readonly IRabbitMQFeedFactory _feedFactory; // Factory to create RabbitMQ feeds
+        private readonly IFeedFactory _feedFactory; // Factory to create RabbitMQ feeds
         private readonly IOptionsMonitor<RmqConnectionSettings> _settingsMonitor; // Monitors and provides access to configuration settings
 
-        private IRabbitMQFeed _inplayFeed; // Inplay feed instance
-        private IRabbitMQFeed _prematchFeed; // Prematch feed instance
+        private IFeed _inplayFeed; // Inplay feed instance
+        private IFeed _prematchFeed; // Prematch feed instance
 
-        public Startup(IRabbitMQFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor, ILogger<Startup> logger)
+        public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor, ILogger<Startup> logger)
         {
             _feedFactory = feedFactory; // Initialize the feed factory
             _settingsMonitor = settingsMonitor; // Initialize the settings monitor
@@ -30,25 +32,25 @@ namespace Trade360SDK.Feed.Example
             _inplayFeed = _feedFactory.CreateFeed(inplaySettings);
 
             // Add entity handlers to the Inplay feed
-            _inplayFeed.AddEntityHandler(new HeartbeatHandler());
-            _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandler());
-            _inplayFeed.AddEntityHandler(new LivescoreUpdateHandler());
+            _inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
+            _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
+            _inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
 
             // Start the Inplay feed
             await _inplayFeed.StartAsync(cancellationToken);
 
-            // Get the settings for the Prematch feed - look at progrem.cs initialization
-            var prematchSettings = _settingsMonitor.Get("Prematch");
-            // Create the Prematch feed using the factory and settings
-            _prematchFeed = _feedFactory.CreateFeed(prematchSettings);
+            //// Get the settings for the Prematch feed - look at progrem.cs initialization
+            //var prematchSettings = _settingsMonitor.Get("Prematch");
+            //// Create the Prematch feed using the factory and settings
+            //_prematchFeed = _feedFactory.CreateFeed(prematchSettings);
 
-            // Add entity handlers to the Prematch feed
-            _prematchFeed.AddEntityHandler(new HeartbeatHandler());
-            _prematchFeed.AddEntityHandler(new FixtureMetadataUpdateHandler());
-            _prematchFeed.AddEntityHandler(new LivescoreUpdateHandler());
+            //// Add entity handlers to the Prematch feed
+            //_prematchFeed.AddEntityHandler(new HeartbeatHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new LivescoreUpdateHandlerPrematch());
 
-            // Start the Prematch feed
-            await _prematchFeed.StartAsync(cancellationToken);
+            //// Start the Prematch feed
+            //await _prematchFeed.StartAsync(cancellationToken);
 
             // Output a message to the console and wait for user input to stop the feeds
             Console.WriteLine("Click any key to stop message consumption");

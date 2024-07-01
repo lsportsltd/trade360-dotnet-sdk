@@ -8,7 +8,7 @@ using Trade360SDK.Feed.RabbitMQ.Exceptions;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMQFeed : IRabbitMQFeed
+    public class RabbitMQFeed : IFeed
     {
         private readonly MessageConsumer _consumer;
         private readonly ILogger _logger;

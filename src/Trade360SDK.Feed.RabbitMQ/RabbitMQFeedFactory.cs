@@ -5,7 +5,7 @@ using System;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMQFeedFactory : IRabbitMQFeedFactory
+    public class RabbitMQFeedFactory : IFeedFactory
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
@@ -16,7 +16,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             _configuration = configuration;
         }
 
-        public IRabbitMQFeed CreateFeed(RmqConnectionSettings settings)
+        public IFeed CreateFeed(RmqConnectionSettings settings)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             return new RabbitMQFeed(settings, loggerFactory);

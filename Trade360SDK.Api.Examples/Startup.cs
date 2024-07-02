@@ -9,17 +9,30 @@ namespace Trade360SDK.Feed.Example
     {
         private readonly ILogger<Startup> _logger;
         private readonly IMetadataClient _MetadataClient;
+        private readonly IPackageDistributionClient _packageDistributionClient;
 
-        public Startup(ILogger<Startup> logger, IMetadataClient MetadataClient)
+        public Startup(ILogger<Startup> logger, IMetadataClient MetadataClient, IPackageDistributionClient packageDistributionClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _MetadataClient = MetadataClient;
+            _packageDistributionClient = packageDistributionClient;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
+                Console.WriteLine("Get Distribution Status");
+                Console.ReadKey();
+
+                var getDistributionStatus = await _packageDistributionClient.GetDistributionStatusAsync(cancellationToken);
+
+
+                Console.WriteLine("Starting Distribution");
+                Console.ReadKey();
+
+                var startDistributionResponse = await _packageDistributionClient.StartDistributionAsync(cancellationToken);
+
                 Console.WriteLine("Press any key to receive LSports markets entities");
                 Console.ReadKey();
 

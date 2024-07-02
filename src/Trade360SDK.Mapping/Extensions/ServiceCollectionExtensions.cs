@@ -5,8 +5,8 @@ using System;
 using Trade360SDK.Common;
 using Trade360SDK.CustomersApi.MetadataApi;
 using Trade360SDK.Metadata;
-using AutoMapper;
 using Trade360SDK.CustomersApi.Mapper;
+using Trade360SDK.CustomersApi.PackageDistributionClient;
 
 
 
@@ -16,17 +16,26 @@ public static class ServiceCollectionExtensions
     {
         services.Configure<Trade360ApiSettings>(configuration.GetSection("Trade360:CustomersApi"));
 
-        // Register HttpClient and clients
-        services.AddHttpClient<IMetadataClient, MetadataClient>((serviceProvider, client) =>
+        // Register HttpClients
+        AddHttpClientWithBaseAddress<IMetadataClient, MetadataClient>(services);
+        AddHttpClientWithBaseAddress<IPackageDistributionClient, PackageDistributionClient>(services);
+
+        // Register services
+        services.AddTransient<IMetadataClient, MetadataClient>();
+        services.AddTransient<IPackageDistributionClient, PackageDistributionClient>();
+        services.AddAutoMapper(typeof(MappingProfile));
+
+        return services;
+    }
+
+    private static void AddHttpClientWithBaseAddress<TClient, TImplementation>(IServiceCollection services)
+    where TClient : class
+    where TImplementation : class, TClient
+    {
+        services.AddHttpClient<TClient, TImplementation>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<Trade360ApiSettings>>().Value;
             client.BaseAddress = new Uri(options.BaseUrl);
         });
-
-        // Register services
-        services.AddTransient<IMetadataClient, MetadataClient>();
-        services.AddAutoMapper(typeof(MappingProfile));
-
-        return services;
     }
 }

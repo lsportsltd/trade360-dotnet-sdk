@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Trade360SDK.Feed.Example.Handlers; // Using custom handlers for the example feed
 using Trade360SDK.Feed.RabbitMQ; // Using RabbitMQ related classes from the SDK
 using Microsoft.Extensions.Options;
 using Trade360SDK.Feed.Example.Handlers.Inplay;
-using Trade360SDK.Feed.Example.Handlers.Prematch;
 
 namespace Trade360SDK.Feed.Example
 {

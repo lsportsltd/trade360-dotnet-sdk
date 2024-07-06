@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
+using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
 using Trade360SDK.Common.Metadata.Requests;
 using Trade360SDK.CustomersApi.MetadataApi.Requests;
 
@@ -10,6 +12,17 @@ namespace Trade360SDK.CustomersApi.Mapper
         {
             CreateMap<GetLeaguesRequestDto, GetLeaguesRequest>();
             CreateMap<GetMarketsRequestDto, GetMarketsRequest>();
+            CreateMap<GetTranslationsRequestDto, GetTranslationsRequest>();
+            CreateMap<GetCompetitionsRequestDto, GetCompetitionsRequest>();
+            CreateMap<FixtureSubscriptionRequestDto, FixtureSubscriptionRequest>();
+            CreateMap<LeagueSubscriptionRequestDto, LeagueSubscriptionRequest>();
+            CreateMap<GetFixtureScheduleRequestDto, GetFixtureScheduleRequest>();
+            CreateMap<ChangeManualSuspensionRequestDto, ChangeManualSuspensionRequest>();
+            CreateMap<GetSubscriptionRequestDto, GetSubscriptionRequest>();
+            CreateMap<CompetitionSubscriptionRequestDto, CompetitionSubscriptionRequest>();
+            CreateMap<GetFixtureMetadataRequestDto, GetFixtureMetadataRequest>()
+                  .ForMember(dest => dest.FromDate, opt => opt.MapFrom(src => src.FromDate.ToString("MM/dd/yyyy")))
+                  .ForMember(dest => dest.ToDate, opt => opt.MapFrom(src => src.ToDate.ToString("MM/dd/yyyy")));
         }
     }
 }

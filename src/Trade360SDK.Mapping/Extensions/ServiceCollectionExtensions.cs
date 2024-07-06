@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using Trade360SDK.Common;
-using Trade360SDK.CustomersApi.MetadataApi;
 using Trade360SDK.Metadata;
 using Trade360SDK.CustomersApi.Mapper;
-using Trade360SDK.CustomersApi.PackageDistributionClient;
+using Trade360SDK.CustomersApi;
+using Trade360SDK.Api.Abstraction.Interfaces;
 
 
 
@@ -14,15 +14,14 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddT360ApiClient(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<Trade360ApiSettings>(configuration.GetSection("Trade360:CustomersApi"));
-
         // Register HttpClients
-        AddHttpClientWithBaseAddress<IMetadataClient, MetadataClient>(services);
-        AddHttpClientWithBaseAddress<IPackageDistributionClient, PackageDistributionClient>(services);
+        AddHttpClientWithBaseAddress<IMetadataApiClient, MetadataApiClient>(services);
+        AddHttpClientWithBaseAddress<IPackageDistributionApiClient, PackageDistributionApiClient>(services);
 
         // Register services
-        services.AddTransient<IMetadataClient, MetadataClient>();
-        services.AddTransient<IPackageDistributionClient, PackageDistributionClient>();
+        services.AddTransient<IMetadataApiClient, MetadataApiClient>();
+        services.AddTransient<IPackageDistributionApiClient, PackageDistributionApiClient>();
+        services.AddTransient<ICustomersApiFactory, CustomersApiFactory>();
         services.AddAutoMapper(typeof(MappingProfile));
 
         return services;
@@ -34,7 +33,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient<TClient, TImplementation>((serviceProvider, client) =>
         {
-            var options = serviceProvider.GetRequiredService<IOptions<Trade360ApiSettings>>().Value;
+            var options = serviceProvider.GetRequiredService<IOptions<CustomersApiSettings>>().Value;
             client.BaseAddress = new Uri(options.BaseUrl);
         });
     }

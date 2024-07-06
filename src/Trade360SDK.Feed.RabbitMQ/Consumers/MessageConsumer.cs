@@ -7,10 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using Trade360SDK.Feed.Attributes;
+using Trade360SDK.Common.Attributes;
+using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.RabbitMQ.Handlers;
 using Trade360SDK.Feed.RabbitMQ.Interfaces;
-using Trade360SDK.Feed.RabbitMQ.Models;
 
 namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {

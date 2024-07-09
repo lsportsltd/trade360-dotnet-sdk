@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F0DCAF3-56A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed", "src\Trade360SDK.Feed\Trade360SDK.Feed.csproj", "{296E9584-EDEF-41A2-B05E-115920DA8102}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.CustomersApi", "src\Trade360SDK.Mapping\Trade360SDK.CustomersApi.csproj", "{355A78D4-ACAC-4D17-8B57-6767DA3FD2A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.CustomersApi", "src\Trade360SDK.CustomersApi\Trade360SDK.CustomersApi.csproj", "{355A78D4-ACAC-4D17-8B57-6767DA3FD2A8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.RabbitMQ", "src\Trade360SDK.Feed.RabbitMQ\Trade360SDK.Feed.RabbitMQ.csproj", "{619F8B46-159D-420A-8D7C-8A359B8B6AAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi", "src\Trade360.SnapshotApi\Trade360SDK.SnapshotApi.csproj", "{A6A25932-897D-4FEE-87DF-A5F1CABDB0DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi", "src\Trade360SDK.SnapshotApi\Trade360SDK.SnapshotApi.csproj", "{A6A25932-897D-4FEE-87DF-A5F1CABDB0DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Common", "src\Trade360SDK.Common.Entities\Trade360SDK.Common.csproj", "{13DE42C3-E297-4D98-BDF1-AADDD137D13F}"
 EndProject

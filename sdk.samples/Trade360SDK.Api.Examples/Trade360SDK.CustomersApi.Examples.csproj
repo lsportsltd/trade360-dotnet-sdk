@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Trade360SDK.Mapping\Trade360SDK.CustomersApi.csproj" />
+    <ProjectReference Include="..\..\src\Trade360SDK.Mapping\Trade360SDK.CustomersApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

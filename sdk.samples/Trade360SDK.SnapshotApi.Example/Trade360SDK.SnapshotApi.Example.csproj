@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Trade360.SnapshotApi\Trade360SDK.SnapshotApi.csproj" />
+	  <ProjectReference Include="..\..\src\Trade360.SnapshotApi\Trade360SDK.SnapshotApi.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

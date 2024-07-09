@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Trade360SDK.Common.Entities\Trade360SDK.Common.csproj" />
+    <ProjectReference Include="..\Trade360SDK.Common.Entities\Trade360SDK.Common.csproj" />
   </ItemGroup>
 
 </Project>

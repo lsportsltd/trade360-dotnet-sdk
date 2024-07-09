@@ -1,4 +1,4 @@
-using Trade360SDK.Common.Entities;
+using Trade360SDK.Common.Entities.MessageTypes;
 
 namespace Trade360SDK.Feed.Example.Handlers.Inplay;
 

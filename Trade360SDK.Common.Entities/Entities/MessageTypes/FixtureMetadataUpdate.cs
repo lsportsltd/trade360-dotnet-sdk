@@ -2,7 +2,7 @@
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Entities.Fixtures;
 
-namespace Trade360SDK.Common.Entities
+namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(1)]
     public class FixtureMetadataUpdate

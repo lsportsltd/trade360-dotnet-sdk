@@ -1,6 +1,6 @@
 ﻿using Trade360SDK.Common.Attributes;
 
-namespace Trade360SDK.Common.Entities
+namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(31)]
     public class KeepAliveUpdate

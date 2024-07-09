@@ -2,7 +2,7 @@
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Entities.Outright;
 
-namespace Trade360SDK.Common.Entities
+namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(39)]
     public class OutrightScoreUpdate

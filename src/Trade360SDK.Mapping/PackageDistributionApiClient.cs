@@ -1,9 +1,11 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Api.Abstraction;
-using Trade360SDK.Api.Abstraction.Interfaces;
-using Trade360SDK.Api.Abstraction.MetadataApi.Responses;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Entities.Base;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
+using Trade360SDK.CustomersApi.Http;
+using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.CustomersApi
 {

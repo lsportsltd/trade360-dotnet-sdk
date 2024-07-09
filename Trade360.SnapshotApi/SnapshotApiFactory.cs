@@ -19,7 +19,6 @@ namespace Trade360SDK.SnapshotApi
 
         public ISnapshotInplayApiClient CreateInplayHttpClient(SnapshotApiSettings settings)
         {
-            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
             return new InplaySnapshotApiClient(httpClient, settings, mapper);
@@ -27,7 +26,6 @@ namespace Trade360SDK.SnapshotApi
 
         public ISnapshotPrematchApiClient CreatePrematchHttpClient(SnapshotApiSettings settings)
         {
-            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
             return new PrematchSnapshotApiClient(httpClient, settings, mapper);

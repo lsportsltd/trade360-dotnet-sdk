@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 
 namespace Trade360SDK.CustomersApi.Validators
 {

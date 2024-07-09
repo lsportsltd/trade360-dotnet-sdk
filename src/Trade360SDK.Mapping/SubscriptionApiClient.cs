@@ -1,12 +1,14 @@
-﻿using System.Net.Http;
+﻿using AutoMapper;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using Trade360SDK.Api.Abstraction;
-using Trade360SDK.Api.Abstraction.Interfaces;
-using Trade360SDK.Api.Abstraction.MetadataApi.Responses;
-using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
-using Trade360SDK.Api.Abstraction.SubscriptionApi.Responses;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Entities.Base;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
+using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
+using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
+using Trade360SDK.CustomersApi.Http;
+using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.CustomersApi
 {

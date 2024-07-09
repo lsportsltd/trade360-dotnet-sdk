@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
-using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
+using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 
 namespace Trade360SDK.CustomersApi.Mapper
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Trade360SDK.Api.Abstraction;
+using Trade360SDK.CustomersApi.Configuration;
 using Trade360SDK.CustomersApi.Extensions;
 
 namespace Trade360SDK.Api.Examples;

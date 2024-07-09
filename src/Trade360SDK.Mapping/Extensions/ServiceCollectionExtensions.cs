@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Trade360SDK.Api.Abstraction;
-using Trade360SDK.Api.Abstraction.Interfaces;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.CustomersApi.Mapper;
 
 namespace Trade360SDK.CustomersApi.Extensions

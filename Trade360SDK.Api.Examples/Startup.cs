@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Trade360SDK.Api.Abstraction;
-using Trade360SDK.Api.Abstraction.Interfaces;
-using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
-using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
+using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
+using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.Api.Examples
 {
@@ -76,7 +76,7 @@ namespace Trade360SDK.Api.Examples
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.SubscribeByFixture(request, cancellationToken);
-            Console.WriteLine($"Send subscription request to {response.Fixtures.Count()} fixtures");
+            Console.WriteLine($"Send subscription request to {response.Fixtures.Count} fixtures");
         }
 
         private async Task UnsubscribeFromFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -89,7 +89,7 @@ namespace Trade360SDK.Api.Examples
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.UnSubscribeByFixture(request, cancellationToken);
-            Console.WriteLine($"Send unSubscription request to {response.Fixtures.Count()} fixtures");
+            Console.WriteLine($"Send unSubscription request to {response.Fixtures.Count} fixtures");
         }
 
         private async Task SubscribeToLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -111,7 +111,7 @@ namespace Trade360SDK.Api.Examples
 
             };
             var response = await subscriptionApiClient.SubscribeByLeague(request, cancellationToken);
-            Console.WriteLine($"Send Subscription request to {response?.Subscription?.Count()} fixtures");
+            Console.WriteLine($"Send Subscription request to {response?.Subscription?.Count} fixtures");
         }
 
         private async Task UnsubscribeFromLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -132,7 +132,7 @@ namespace Trade360SDK.Api.Examples
                 }
             };
             var response = await subscriptionApiClient.UnSubscribeByLeague(request, cancellationToken);
-            Console.WriteLine($"Send UnSubscription request to {response?.Subscription?.Count()} fixtures");
+            Console.WriteLine($"Send UnSubscription request to {response?.Subscription?.Count} fixtures");
         }
 
         private async Task GetSubscribedFixtures(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)

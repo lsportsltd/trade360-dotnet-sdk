@@ -4,6 +4,6 @@ namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Requests
 {
     public class CompetitionSubscriptionRequestDto
     {
-        public List<CompetitionSubcsription> Subscriptions { get; set; }
+        public List<CompetitionSubscription> Subscriptions { get; set; }
     }
 }

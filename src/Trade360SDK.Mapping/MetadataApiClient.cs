@@ -3,15 +3,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Common;
-using Trade360SDK.Api.Common.Models.Requests.Base;
-using Trade360SDK.Metadata;
-using Trade360SDK.CustomersApi.MetadataApi.Requests;
-using Trade360SDK.Common.Metadata.Requests;
-using Trade360SDK.Common.Metadata.Responses;
 using AutoMapper;
+using Trade360SDK.Api.Abstraction;
+using Trade360SDK.Api.Abstraction.Interfaces;
 using Trade360SDK.Api.Abstraction.MetadataApi.Responses;
 using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
+using Trade360SDK.CustomersApi.Validators;
 
 namespace Trade360SDK.CustomersApi
 {
@@ -75,7 +72,7 @@ namespace Trade360SDK.CustomersApi
             return response;
         }
 
-        public async Task<CompetitionCollectionResponse> GetCompetitionsAync(GetCompetitionsRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<CompetitionCollectionResponse> GetCompetitionsAsync(GetCompetitionsRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<GetCompetitionsRequest>(requestDto);
 

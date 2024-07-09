@@ -1,25 +1,23 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using Trade360SDK.Feed.Configuration;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMQFeedFactory : IFeedFactory
+    public class RabbitMqFeedFactory : IFeedFactory
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration;
 
-        public RabbitMQFeedFactory(IServiceProvider serviceProvider, IConfiguration configuration)
+        public RabbitMqFeedFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _configuration = configuration;
         }
 
         public IFeed CreateFeed(RmqConnectionSettings settings)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            return new RabbitMQFeed(settings, loggerFactory);
+            return new RabbitMqFeed(settings, loggerFactory);
         }
     }
 }

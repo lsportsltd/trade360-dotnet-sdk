@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Api.Common.Models.Requests.Base;
 
-namespace Trade360SDK.Common.Metadata.Requests
+namespace Trade360SDK.Api.Abstraction.MetadataApi.Requests
 {
     public class GetTranslationsRequest : BaseRequest
     {

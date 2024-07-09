@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Trade360SDK.Common.Entities.Shared;
 
-namespace Trade360SDK.Common.Entities.KeepAlives
+namespace Trade360SDK.Common.Entities.KeepAlive
 {
     public class KeepAlive
     {

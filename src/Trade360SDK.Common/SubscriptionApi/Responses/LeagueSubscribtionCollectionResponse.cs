@@ -2,9 +2,9 @@
 
 namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Responses
 {
-    public class LeagueSubscribtionCollectionResponse
+    public class LeagueSubscriptionCollectionResponse
     {
-        public List<LeagueSubscriptionResponse> Subscription { get; set; }
+        public List<LeagueSubscriptionResponse>? Subscription { get; set; }
     }
 
     public class LeagueSubscriptionResponse

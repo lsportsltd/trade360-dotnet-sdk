@@ -1,15 +1,12 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Trade360SDK.Api.Abstraction;
 using Trade360SDK.Api.Abstraction.Interfaces;
 using Trade360SDK.Api.Abstraction.MetadataApi.Requests;
 using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
-using Trade360SDK.Common;
-using Trade360SDK.Common.Metadata.Requests;
-using Trade360SDK.CustomersApi.MetadataApi.Requests;
-using Trade360SDK.Metadata;
 
-namespace Trade360SDK.Feed.Example
+namespace Trade360SDK.Api.Examples
 {
     public class Startup : IHostedService
     {
@@ -79,7 +76,7 @@ namespace Trade360SDK.Feed.Example
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.SubscribeByFixture(request, cancellationToken);
-            Console.WriteLine("Fixture subscribed.");
+            Console.WriteLine($"Send subscription request to {response.Fixtures.Count()} fixtures");
         }
 
         private async Task UnsubscribeFromFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -92,7 +89,7 @@ namespace Trade360SDK.Feed.Example
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.UnSubscribeByFixture(request, cancellationToken);
-            Console.WriteLine("Fixture unsubscribed.");
+            Console.WriteLine($"Send unSubscription request to {response.Fixtures.Count()} fixtures");
         }
 
         private async Task SubscribeToLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -114,7 +111,7 @@ namespace Trade360SDK.Feed.Example
 
             };
             var response = await subscriptionApiClient.SubscribeByLeague(request, cancellationToken);
-            Console.WriteLine("League subscribed.");
+            Console.WriteLine($"Send Subscription request to {response?.Subscription?.Count()} fixtures");
         }
 
         private async Task UnsubscribeFromLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -135,7 +132,7 @@ namespace Trade360SDK.Feed.Example
                 }
             };
             var response = await subscriptionApiClient.UnSubscribeByLeague(request, cancellationToken);
-            Console.WriteLine("League unsubscribed.");
+            Console.WriteLine($"Send UnSubscription request to {response?.Subscription?.Count()} fixtures");
         }
 
         private async Task GetSubscribedFixtures(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -147,7 +144,7 @@ namespace Trade360SDK.Feed.Example
             {
                 SportIds = new List<int>() { 6046 }
             };
-            var response = await subscriptionApiClient.GetSubscritptions(request, cancellationToken);
+            var response = await subscriptionApiClient.GetSubscriptions(request, cancellationToken);
             Console.WriteLine("Subscribed fixtures retrieved.");
         }
 
@@ -158,9 +155,9 @@ namespace Trade360SDK.Feed.Example
 
             var request = new CompetitionSubscriptionRequestDto
             {
-                Subscriptions = new List<CompetitionSubcsription>()
+                Subscriptions = new List<CompetitionSubscription>()
                 {
-                    new CompetitionSubcsription()
+                    new CompetitionSubscription()
                     {
                         SportId = 6046
                     }
@@ -177,9 +174,9 @@ namespace Trade360SDK.Feed.Example
 
             var request = new CompetitionSubscriptionRequestDto
             {
-                Subscriptions = new List<CompetitionSubcsription>()
+                Subscriptions = new List<CompetitionSubscription>()
                 {
-                    new CompetitionSubcsription()
+                    new CompetitionSubscription()
                     {
                         SportId = 6046
                     }
@@ -227,7 +224,7 @@ namespace Trade360SDK.Feed.Example
                 LocationIds = new[] { 1 },
                 SubscriptionStatus = 0
             };
-            var response = await metadataApiClient.GetCompetitionsAync(request, cancellationToken);
+            var response = await metadataApiClient.GetCompetitionsAsync(request, cancellationToken);
             Console.WriteLine("Competitions retrieved.");
         }
 

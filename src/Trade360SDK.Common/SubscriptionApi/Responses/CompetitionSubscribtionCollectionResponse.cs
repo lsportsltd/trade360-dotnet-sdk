@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Responses
 {
-    public class CompetitionSubscribtionCollectionResponse
+    public class CompetitionSubscriptionCollectionResponse
     {
         public List<CompetitionSubscriptionResponse> Subscription { get; set; }
     }

@@ -1,7 +1,4 @@
-﻿using Trade360SDK.Common;
-using Trade360SDK.Metadata;
-
-namespace Trade360SDK.Api.Abstraction.Interfaces
+﻿namespace Trade360SDK.Api.Abstraction.Interfaces
 {
     public interface ICustomersApiFactory
     {

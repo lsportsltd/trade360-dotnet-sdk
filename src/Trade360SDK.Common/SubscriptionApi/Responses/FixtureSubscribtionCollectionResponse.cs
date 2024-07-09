@@ -2,12 +2,12 @@
 
 namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Responses
 {
-    public class FixtureSubscribtionCollectionResponse
+    public class FixtureSubscriptionCollectionResponse
     {
-        public List<FixtureSubsription> Fixtures { get; set; }
+        public List<FixtureSubscription> Fixtures { get; set; }
     }
 
-    public class FixtureSubsription
+    public class FixtureSubscription
     {
         public int FixtureId { get; set; }
         public bool Success { get; set; }

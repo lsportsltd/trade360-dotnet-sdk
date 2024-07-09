@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 
-namespace Trade360SDK.Api.Common.Models.Responses
+namespace Trade360SDK.Api.Abstraction
 {
     internal class HeaderResponse
     {

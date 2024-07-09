@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Common.MetadataApi.Responses
+﻿namespace Trade360SDK.Api.Abstraction.MetadataApi.Responses
 {
     public class StartDistributionResponse
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Trade360SDK.Common.Metadata.Requests
+namespace Trade360SDK.Api.Abstraction.MetadataApi.Requests
 {
     public class GetTranslationsRequestDto
     {

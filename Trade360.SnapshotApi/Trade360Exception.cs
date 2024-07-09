@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Trade360SDK.Common
+namespace Trade360SDK.SnapshotApi
 {
     public class Trade360Exception : Exception
     {

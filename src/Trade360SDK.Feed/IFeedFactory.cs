@@ -1,4 +1,6 @@
-﻿namespace Trade360SDK.Feed.RabbitMQ
+﻿using Trade360SDK.Feed.Configuration;
+
+namespace Trade360SDK.Feed
 {
     public interface IFeedFactory
     {

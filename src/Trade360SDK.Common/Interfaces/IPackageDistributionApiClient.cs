@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Common.MetadataApi.Responses;
+using Trade360SDK.Api.Abstraction.MetadataApi.Responses;
 
-namespace Trade360SDK.Metadata
+namespace Trade360SDK.Api.Abstraction.Interfaces
 {
     public interface IPackageDistributionApiClient
     {

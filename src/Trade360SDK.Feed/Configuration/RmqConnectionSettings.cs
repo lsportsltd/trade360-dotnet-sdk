@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Feed.RabbitMQ
+﻿namespace Trade360SDK.Feed.Configuration
 {
     public class RmqConnectionSettings
     {

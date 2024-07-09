@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Common.Enums
+﻿namespace Trade360SDK.Api.Abstraction.Enums
 {
     public enum PackageTypeEnum
     {

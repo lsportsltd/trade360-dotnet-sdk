@@ -3,12 +3,14 @@ using RabbitMQ.Client;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
 using Trade360SDK.Feed.RabbitMQ.Exceptions;
+using Trade360SDK.Feed.RabbitMQ.Validators;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMQFeed : IFeed
+    public class RabbitMqFeed : IFeed
     {
         private readonly MessageConsumer _consumer;
         private readonly ILogger _logger;
@@ -17,7 +19,7 @@ namespace Trade360SDK.Feed.RabbitMQ
         private string? _consumerTag;
         private readonly RmqConnectionSettings _settings;
 
-        public RabbitMQFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory)
+        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
             _consumer = new MessageConsumer(loggerFactory);
@@ -31,7 +33,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             _consumer.RegisterEntityHandler(entityHandler);
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -60,9 +62,11 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _logger.LogError(ex, "Error starting RabbitMQFeed.");
                 throw new RabbitMQFeedException("An error occurred while starting the RabbitMQ feed.", ex);
             }
+
+            return Task.CompletedTask;
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -79,6 +83,8 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _logger.LogError(ex, "Error stopping RabbitMQFeed.");
                 throw new RabbitMQFeedException("An error occurred while stopping the RabbitMQ feed.", ex);
             }
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Api.Common.Models.Requests.Base;
 
 namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Requests
 {
-    public class CompetitionSubcsription
+    public class CompetitionSubscription
     {
         public int SportId { get; set; }
         public int LocationId { get; set; }
@@ -12,6 +11,6 @@ namespace Trade360SDK.Api.Abstraction.SubscriptionApi.Requests
 
     public class CompetitionSubscriptionRequest : BaseRequest
     {
-        public List<CompetitionSubcsription> Subscriptions { get; set; }
+        public List<CompetitionSubscription> Subscriptions { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Metadata.Enums;
+using Trade360SDK.Api.Abstraction.Enums;
 
 namespace Trade360SDK.Api.Abstraction.MetadataApi.Responses
 {

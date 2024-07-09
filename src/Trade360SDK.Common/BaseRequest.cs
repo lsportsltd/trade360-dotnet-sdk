@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Api.Common.Models.Requests.Base
+﻿namespace Trade360SDK.Api.Abstraction
 {
     public class BaseRequest
     {

@@ -1,6 +1,6 @@
 ﻿using Trade360SDK.Common.Entities.Fixtures;
 
-namespace Trade360SDK.Common.Entities.Livescores
+namespace Trade360SDK.Common.Entities.Livescore
 {
     public class LivescoreEvent
     {

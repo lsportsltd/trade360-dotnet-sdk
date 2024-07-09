@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.Feed
 {
-    public interface IEntityHandler<T>
+    public interface IEntityHandler<in T>
     {
         Task ProcessAsync(T entity);
     }

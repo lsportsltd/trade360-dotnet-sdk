@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Trade360SDK.Feed.RabbitMQ;
 
-
-public static class ServiceCollectionExtensions
+namespace Trade360SDK.Feed.RabbitMQ.Extensions
 {
-    public static IServiceCollection AddT360RmqFeedSdk(this IServiceCollection services)
+    public static class ServiceCollectionExtensions
     {
-        // Register the factory
-        services.AddSingleton<IFeedFactory, RabbitMQFeedFactory>();
-        return services;
+        public static IServiceCollection AddT360RmqFeedSdk(this IServiceCollection services)
+        {
+            // Register the factory
+            services.AddSingleton<IFeedFactory, RabbitMqFeedFactory>();
+            return services;
+        }
     }
 }

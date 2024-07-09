@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Metadata.Enums
+﻿namespace Trade360SDK.Api.Abstraction.Enums
 {
     public enum SubscriptionStatusEnum
     {

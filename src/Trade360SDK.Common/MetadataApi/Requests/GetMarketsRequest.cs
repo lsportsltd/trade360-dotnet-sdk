@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Api.Common.Models.Requests.Base;
-using Trade360SDK.Metadata.Enums;
+using Trade360SDK.Api.Abstraction.Enums;
 
-namespace Trade360SDK.Common.Metadata.Requests
+namespace Trade360SDK.Api.Abstraction.MetadataApi.Requests
 {
     public class GetMarketsRequest : BaseRequest
     {

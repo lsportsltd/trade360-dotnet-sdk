@@ -1,6 +1,4 @@
-﻿using Trade360SDK.Api.Common.Models.Requests.Base;
-
-namespace Trade360SDK.Api.Abstraction.MetadataApi.Requests
+﻿namespace Trade360SDK.Api.Abstraction.MetadataApi.Requests
 {
     public class GetFixtureMetadataRequest : BaseRequest
     {

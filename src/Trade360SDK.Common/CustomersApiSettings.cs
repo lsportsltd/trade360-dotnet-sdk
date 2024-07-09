@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Common
+﻿namespace Trade360SDK.Api.Abstraction
 {
     public class CustomersApiSettings
     {

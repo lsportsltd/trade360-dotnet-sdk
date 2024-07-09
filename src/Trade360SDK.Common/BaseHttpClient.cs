@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,10 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Api.Common.Models.Requests.Base;
-using Trade360SDK.Api.Common.Models.Responses.Base;
+using Newtonsoft.Json;
 
-namespace Trade360SDK.Common
+namespace Trade360SDK.Api.Abstraction
 {
     public abstract class BaseHttpClient : IDisposable
     {
@@ -20,7 +18,7 @@ namespace Trade360SDK.Common
         private readonly string _username;
         private readonly string _password;
 
-        public BaseHttpClient(HttpClient httpClient, CustomersApiSettings settings)
+        protected BaseHttpClient(HttpClient httpClient, CustomersApiSettings settings)
         {
             _httpClient = httpClient;
 
@@ -49,7 +47,7 @@ namespace Trade360SDK.Common
                 var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawErrorResponse);
 
-                if (errorResponse != null && errorResponse.Header != null)
+                if (errorResponse is { Header: { } })
                 {
                     var errors = errorResponse.Header.Errors?.Select(x => x.Message);
                     throw new Trade360Exception(errors);
@@ -63,7 +61,7 @@ namespace Trade360SDK.Common
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawResponse);
 
-            if (response == null || response.Header == null)
+            if (response?.Header == null)
             {
                 throw new InvalidOperationException("'Header' property is missed. Please, ensure that you use Trade360 url");
             }
@@ -101,7 +99,7 @@ namespace Trade360SDK.Common
                 var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawErrorResponse);
 
-                if (errorResponse != null && errorResponse.Header != null)
+                if (errorResponse is { Header: { } })
                 {
                     var errors = errorResponse.Header.Errors?.Select(x => x.Message);
                     throw new Trade360Exception(errors);
@@ -115,7 +113,7 @@ namespace Trade360SDK.Common
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawResponse);
 
-            if (response == null || response.Header == null)
+            if (response?.Header == null)
             {
                 throw new InvalidOperationException("'Header' property is missed. Please, ensure that you use Trade360 url");
             }
@@ -142,19 +140,17 @@ namespace Trade360SDK.Common
             foreach (var prop in properties)
             {
                 var value = prop.GetValue(request);
-                if (value != null)
+                if (value == null) continue;
+                if (value is System.Collections.IEnumerable enumerable && !(value is string))
                 {
-                    if (value is System.Collections.IEnumerable enumerable && !(value is string))
+                    foreach (var item in enumerable)
                     {
-                        foreach (var item in enumerable)
-                        {
-                            queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(item.ToString())}&");
-                        }
+                        queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(item.ToString())}&");
                     }
-                    else
-                    {
-                        queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(value.ToString())}&");
-                    }
+                }
+                else
+                {
+                    queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(value.ToString())}&");
                 }
             }
 

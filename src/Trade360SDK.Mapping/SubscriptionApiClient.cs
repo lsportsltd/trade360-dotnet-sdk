@@ -1,15 +1,14 @@
-﻿using AutoMapper;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using Trade360SDK.Api.Abstraction;
 using Trade360SDK.Api.Abstraction.Interfaces;
+using Trade360SDK.Api.Abstraction.MetadataApi.Responses;
 using Trade360SDK.Api.Abstraction.SubscriptionApi.Requests;
 using Trade360SDK.Api.Abstraction.SubscriptionApi.Responses;
-using Trade360SDK.Api.Common.Models.Requests.Base;
-using Trade360SDK.Common;
-using Trade360SDK.Common.Metadata.Responses;
 
-namespace Trade360SDK.Api.Subscription
+namespace Trade360SDK.CustomersApi
 {
     public class SubscriptionApiClient : BaseHttpClient, ISubscriptionApiClient
     {
@@ -21,8 +20,8 @@ namespace Trade360SDK.Api.Subscription
             _mapper = mapper;
         }
 
-        public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancelationToken)
-            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota", new BaseRequest(), cancelationToken);
+        public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken)
+            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota", new BaseRequest(), cancellationToken);
 
         public async Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken)
         {
@@ -35,51 +34,51 @@ namespace Trade360SDK.Api.Subscription
             return response;
         }
 
-        public async Task<FixtureSubscribtionCollectionResponse> SubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<FixtureSubscriptionCollectionResponse> SubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<FixtureSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<FixtureSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<FixtureSubscriptionCollectionResponse>(
                 "Fixtures/Subscribe",
                 request,
                 cancellationToken);
             return response;
         }
 
-        public async Task<FixtureSubscribtionCollectionResponse> UnSubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<FixtureSubscriptionCollectionResponse> UnSubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<FixtureSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<FixtureSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<FixtureSubscriptionCollectionResponse>(
                 "Fixtures/UnSubscribe",
                 request,
                 cancellationToken);
             return response;
         }
 
-        public async Task<LeagueSubscribtionCollectionResponse> SubscribeByLeague(LeagueSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<LeagueSubscriptionCollectionResponse> SubscribeByLeague(LeagueSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<LeagueSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<LeagueSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<LeagueSubscriptionCollectionResponse>(
                 "Leagues/Subscribe",
                 request,
                 cancellationToken);
             return response;
         }
 
-        public async Task<LeagueSubscribtionCollectionResponse> UnSubscribeByLeague(LeagueSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<LeagueSubscriptionCollectionResponse> UnSubscribeByLeague(LeagueSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<LeagueSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<LeagueSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<LeagueSubscriptionCollectionResponse>(
                 "Leagues/UnSubscribe",
                 request,
                 cancellationToken);
             return response;
         }
 
-        public async Task<GetSubscriptionResponse> GetSubscritptions(GetSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<GetSubscriptionResponse> GetSubscriptions(GetSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<GetSubscriptionRequest>(requestDto);
 
@@ -90,22 +89,22 @@ namespace Trade360SDK.Api.Subscription
             return response;
         }
 
-        public async Task<CompetitionSubscribtionCollectionResponse> SubscribeByCompetition(CompetitionSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<CompetitionSubscriptionCollectionResponse> SubscribeByCompetition(CompetitionSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<CompetitionSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<CompetitionSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<CompetitionSubscriptionCollectionResponse>(
                 "Outright/Subscribe",
                 request,
                 cancellationToken);
             return response;
         }
 
-        public async Task<CompetitionSubscribtionCollectionResponse> UnSubscribeByCompetition(CompetitionSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<CompetitionSubscriptionCollectionResponse> UnSubscribeByCompetition(CompetitionSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<CompetitionSubscriptionRequest>(requestDto);
 
-            var response = await PostEntityAsync<CompetitionSubscribtionCollectionResponse>(
+            var response = await PostEntityAsync<CompetitionSubscriptionCollectionResponse>(
                 "Outright/UnSubscribe",
                 request,
                 cancellationToken);

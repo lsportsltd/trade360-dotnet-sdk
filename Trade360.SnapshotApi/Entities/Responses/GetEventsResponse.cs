@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Trade360SDK.Common.Entities.Fixtures;
-using Trade360SDK.Common.Entities.Livescores;
+using Trade360SDK.Common.Entities.Livescore;
 using Trade360SDK.Common.Entities.Markets;
 
 namespace Trade360SDK.SnapshotApi.Entities.Responses

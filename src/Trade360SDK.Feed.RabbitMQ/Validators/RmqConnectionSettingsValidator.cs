@@ -1,6 +1,7 @@
 ﻿using System;
+using Trade360SDK.Feed.Configuration;
 
-namespace Trade360SDK.Feed.RabbitMQ
+namespace Trade360SDK.Feed.RabbitMQ.Validators
 {
     public static class RmqConnectionSettingsValidator
     {

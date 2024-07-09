@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Trade360SDK.Common.Entities.Livescores
+namespace Trade360SDK.Common.Entities.Livescore
 {
     public class Incident
     {

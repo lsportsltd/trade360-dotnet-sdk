@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Entities.Fixtures;
-using Trade360SDK.Common.Entities.Livescores;
 using Trade360SDK.Common.Entities.Markets;
 using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
@@ -34,7 +33,7 @@ namespace Trade360SDK.SnapshotApi
                 "Inplay/GetFixtures",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<FixtureEvent>();
+            return response;
         }
 
         public async Task<IEnumerable<GetLiveScoreResponse>> GetLivescore(GetLivescoreRequestDto requestDto, CancellationToken cancellationToken)
@@ -45,7 +44,7 @@ namespace Trade360SDK.SnapshotApi
                 "Inplay/GetScores",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<GetLiveScoreResponse>();
+            return response;
         }   
         
         public async Task<IEnumerable<MarketEvent>> GetFixtureMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
@@ -56,7 +55,7 @@ namespace Trade360SDK.SnapshotApi
                 "Inplay/GetFixtureMarkets",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<MarketEvent>();
+            return response;
         }
 
         public async Task<IEnumerable<GetEventsResponse>> GetEvents(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
@@ -67,7 +66,7 @@ namespace Trade360SDK.SnapshotApi
                 "Inplay/GetEvents",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<GetEventsResponse>();
+            return response;
         }
     }
 }

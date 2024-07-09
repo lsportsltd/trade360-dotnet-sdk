@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Entities.Fixtures;
-using Trade360SDK.Common.Entities.Livescores;
+using Trade360SDK.Common.Entities.Livescore;
 using Trade360SDK.Common.Entities.Markets;
 using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
@@ -33,7 +33,7 @@ namespace Trade360SDK.SnapshotApi
                 "Prematch/GetFixtures",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<FixtureEvent>();
+            return response;
         }
 
         public async Task<IEnumerable<LivescoreEvent>> GetLivescore(GetLivescoreRequestDto requestDto, CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ namespace Trade360SDK.SnapshotApi
                 "Prematch/GetScores",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<LivescoreEvent>();
+            return response;
         }
 
         public async Task<IEnumerable<MarketEvent>> GetFixtureMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
@@ -55,7 +55,7 @@ namespace Trade360SDK.SnapshotApi
                 "Prematch/GetFixtureMarkets",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<MarketEvent>();
+            return response;
         }
 
         public async Task<IEnumerable<GetEventsResponse>> GetEvents(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
@@ -66,7 +66,73 @@ namespace Trade360SDK.SnapshotApi
                 "Prematch/GetEvents",
                 request,
                 cancellationToken);
-            return response ?? Enumerable.Empty<GetEventsResponse>();
+            return response;
+        }
+
+        public async Task<IEnumerable<GetOutrightFixtureResponse>> GetOutrightFixture(GetOutrightFixturesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightFixtureResponse>>(
+                "Prematch/GetOutrightFixture",
+                request,
+                cancellationToken);
+            return response;
+        }
+        public async Task<IEnumerable<GetOutrightLivescoreResponse>> GetOutrightScores(GetOutrightLivescoreRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLivescoreResponse>>(
+                "Prematch/GetOutrightScores",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+        public async Task<IEnumerable<GetOutrightMarketsResponse>> GetOutrightFixtureMarkets(GetOutrightMarketsRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightMarketsResponse>>(
+                "Prematch/GetOutrightFixtureMarkets",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+        public async Task<IEnumerable<GetOutrightEventsResponse>> GetOutrightEvents(GetOutrightMarketsRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightEventsResponse>>(
+                "Prematch/GetOutrightEvents",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+        public async Task<IEnumerable<GetOutrightLeaguesFixturesResponse>> GetOutrightLeagues(GetFixturesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseStandardRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeaguesFixturesResponse>>(
+                "Prematch/GetOutrightLeagues",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+
+        public async Task<IEnumerable<GetOutrightLeaguesMarketsResponse>> GetOutrightLeaguesMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseStandardRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeaguesMarketsResponse>>(
+                "Prematch/GetOutrightLeagueMarkets",
+                request,
+                cancellationToken);
+            return response;
         }
     }
 }

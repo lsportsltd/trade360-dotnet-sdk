@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Trade360SDK.Common.Metadata.Responses
+namespace Trade360SDK.Api.Abstraction.MetadataApi.Responses
 {
     public class LeaguesCollectionResponse
     {

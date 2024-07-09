@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Trade360SDK.Common.Entities.Enums;
 
-namespace Trade360SDK.Common.Entities.Livescores
+namespace Trade360SDK.Common.Entities.Livescore
 {
     public class Scoreboard
     {

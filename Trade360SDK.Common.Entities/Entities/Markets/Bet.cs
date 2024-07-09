@@ -1,6 +1,5 @@
 ﻿using System;
 using Trade360SDK.Common.Entities.Enums;
-using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Common.Entities.Markets
 {

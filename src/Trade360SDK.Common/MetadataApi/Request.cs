@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Common.Metadata
+﻿namespace Trade360SDK.Api.Abstraction.MetadataApi
 {
     public class Request
     {

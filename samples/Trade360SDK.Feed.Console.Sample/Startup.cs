@@ -1,30 +1,27 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Trade360SDK.Feed.RabbitMQ; // Using RabbitMQ related classes from the SDK
 using Microsoft.Extensions.Options;
+using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.Example.Handlers.Inplay;
 
 namespace Trade360SDK.Feed.Example
 {
     public class Startup : IHostedService
     {
-        private readonly ILogger<Startup> _logger;
         private readonly IFeedFactory _feedFactory; // Factory to create RabbitMQ feeds
         private readonly IOptionsMonitor<RmqConnectionSettings> _settingsMonitor; // Monitors and provides access to configuration settings
 
         private IFeed _inplayFeed; // Inplay feed instance
         private IFeed _prematchFeed; // Prematch feed instance
 
-        public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor, ILogger<Startup> logger)
+        public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor)
         {
             _feedFactory = feedFactory; // Initialize the feed factory
             _settingsMonitor = settingsMonitor; // Initialize the settings monitor
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // Initialize the logger, throw an exception if logger is null
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) // Method to start the service
         {
-            // Get the settings for the Inplay feed - look at progrem.cs initialization
+            // Get the settings for the Inplay feed - look at Program.cs initialization
             var inplaySettings = _settingsMonitor.Get("Inplay");
             // Create the Inplay feed using the factory and settings
             _inplayFeed = _feedFactory.CreateFeed(inplaySettings);
@@ -34,10 +31,12 @@ namespace Trade360SDK.Feed.Example
             _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
             _inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
 
+            //Start Distribution Logic
+
             // Start the Inplay feed
             await _inplayFeed.StartAsync(cancellationToken);
 
-            //// Get the settings for the Prematch feed - look at progrem.cs initialization
+            //// Get the settings for the Prematch feed - look at program.cs initialization
             //var prematchSettings = _settingsMonitor.Get("Prematch");
             //// Create the Prematch feed using the factory and settings
             //_prematchFeed = _feedFactory.CreateFeed(prematchSettings);

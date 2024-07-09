@@ -1,4 +1,4 @@
-﻿using Trade360SDK.Common.Entities.Livescores;
+﻿using Trade360SDK.Common.Entities.Livescore;
 
 namespace Trade360SDK.SnapshotApi.Entities.Responses
 {

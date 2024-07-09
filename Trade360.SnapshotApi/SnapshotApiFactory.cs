@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,12 +11,10 @@ namespace Trade360SDK.SnapshotApi
     public class SnapshotApiFactory : ISnapshotApiFactory
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration;
 
-        public SnapshotApiFactory(IServiceProvider serviceProvider, IConfiguration configuration)
+        public SnapshotApiFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _configuration = configuration;
         }
 
         public ISnapshotInplayApiClient CreateInplayHttpClient(SnapshotApiSettings settings)

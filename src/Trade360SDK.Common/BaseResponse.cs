@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Api.Common.Models.Responses.Base
+﻿namespace Trade360SDK.Api.Abstraction
 {
     internal class BaseResponse<TBody>
         where TBody : class

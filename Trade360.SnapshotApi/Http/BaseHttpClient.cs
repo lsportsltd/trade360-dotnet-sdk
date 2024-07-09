@@ -17,7 +17,7 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly string _username;
         private readonly string _password;
 
-        public BaseHttpClient(HttpClient httpClient, SnapshotApiSettings settings)
+        protected BaseHttpClient(HttpClient httpClient, SnapshotApiSettings settings)
         {
             _httpClient = httpClient;
 

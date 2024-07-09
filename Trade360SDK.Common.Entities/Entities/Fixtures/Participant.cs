@@ -6,7 +6,7 @@
 
         public string? Name { get; set; }
 
-        public string Position { get; set; }
+        public string? Position { get; set; }
 
         public int? RotationId { get; set; }
 

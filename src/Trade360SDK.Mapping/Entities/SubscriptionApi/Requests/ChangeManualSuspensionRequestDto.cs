@@ -6,5 +6,4 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests
     {
         public List<Suspension> Suspensions { get; set; }
     }
-
 }

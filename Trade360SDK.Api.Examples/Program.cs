@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Trade360SDK.CustomersApi.Configuration;
 using Trade360SDK.CustomersApi.Extensions;
 
-namespace Trade360SDK.Api.Examples;
+namespace Trade360SDK.CustomersApi.Examples;
 
 internal class Program
 {

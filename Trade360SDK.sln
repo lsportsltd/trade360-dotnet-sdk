@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.CustomersApi", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.RabbitMQ", "src\Trade360SDK.Feed.RabbitMQ\Trade360SDK.Feed.RabbitMQ.csproj", "{619F8B46-159D-420A-8D7C-8A359B8B6AAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Api.Examples", "Trade360SDK.Api.Examples\Trade360SDK.Api.Examples.csproj", "{CF8771B8-F24D-43BE-8F51-1C000DA89F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.CustomersApi.Examples", "Trade360SDK.Api.Examples\Trade360SDK.CustomersApi.Examples.csproj", "{CF8771B8-F24D-43BE-8F51-1C000DA89F17}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi", "Trade360.SnapshotApi\Trade360SDK.SnapshotApi.csproj", "{A6A25932-897D-4FEE-87DF-A5F1CABDB0DF}"
 EndProject

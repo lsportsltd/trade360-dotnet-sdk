@@ -10,8 +10,8 @@ namespace Trade360SDK.Feed.Example
         private readonly IFeedFactory _feedFactory; // Factory to create RabbitMQ feeds
         private readonly IOptionsMonitor<RmqConnectionSettings> _settingsMonitor; // Monitors and provides access to configuration settings
 
-        private IFeed _inplayFeed; // Inplay feed instance
-        private IFeed _prematchFeed; // Prematch feed instance
+        private IFeed? _inplayFeed; // Inplay feed instance
+        private IFeed? _prematchFeed; // Prematch feed instance
 
         public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor)
         {
@@ -54,8 +54,8 @@ namespace Trade360SDK.Feed.Example
             Console.ReadLine();
 
             // Stop the Inplay and Prematch feeds
-            await _inplayFeed.StopAsync(cancellationToken);
-            await _prematchFeed.StopAsync(cancellationToken);
+            if (_inplayFeed != null) await _inplayFeed.StopAsync(cancellationToken);
+            if (_prematchFeed != null) await _prematchFeed.StopAsync(cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken) // Method to stop the service

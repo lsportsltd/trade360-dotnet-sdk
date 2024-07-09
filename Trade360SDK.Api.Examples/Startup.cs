@@ -6,7 +6,7 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Interfaces;
 
-namespace Trade360SDK.Api.Examples
+namespace Trade360SDK.CustomersApi.Examples
 {
     public class Startup : IHostedService
     {
@@ -111,7 +111,7 @@ namespace Trade360SDK.Api.Examples
 
             };
             var response = await subscriptionApiClient.SubscribeByLeague(request, cancellationToken);
-            Console.WriteLine($"Send Subscription request to {response?.Subscription?.Count} fixtures");
+            Console.WriteLine($"Send Subscription request to {response.Subscription?.Count} fixtures");
         }
 
         private async Task UnsubscribeFromLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -132,7 +132,7 @@ namespace Trade360SDK.Api.Examples
                 }
             };
             var response = await subscriptionApiClient.UnSubscribeByLeague(request, cancellationToken);
-            Console.WriteLine($"Send UnSubscription request to {response?.Subscription?.Count} fixtures");
+            Console.WriteLine($"Send UnSubscription request to {response.Subscription?.Count} fixtures");
         }
 
         private async Task GetSubscribedFixtures(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)

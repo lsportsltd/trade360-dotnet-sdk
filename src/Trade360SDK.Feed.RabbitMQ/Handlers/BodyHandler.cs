@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Trade360SDK.Feed.RabbitMQ.Interfaces;
@@ -18,12 +19,24 @@ namespace Trade360SDK.Feed.RabbitMQ.Handlers
 
         public Task ProcessAsync(string? body)
         {
-            var entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
+            var entity = default(T);
+            
+            try
+            {
+                entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning($"Failed to deserialize {typeof(T).Name} entity, Due to: {e.Message}");
+            }
+            
             if (entity == null)
             {
-                _logger?.WriteError($"Failed to deserialize {typeof(T).Name} entity");
+                _logger?.LogError($"Failed to deserialize {typeof(T).Name} entity");
+                
                 return Task.CompletedTask;
             }
+            
             return _entityHandler.ProcessAsync(entity);
         }
     }

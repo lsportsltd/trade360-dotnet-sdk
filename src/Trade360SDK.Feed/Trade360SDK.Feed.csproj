@@ -6,7 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trade360SDK.Common\Trade360SDK.Common.csproj" />
+    <EditorConfigFiles Remove="C:\StmRepo\trade360-sdk\src\Trade360SDK.Feed\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\StmRepo\trade360-sdk\src\Trade360SDK.Feed\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trade360SDK.Common.Entities\Trade360SDK.Common.csproj" />
   </ItemGroup>
 
 </Project>

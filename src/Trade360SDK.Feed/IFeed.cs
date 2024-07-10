@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Trade360SDK.Feed
 {
-    public interface IFeed
+    public interface IFeed : IDisposable
     {
         Task StartAsync(CancellationToken cancellationToken);
         Task StopAsync(CancellationToken cancellationToken);

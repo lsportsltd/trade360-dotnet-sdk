@@ -10,11 +10,16 @@
 
 ## About <a name = "about"></a>
 
-This example project demonstrates how to use the Trade360SDK to create and manage RabbitMQ feeds for Inplay and Prematch data. The project shows how to configure feeds, add entity handlers, and start/stop feeds using the `IHostedService` interface. This setup is designed to help you integrate real-time data feeds into your application efficiently.
+- Need to write about the aim of the sdk
+- What it solves
+- The structure of the project and what each project inside the solution aims for
 
 ## Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+- Feed Examples
+- Customers Api Examples
+- Snapshot Examples
+
 
 ### Prerequisites
 
@@ -51,13 +56,16 @@ A step-by-step series of instructions to set up your development environment.
 
 2. **Configure the `appsettings.json` file:**
 
+-Feed configuration examples
+-Snapshot api examples
+-Customers Api examples
     Edit the `appsettings.json` file to include your RabbitMQ settings. Here is an example configuration:
 
     \```json
     {
       "Trade360": { 
         "RmqInplaySettings": { 
-          "Host": "artistic-wheat-bobcat.rmq6.cloudamqp.com", 
+          "Host": "TRADE360_INPLAY_HOST", 
           "Port": 5672, 
           "VirtualHost": "StmInPlay", 
           "PackageId": 430, 
@@ -71,7 +79,7 @@ A step-by-step series of instructions to set up your development environment.
           "AutomaticRecoveryEnabled": true 
         },
         "RmqPrematchSettings": { 
-          "RabbitmqHost": "frosty-possum.rmq.cloudamqp.com", 
+          "RabbitmqHost": "TRADE360_PREMATCH_HOST", 
           "RmqPort": 5672, 
           "VirtualHost": "StmPreMatch", 
           "PackageId": 431, 
@@ -89,19 +97,6 @@ A step-by-step series of instructions to set up your development environment.
     }
     \```
 
-3. **Build the project:**
-
-    \```bash
-    dotnet build
-    \```
-
-4. **Run the project:**
-
-    \```bash
-    dotnet run
-    \```
-
-    This will start the service and begin consuming messages from the RabbitMQ feeds.
 
 ### Example Usage
 

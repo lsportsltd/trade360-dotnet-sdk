@@ -5,8 +5,15 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Usage](#usage)
-- [Contributing](../CONTRIBUTING.md)
+- [Pre-requisites](#pre_requisites)
+- [Supported .NET Versions](#supported_versions)
+- [Installing](#installing)
+- [Initial Configuration](#configuration)
+- [Connecting to trade360 feed](#usage_guide_feed)
+- [Using the snapshot api](#usage_snapshot_api)
+- [Using customers api](#usage_customers_api)
+- [Contribution](#contributing)
+- [License](#license)
 
 ## About <a name = "about"></a>
 
@@ -21,7 +28,7 @@
 - Snapshot Examples
 
 
-### Prerequisites
+### Prerequisites <a name = "pre_requisites"></a>
 
 Ensure you have the following installed on your machine:
 
@@ -29,7 +36,7 @@ Ensure you have the following installed on your machine:
 
 :heavy_check_mark: The current stable major version series is: `1.x`
 
-## Supported .NET Versions
+## Supported .NET Versions <a name = "supported_versions"></a>
 
 This SDK targets .NET Standard 2.1 and is compatible with the following .NET implementations:
 
@@ -43,7 +50,7 @@ This SDK targets .NET Standard 2.1 and is compatible with the following .NET imp
 | Xamarin.Android     | :heavy_check_mark: 8.0 and later    |
 | Unity               | :heavy_check_mark: 2018.1 and later |
 
-### Installing
+### Installing <a name = "installing"></a>
 
 A step-by-step series of instructions to set up your development environment.
 
@@ -56,7 +63,7 @@ A step-by-step series of instructions to set up your development environment.
 
 
     
-### Initial Configuration
+### Initial Configuration <a name = "configuration"></a>
 
 
 -Feed configuration examples
@@ -65,16 +72,16 @@ A step-by-step series of instructions to set up your development environment.
 
 ### Usage guide
 
-- Feed Usage Guide with the example project
+- Feed Usage Guide with the example project  <a name = "usage_guide_feed"></a>
 
-- Snapshot Api Usage Guide with the example project
+- Snapshot Api Usage Guide with the example project  <a name = "usage_snapshot_api"></a>
 
-- Customers Api Usage Guide with the example project
+- Customers Api Usage Guide with the example project <a name = "usage_customers_api"></a>
 
-## Contributing
+## Contributing  <a name = "contributing"></a>
 
 Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## License
+## License  <a name = "license"></a>
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

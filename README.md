@@ -54,15 +54,24 @@ A step-by-step series of instructions to set up your development environment.
     cd trade360sdk-feed-example
     \```
 
-2. **Configure the `appsettings.json` file:**
+
+    
+### Initial Configuration
+
 
 -Feed configuration examples
 -Snapshot api examples
 -Customers Api examples
-    
-### Services Configuration
 
+### Usage guide
 
+- Feed Usage Guide
+
+- Snapshot Api Usage Guide
+
+- Customers Api Usage Guide
+
+- 
 ## Contributing
 
 Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

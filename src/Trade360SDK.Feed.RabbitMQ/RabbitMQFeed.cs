@@ -53,7 +53,7 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _consumerTag = _channel.BasicConsume(
                     queue: $"_{_settings.PackageId}_",
                     autoAck: _settings.AutoAck,
-                    _consumer);
+                    consumer: _consumer);
 
                 _logger.LogInformation("Connected to RabbitMQ and started consuming.");
             }

@@ -21,7 +21,22 @@ These instructions will get you a copy of the project up and running on your loc
 Ensure you have the following installed on your machine:
 
 - [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- [RabbitMQ server](https://www.rabbitmq.com/download.html) (or access to a cloud-based RabbitMQ server)
+
+:heavy_check_mark: The current stable major version series is: `1.x`
+
+## Supported .NET Versions
+
+This SDK targets .NET Standard 2.1 and is compatible with the following .NET implementations:
+
+| .NET Implementation | Supported Versions         |
+| ------------------- | -------------------------- |
+| .NET Core           | :heavy_check_mark: 3.0, 3.1, 5.0, 6.0, 7.0  |
+| .NET                | :heavy_check_mark: 5.0, 6.0, 7.0  |
+| Mono                | :heavy_check_mark: 6.4 and later    |
+| Xamarin.iOS         | :heavy_check_mark: 10.14 and later  |
+| Xamarin.Mac         | :heavy_check_mark: 3.8 and later    |
+| Xamarin.Android     | :heavy_check_mark: 8.0 and later    |
+| Unity               | :heavy_check_mark: 2018.1 and later |
 
 ### Installing
 

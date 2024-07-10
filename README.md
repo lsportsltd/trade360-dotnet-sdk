@@ -59,45 +59,7 @@ A step-by-step series of instructions to set up your development environment.
 -Feed configuration examples
 -Snapshot api examples
 -Customers Api examples
-    Edit the `appsettings.json` file to include your RabbitMQ settings. Here is an example configuration:
-
-    \```json
-    {
-      "Trade360": { 
-        "RmqInplaySettings": { 
-          "Host": "TRADE360_INPLAY_HOST", 
-          "Port": 5672, 
-          "VirtualHost": "StmInPlay", 
-          "PackageId": 430, 
-          "UserName": "LSPORTS_USERNAME", 
-          "Password": "LSPORTS_PASSWORD", 
-          "PrefetchCount": 100, 
-          "AutoAck": true, 
-          "RequestedHeartbeatSeconds": 30, 
-          "NetworkRecoveryInterval": 30, 
-          "DispatchConsumersAsync": true, 
-          "AutomaticRecoveryEnabled": true 
-        },
-        "RmqPrematchSettings": { 
-          "RabbitmqHost": "TRADE360_PREMATCH_HOST", 
-          "RmqPort": 5672, 
-          "VirtualHost": "StmPreMatch", 
-          "PackageId": 431, 
-          "UserName": "LSPORTS_USERNAME", 
-          "Password": "LSPORTS_PASSWORD", 
-          "PrefetchCount": 100, 
-          "AutoAck": true, 
-          "RequestedHeartbeatSeconds": 30, 
-          "NetworkRecoveryInterval": 30, 
-          "DispatchConsumersAsync": true, 
-          "AutomaticRecoveryEnabled": true 
-        },
-        "CustomersApiUrl": "https://stm-api.lsports.eu" 
-      }
-    }
-    \```
-
-
+    
 ### Example Usage
 
 After starting the service, it will output a message to the console:

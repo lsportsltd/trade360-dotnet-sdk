@@ -1,40 +1,42 @@
-
 # Trade360SDK Feed Example
 
 ## Table of Contents
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Pre-requisites](#pre_requisites)
-- [Supported .NET Versions](#supported_versions)
-- [Installing](#installing)
-- [Initial Configuration](#configuration)
-- [Connecting to trade360 feed](#usage_guide_feed)
-- [Using the snapshot api](#usage_snapshot_api)
-- [Using customers api](#usage_customers_api)
+    - [Pre-requisites](#pre_requisites)
+    - [Supported .NET Versions](#supported_versions)
+    - [Installing](#installing)
+    - [Initial Configuration](#configuration)
+- [Usage Guide](#usage_guide)
+  - [Connecting to Trade360 Feed](#usage_guide_feed)
+  - [Using the Snapshot API](#usage_snapshot_api)
+  - [Using Customers API](#usage_customers_api)
 - [Contribution](#contributing)
 - [License](#license)
 
 ## About <a name = "about"></a>
 
-- Need to write about the aim of the sdk
-- What it solves
-- The structure of the project and what each project inside the solution aims for
+The Trade360 SDK aims to simplify the integration with Trade360 services. This SDK provides a comprehensive set of tools and examples to streamline the process of connecting to the Trade360 feed, utilizing the snapshot API, and interacting with the customers API. 
+
+### Key Features
+- Efficiently connect and interact with Trade360 feed.
+- Utilize the snapshot API for real-time data.
+- Manage customer data and subscriptions seamlessly.
 
 ## Getting Started <a name = "getting_started"></a>
 
-- Feed Examples
-- Customers Api Examples
-- Snapshot Examples
+This section provides examples and guidance to help you start using the Trade360 SDK.
 
+- Feed Examples
+- Customers API Examples
+- Snapshot Examples
 
 ### Prerequisites <a name = "pre_requisites"></a>
 
 Ensure you have the following installed on your machine:
 
 - [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-
-:heavy_check_mark: The current stable major version series is: `1.x`
 
 ## Supported .NET Versions <a name = "supported_versions"></a>
 
@@ -50,38 +52,59 @@ This SDK targets .NET Standard 2.1 and is compatible with the following .NET imp
 | Xamarin.Android     | :heavy_check_mark: 8.0 and later    |
 | Unity               | :heavy_check_mark: 2018.1 and later |
 
-### Installing <a name = "installing"></a>
+## Installing <a name = "installing"></a>
 
 A step-by-step series of instructions to set up your development environment.
 
 1. **Clone the repository:**
 
-    \```bash
+    ```bash
     git clone https://github.com/yourusername/trade360sdk-feed-example.git
     cd trade360sdk-feed-example
-    \```
+    ```
 
+2. **Restore dependencies:**
 
-    
-### Initial Configuration <a name = "configuration"></a>
+    ```bash
+    dotnet restore
+    ```
 
+3. **Build the project:**
 
--Feed configuration examples
--Snapshot api examples
--Customers Api examples
+    ```bash
+    dotnet build
+    ```
 
-### Usage guide
+## Initial Configuration <a name = "configuration"></a>
 
-- Feed Usage Guide with the example project  <a name = "usage_guide_feed"></a>
+Provide initial configuration examples for:
 
-- Snapshot Api Usage Guide with the example project  <a name = "usage_snapshot_api"></a>
+- Feed configuration
+- Snapshot API
+- Customers API
 
-- Customers Api Usage Guide with the example project <a name = "usage_customers_api"></a>
+## Usage Guide <a name = "usage_guide"></a>
 
-## Contributing  <a name = "contributing"></a>
+### Connecting to Trade360 Feed <a name = "usage_guide_feed"></a>
+
+Include detailed instructions and examples for connecting to the Trade360 feed.
+
+### Using the Snapshot API <a name = "usage_snapshot_api"></a>
+
+Provide guidance on how to use the snapshot API with code examples.
+
+### Using Customers API <a name = "usage_customers_api"></a>
+
+Describe the process of using the customers API, including example requests and responses.
+
+## Contributing <a name = "contributing"></a>
 
 Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## License  <a name = "license"></a>
+## License <a name = "license"></a>
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+Replace `[github-releases]` with the actual link to your GitHub releases page.

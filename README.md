@@ -65,13 +65,12 @@ A step-by-step series of instructions to set up your development environment.
 
 ### Usage guide
 
-- Feed Usage Guide
+- Feed Usage Guide with the example project
 
-- Snapshot Api Usage Guide
+- Snapshot Api Usage Guide with the example project
 
-- Customers Api Usage Guide
+- Customers Api Usage Guide with the example project
 
-- 
 ## Contributing
 
 Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

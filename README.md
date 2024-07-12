@@ -1,4 +1,4 @@
-# Trade360SDK Feed Example
+# LSports Trade360 SDK
 
 ## Table of Contents
 
@@ -17,12 +17,13 @@
 
 ## About <a name = "about"></a>
 
-The Trade360 SDK aims to simplify the integration with Trade360 services. This SDK provides a comprehensive set of tools and examples to streamline the process of connecting to the Trade360 feed, utilizing the snapshot API, and interacting with the customers API. 
+The Trade360 SDK aims to simplify the integration with Trade360 services. 
+This SDK provides a comprehensive set of tools and examples to streamline connecting to the Trade360 feed, utilizing the snapshot API, and interacting with the customers API. 
 
 ### Key Features
 - Efficiently connect and interact with Trade360 feed.
-- Utilize the snapshot API for real-time data.
-- Manage customer data and subscriptions seamlessly.
+- Utilize the snapshot API for real-time recovery.
+- Manage customer data and subscriptions seamlessly via the Customers Api.
 
 ## Getting Started <a name = "getting_started"></a>
 

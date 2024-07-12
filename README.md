@@ -1,13 +1,12 @@
-# LSports Trade360 SDK
+# LSports - Trade360 SDK
+The Trade360 SDK aims to simplify the integration with Trade360 services, ensuring efficient and effective use of the available APIs. This SDK provides tools and examples for connecting to the Trade360 feed, utilizing the Snapshot API, and managing customer data through the Customers API.
 
 ## Table of Contents
 
-- [About](#about)
+- [Key Features](#key_features)
 - [Getting Started](#getting_started)
-    - [Pre-requisites](#pre_requisites)
+    - [Pre-requisites & installation](#pre_requisites)
     - [Supported .NET Versions](#supported_versions)
-    - [Installing](#installing)
-    - [Initial Configuration](#configuration)
 - [Usage Guide](#usage_guide)
   - [Connecting to Trade360 Feed](#usage_guide_feed)
   - [Using the Snapshot API](#usage_snapshot_api)
@@ -15,26 +14,18 @@
 - [Contribution](#contributing)
 - [License](#license)
 
-## About <a name = "about"></a>
 
-The Trade360 SDK is designed to simplify the integration with Trade360 services. This SDK provides a comprehensive set of tools and examples to streamline the following tasks:
+## Key Features  <a name="key_features"></a>
 
-- Connecting to the Trade360 feed
-- Utilizing the Snapshot API
-- Interacting with the Customers API
-
-By using this SDK, developers can easily integrate and interact with Trade360's services, ensuring efficient and effective use of the available APIs.
-
-### Key Features
-- Efficiently connect and interact with the Trade360 feed, featuring automatic recovery through configuration and seamless start/stop distribution aligned with service operations.
-- Utilize the Snapshot API for real-time recovery, with an easy-to-use HTTP client exposing all relevant endpoints, including comprehensive request and response handling.
-- Manage customer data and subscriptions seamlessly via the Customers API, offering an intuitive HTTP client that covers all necessary endpoints for efficient data management.
+- **Trade360 Feed**: Efficiently connect and interact with the Trade360 feed, featuring automatic recovery through configuration and seamless start/stop distribution aligned with service operations.
+- **Snapshot API**: Utilize the Snapshot API for real-time recovery, with an easy-to-use HTTP client exposing all relevant endpoints, including comprehensive request and response handling.
+- **Customers API**: Manage customer data and subscriptions seamlessly via the Customers API, offering an intuitive HTTP client that covers all necessary endpoints for efficient data management.
 
 ## Getting Started <a name="getting_started"></a>
 
 This section provides examples and guidance to help you start using the Trade360 SDK.
 
-### Prerequisites <a name = "pre_requisites"></a>
+### Prerequisites & Installation <a name = "pre_requisites"></a>
 
 Ensure you have the following installed on your machine:
 
@@ -54,32 +45,10 @@ This SDK targets .NET Standard 2.1 and is compatible with the following .NET imp
 | Xamarin.Android     | :heavy_check_mark: 8.0 and later    |
 | Unity               | :heavy_check_mark: 2018.1 and later |
 
-## Installing <a name = "installing"></a>
 
-A step-by-step series of instructions to set up your development environment.
+# Usage Guide <a name = "usage_guide"></a>
 
-1. **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/yourusername/trade360sdk-feed-example.git
-    cd trade360sdk-feed-example
-    ```
-
-2. **Restore dependencies:**
-
-    ```bash
-    dotnet restore
-    ```
-
-3. **Build the project:**
-
-    ```bash
-    dotnet build
-    ```
-
-## Usage Guide <a name = "usage_guide"></a>
-
-### Connecting to Trade360 Feed <a name = "usage_guide_feed"></a>
+## Connecting to Trade360 Feed <a name = "usage_guide_feed"></a>
 
 This is an example usage of the feed SDK, which gives you the ability to create an instance and connect to your RabbitMQ feed. You can create a handler to deal with each type of message being produced (fixture, livescore, markets, settlement) for standard sports, outright sports, and outright league sports (tournaments). Please download the repo and run the examples for more information.
 
@@ -194,54 +163,326 @@ As demonstrated above, we are injecting the IFeedFactory and creating the IFeed 
     ```
 
 
-### Using the Snapshot API <a name = "usage_snapshot_api"></a>
+## Using the Snapshot API <a name = "usage_snapshot_api"></a>
+
+This is an example usage of the Snapshot API SDK, which provides an easy way to interact with the Snapshot API for recovery purposes. The SDK offers a simplified HTTP client with request and response handling.
+
+#### Example Configuration (`appsettings.json`)
+
+```json
+{
+  "Trade360": {
+    "SnapshotInplaySettings": {
+      "BaseUrl": "https://stm-snapshot.lsports.eu",
+      "PackageId": 0, //Insert your package id
+      "Username": "your-username",
+      "Password": "your-password"
+    },
+    "SnapshotPrematchSettings": {
+      "BaseUrl": "https://stm-snapshot.lsports.eu",
+      "PackageId": 0, //Insert your package id
+      "Username": "your-username",
+      "Password": "your-password"
+    }
+  }
+}
+```
+
+Dependency Injection Setup (Program.cs)
+After setting the correct configuration, add the following to your dependency injection:
+```csharp
+services.AddT360ApiClient();
+```
+
+#### Implementing The Snapshot API Client
+
+Using `ISnapshotApiFactory` to create and use the Snapshot API client:
+
+```csharp
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Trade360SDK.SnapshotApi.Configuration;
+using Trade360SDK.SnapshotApi.Interfaces;
+using Trade360SDK.SnapshotApi.Entities.Requests;
+using Microsoft.Extensions.Logging;
+
+namespace Trade360SDK.SnapshotApi.Example
+{
+    public class Startup : IHostedService
+    {
+        private readonly ILogger<Startup> _logger;
+        private readonly ISnapshotApiFactory _snapshotApiFactory;
+        private readonly IOptionsMonitor<SnapshotApiSettings> _settingsMonitor;
+
+        public Startup(ILogger<Startup> logger, ISnapshotApiFactory snapshotApiFactory, IOptionsMonitor<SnapshotApiSettings> settingsMonitor)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _snapshotApiFactory = snapshotApiFactory;
+            _settingsMonitor = settingsMonitor;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var snapshotInplayApiSettings = _settingsMonitor.Get("SnapshotInplaySettings");
+                var snapshotPrematchApiSettings = _settingsMonitor.Get("SnapshotPrematchSettings");
+
+                var inplaySnapshotClient = _snapshotApiFactory.CreateInplayHttpClient(snapshotInplayApiSettings);
+                var prematchSnapshotClient = _snapshotApiFactory.CreatePrematchHttpClient(snapshotPrematchApiSettings);
+
+                // Example method call: GetFixtures
+                await GetFixtures(prematchSnapshotClient, cancellationToken);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving data");
+            }
+        }
+
+        private async Task GetFixtures(ISnapshotPrematchApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting GetFixtures...");
+
+            var request = new GetFixturesRequestDto
+            {
+                Sports = new List<int> { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Fixtures = new List<int> { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Leagues = new List<int> { /* List of league IDs, e.g., 1111, 2222 */ },
+                Locations = new List<int> { /* List of location IDs, e.g., 3333, 4444 */ }
+            };
+
+            var response = await snapshotPrematchApiClient.GetFixtures(request, cancellationToken);
+            _logger.LogInformation("GetFixtures ended with response count: {Count}", response.Count());
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Service is stopping.");
+            return Task.CompletedTask;
+        }
+    }
+}
+```
+
+As demonstrated above, we are injecting the ISnapshotApiFactory and creating the Snapshot API client instance for inplay and prematch by providing the relevant configuration.
+
+1. **Inject `ISnapshotApiFactory`**:
+    ```csharp
+    public Startup(ILogger<Startup> logger, ISnapshotApiFactory snapshotApiFactory, IOptionsMonitor<SnapshotApiSettings> settingsMonitor)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _snapshotApiFactory = snapshotApiFactory;
+        _settingsMonitor = settingsMonitor;
+    }
+    ```
+
+2. **Create the Snapshot API client instance**:
+    ```csharp
+    var snapshotInplayApiSettings = _settingsMonitor.Get("SnapshotInplaySettings");
+    var snapshotPrematchApiSettings = _settingsMonitor.Get("SnapshotPrematchSettings");
+
+    var inplaySnapshotClient = _snapshotApiFactory.CreateInplayHttpClient(snapshotInplayApiSettings);
+    var prematchSnapshotClient = _snapshotApiFactory.CreatePrematchHttpClient(snapshotPrematchApiSettings);
+    ```
+
+3. **Add methods for snapshot operations**:
+    ```csharp
+    private async Task GetFixtures(ISnapshotPrematchApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Starting GetFixtures...");
+
+        var request = new GetFixturesRequestDto
+        {
+            Sports = new List<int> { /* List of sport IDs, e.g., 1234, 2345 */ },
+            Fixtures = new List<int> { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+            Leagues = new List<int> { /* List of league IDs, e.g., 1111, 2222 */ },
+            Locations = new List<int> { /* List of location IDs, e.g., 3333, 4444 */ }
+        };
+
+        var response = await snapshotPrematchApiClient.GetFixtures(request, cancellationToken);
+        _logger.LogInformation("GetFixtures ended with response count: {Count}", response.Count());
+    }
+    ```
+
+4. **Call methods to interact with the API**:
+    ```csharp
+    await GetFixtures(prematchSnapshotClient, cancellationToken);
+    ```
 
 
 
-2. **Update Customer Subscription:**
-   - **Code:**
-     ```csharp
-     using Trade360SDK.Customers;
+## Using Customers API <a name = "usage_customers_api"></a>
 
-     var customersClient = new CustomersClient("your-api-key");
-     var subscriptionUpdate = new SubscriptionUpdate
-     {
-         CustomerId = customerId,
-         SubscriptionType = "Premium"
-     };
-     await customersClient.UpdateSubscriptionAsync(subscriptionUpdate);
-     ```
+The Customers API SDK is made up of three parts: Package Distribution, Metadata, and Subscription. It provides a simplified HTTP client with request and response handling for various operations.
 
+- **Package Distribution**: Start, stop, and get distribution status.
+- **Metadata**: Exposes endpoints to get leagues, sports, locations, markets, and translations.
+- **Subscription**: Allows subscribing and unsubscribing to a fixture or by league. It also includes manual suspension actions and quota retrieval.
 
-1. **Fetch Snapshot Data:**
-   - **Code:**
-     ```csharp
-     using Trade360SDK.Snapshot;
+#### Example Configuration (`appsettings.json`)
 
-     var snapshotClient = new SnapshotClient("your-api-key");
-     var snapshotId = "67890";
-     var snapshotData = await snapshotClient.GetSnapshotDataAsync(snapshotId);
-     Console.WriteLine($"Snapshot Timestamp: {snapshotData.Timestamp}");
-     ```
-
-2. **Create a New Snapshot:**
-   - **Code:**
-     ```csharp
-     using Trade360SDK.Snapshot;
-
-     var snapshotClient = new SnapshotClient("your-api-key");
-     var newSnapshotRequest = new CreateSnapshotRequest
-     {
-         Data = "Example data"
-     };
-     var newSnapshot = await snapshotClient.CreateSnapshotAsync(newSnapshotRequest);
-     Console.WriteLine($"New Snapshot ID: {newSnapshot.Id}");
-     ```
+```json
+{
+  "Trade360": {
+    "CustomersApiInplay": {
+      "BaseUrl": "https://stm-api.lsports.eu",
+      "PackageId": 0, // Insert your package id
+      "Username": "your-username",
+      "Password": "your-password"
+    },
+    "CustomersApiPrematch": {
+      "BaseUrl": "https://stm-api.lsports.eu",
+      "PackageId": 0, // Insert your package id
+      "Username": "your-username",
+      "Password": "your-password"
+    }
+  }
+}
+```
 
 
-### Using Customers API <a name = "usage_customers_api"></a>
+Dependency Injection Setup (Program.cs)
+After setting the correct configuration, add the following to your dependency injection:
+```csharp
+services.AddT360ApiClient();
+```
 
-Describe the process of using the customers API, including example requests and responses.
+
+#### Implementing The Customers API Client
+
+Using `ICustomersApiFactory` to create and use the Customers API client:
+
+```csharp
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Interfaces;
+
+namespace Trade360SDK.CustomersApi.Examples
+{
+    public class Startup : IHostedService
+    {
+        private readonly ILogger<Startup> _logger;
+        private readonly ICustomersApiFactory _customerApiFactory;
+        private readonly IOptionsMonitor<CustomersApiSettings> _settingsMonitor;
+
+        public Startup(ILogger<Startup> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _customerApiFactory = customersApiFactory;
+            _settingsMonitor = settingsMonitor;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var customersApiSettings = _settingsMonitor.Get("CustomersApiInplay");
+
+                // Initialize API Clients (Metadata, PackageDistribution, Subscription)
+                var packageDistributionApiClient = _customerApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
+                var metadataApiClient = _customerApiFactory.CreateMetadataHttpClient(customersApiSettings);
+                var subscriptionApiClient = _customerApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
+
+                // Example method calls
+                await SubscribeToFixture(subscriptionApiClient, cancellationToken);
+                await GetFixtureMetadata(metadataApiClient, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving data");
+            }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Service is stopping.");
+            return Task.CompletedTask;
+        }
+
+        private async Task SubscribeToFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
+        {
+            var request = new FixtureSubscriptionRequestDto { Fixtures = new[] { 12345 } };
+            var response = await subscriptionApiClient.SubscribeByFixture(request, cancellationToken);
+            Console.WriteLine($"Send subscription request to {response.Fixtures.Count} fixtures");
+        }
+
+        private async Task GetFixtureMetadata(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
+        {
+            var request = new GetFixtureMetadataRequestDto { FromDate = DateTime.Now, ToDate = DateTime.Now.AddDays(2) };
+            var response = await metadataApiClient.GetFixtureMetadataAsync(request, cancellationToken);
+            Console.WriteLine("Fixture metadata retrieved.");
+        }
+    }
+}
+```
+
+1. **Inject `ICustomersApiFactory`**:
+    ```csharp
+    public Startup(ILogger<Startup> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _customersApiFactory = customersApiFactory;
+        _settingsMonitor = settingsMonitor;
+    }
+    ```
+
+2. **Create the Customers API client instance**:
+    ```csharp
+    var customersApiSettings = _settingsMonitor.Get("CustomersApiInplay");
+
+    var packageDistributionApiClient = _customersApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
+    var metadataApiClient = _customersApiFactory.CreateMetadataHttpClient(customersApiSettings);
+    var subscriptionApiClient = _customersApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
+    ```
+
+3. **Add methods for various operations**:
+    ```csharp
+    private async Task SubscribeToFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
+    {
+        var request = new FixtureSubscriptionRequestDto { Fixtures = new[] { 12345 } };
+        var response = await subscriptionApiClient.SubscribeByFixture(request, cancellationToken);
+        Console.WriteLine($"Send subscription request to {response.Fixtures.Count} fixtures");
+    }
+
+    private async Task GetFixtureMetadata(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
+    {
+        var request = new GetFixtureMetadataRequestDto { FromDate = DateTime.Now, ToDate = DateTime.Now.AddDays(2) };
+        var response = await metadataApiClient.GetFixtureMetadataAsync(request, cancellationToken);
+        Console.WriteLine("Fixture metadata retrieved.");
+    }
+    ```
+
+4. **Start and Stop the service**:
+    ```csharp
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var customersApiSettings = _settingsMonitor.Get("CustomersApiInplay");
+
+            var packageDistributionApiClient = _customerApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
+            var metadataApiClient = _customerApiFactory.CreateMetadataHttpClient(customersApiSettings);
+            var subscriptionApiClient = _customerApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
+
+            await SubscribeToFixture(subscriptionApiClient, cancellationToken);
+            await GetFixtureMetadata(metadataApiClient, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving data");
+        }
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Service is stopping.");
+        return Task.CompletedTask;
+    }
+    ```
 
 ## Contributing <a name = "contributing"></a>
 

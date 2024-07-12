@@ -17,21 +17,22 @@
 
 ## About <a name = "about"></a>
 
-The Trade360 SDK aims to simplify the integration with Trade360 services. 
-This SDK provides a comprehensive set of tools and examples to streamline connecting to the Trade360 feed, utilizing the snapshot API, and interacting with the customers API. 
+The Trade360 SDK is designed to simplify the integration with Trade360 services. This SDK provides a comprehensive set of tools and examples to streamline the following tasks:
+
+- Connecting to the Trade360 feed
+- Utilizing the Snapshot API
+- Interacting with the Customers API
+
+By using this SDK, developers can easily integrate and interact with Trade360's services, ensuring efficient and effective use of the available APIs.
 
 ### Key Features
-- Efficiently connect and interact with Trade360 feed.
-- Utilize the snapshot API for real-time recovery.
-- Manage customer data and subscriptions seamlessly via the Customers Api.
+- Efficiently connect and interact with the Trade360 feed, featuring automatic recovery through configuration and seamless start/stop distribution aligned with service operations.
+- Utilize the Snapshot API for real-time recovery, with an easy-to-use HTTP client exposing all relevant endpoints, including comprehensive request and response handling.
+- Manage customer data and subscriptions seamlessly via the Customers API, offering an intuitive HTTP client that covers all necessary endpoints for efficient data management.
 
-## Getting Started <a name = "getting_started"></a>
+## Getting Started <a name="getting_started"></a>
 
 This section provides examples and guidance to help you start using the Trade360 SDK.
-
-- Feed Examples
-- Customers API Examples
-- Snapshot Examples
 
 ### Prerequisites <a name = "pre_requisites"></a>
 
@@ -76,23 +77,167 @@ A step-by-step series of instructions to set up your development environment.
     dotnet build
     ```
 
-## Initial Configuration <a name = "configuration"></a>
-
-Provide initial configuration examples for:
-
-- Feed configuration
-- Snapshot API
-- Customers API
-
 ## Usage Guide <a name = "usage_guide"></a>
 
 ### Connecting to Trade360 Feed <a name = "usage_guide_feed"></a>
 
-Include detailed instructions and examples for connecting to the Trade360 feed.
+This is an example usage of the feed SDK, which gives you the ability to create an instance and connect to your RabbitMQ feed. You can create a handler to deal with each type of message being produced (fixture, livescore, markets, settlement) for standard sports, outright sports, and outright league sports (tournaments). Please download the repo and run the examples for more information.
+
+#### Example Configuration (`appsettings.json`)
+
+```json
+{
+  "Trade360": {
+    "RmqInplaySettings": {
+      "Host": "trade360-inplay-rabbitmq-host",
+      "Port": "trade360-inplay-rabbitmq-port",
+      "VirtualHost": "trade360-inplay-rabbitmq-virtual-host",
+      "PackageId": 0,
+      "Username": "your-username",
+      "Password": "your-password",
+      "PrefetchCount": 100,
+      "AutoAck": true,
+      "RequestedHeartbeatSeconds": 30,
+      "NetworkRecoveryInterval": 30,
+      "DispatchConsumersAsync": true,
+      "AutomaticRecoveryEnabled": true
+    }
+  }
+}
+```
+
+#### Dependency Injection Setup (Program.cs)
+After setting the correct configuration, add the following to your dependency injection:
+```csharp
+services.AddT360RmqFeedSdk();
+```
+
+#### Implementing The Connection
+
+Using `IFeedFactory` and creating a connection to the desired package (inplay or prematch):
+
+```csharp
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Trade360SDK.Feed.Configuration;
+using Trade360SDK.Feed.Example.Handlers.Inplay;
+
+namespace Trade360SDK.Feed.Example
+{
+    public class Startup : IHostedService
+    {
+        private readonly IFeedFactory _feedFactory;
+        private readonly IOptionsMonitor<RmqConnectionSettings> _settingsMonitor;
+        private IFeed? _inplayFeed;
+
+        public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor)
+        {
+            _feedFactory = feedFactory;
+            _settingsMonitor = settingsMonitor;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            var inplaySettings = _settingsMonitor.Get("Inplay");
+            _inplayFeed = _feedFactory.CreateFeed(inplaySettings); // Create the IFeed instance for inplay
+
+            // Add entity handlers to the Inplay feed
+            _inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
+            _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
+            _inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
+
+            await _inplayFeed.StartAsync(cancellationToken); // Start the connection
+
+            Console.WriteLine("Click any key to stop message consumption");
+            Console.ReadLine();
+
+            if (_inplayFeed != null) await _inplayFeed.StopAsync(cancellationToken);
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            if (_inplayFeed != null)
+            {
+                await _inplayFeed.StopAsync(cancellationToken);
+            }
+        }
+    }
+}
+```
+
+As demonstrated above, we are injecting the IFeedFactory and creating the IFeed instance for inplay by providing the relevant configuration.
+1. **Inject `IFeedFactory`**:
+    ```csharp
+    public Startup(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor)
+    {
+        _feedFactory = feedFactory;
+        _settingsMonitor = settingsMonitor;
+    }
+    ```
+
+2. **Create the `IFeed` instance for inplay**:
+    ```csharp
+    var inplaySettings = _settingsMonitor.Get("Inplay");
+    _inplayFeed = _feedFactory.CreateFeed(inplaySettings);
+    ```
+
+3. **Add handlers for each type of message**:
+    ```csharp
+    _inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
+    _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
+    _inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
+    ```
+
+4. **Start the connection**:
+    ```csharp
+    await _inplayFeed.StartAsync(cancellationToken);
+    ```
+
 
 ### Using the Snapshot API <a name = "usage_snapshot_api"></a>
 
-Provide guidance on how to use the snapshot API with code examples.
+
+
+2. **Update Customer Subscription:**
+   - **Code:**
+     ```csharp
+     using Trade360SDK.Customers;
+
+     var customersClient = new CustomersClient("your-api-key");
+     var subscriptionUpdate = new SubscriptionUpdate
+     {
+         CustomerId = customerId,
+         SubscriptionType = "Premium"
+     };
+     await customersClient.UpdateSubscriptionAsync(subscriptionUpdate);
+     ```
+
+
+1. **Fetch Snapshot Data:**
+   - **Code:**
+     ```csharp
+     using Trade360SDK.Snapshot;
+
+     var snapshotClient = new SnapshotClient("your-api-key");
+     var snapshotId = "67890";
+     var snapshotData = await snapshotClient.GetSnapshotDataAsync(snapshotId);
+     Console.WriteLine($"Snapshot Timestamp: {snapshotData.Timestamp}");
+     ```
+
+2. **Create a New Snapshot:**
+   - **Code:**
+     ```csharp
+     using Trade360SDK.Snapshot;
+
+     var snapshotClient = new SnapshotClient("your-api-key");
+     var newSnapshotRequest = new CreateSnapshotRequest
+     {
+         Data = "Example data"
+     };
+     var newSnapshot = await snapshotClient.CreateSnapshotAsync(newSnapshotRequest);
+     Console.WriteLine($"New Snapshot ID: {newSnapshot.Id}");
+     ```
+
 
 ### Using Customers API <a name = "usage_customers_api"></a>
 

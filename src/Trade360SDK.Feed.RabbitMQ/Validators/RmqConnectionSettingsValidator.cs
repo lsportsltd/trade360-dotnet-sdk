@@ -25,9 +25,6 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
             if (string.IsNullOrWhiteSpace(settings.Password))
                 throw new ArgumentException("Password is required.", nameof(settings.Password));
 
-            if (settings.PrefetchCount < 0)
-                throw new ArgumentException("PrefetchCount must be a positive integer.", nameof(settings.PrefetchCount));
-
             if (settings.RequestedHeartbeatSeconds <= 10)
                 throw new ArgumentException("RequestedHeartbeatSeconds must be a positive integer - Larger then 10.", nameof(settings.RequestedHeartbeatSeconds));
 

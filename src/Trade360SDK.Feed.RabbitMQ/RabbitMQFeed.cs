@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
 using Trade360SDK.Feed.RabbitMQ.Exceptions;
@@ -18,14 +20,22 @@ namespace Trade360SDK.Feed.RabbitMQ
         private IModel? _channel;
         private string? _consumerTag;
         private readonly RmqConnectionSettings _settings;
+        private readonly IPackageDistributionApiClient _packageDistributionApiClient;
 
-        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory)
+        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory, ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
             _consumer = new MessageConsumer(loggerFactory);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
+            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(new CustomersApiSettings()
+            {
+                BaseUrl = _settings.BaseCustomersApi,
+                PackageId = settings.PackageId,
+                Password = settings.Password,
+                Username = settings.UserName
+             });
         }
 
         public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
@@ -33,10 +43,19 @@ namespace Trade360SDK.Feed.RabbitMQ
             _consumer.RegisterEntityHandler(entityHandler);
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
         {
             try
             {
+                if (connectAtStart)
+                {
+                    var result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
+                    if (!result.IsDistributionOn)
+                    {
+                        await _packageDistributionApiClient.StartDistributionAsync(cancellationToken);
+                    }
+                }
+
                 _connection = CreateConnection(_settings);
 
                 if (!_connection.IsOpen)
@@ -63,7 +82,6 @@ namespace Trade360SDK.Feed.RabbitMQ
                 throw new RabbitMQFeedException("An error occurred while starting the RabbitMQ feed.", ex);
             }
 
-            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

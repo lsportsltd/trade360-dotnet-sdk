@@ -2,9 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.CustomersApi.Examples;
 using Trade360SDK.CustomersApi.Extensions;
 
-namespace Trade360SDK.CustomersApi.Examples;
+namespace Trade360SDK.CustomersApi.Example;
 
 internal class Program
 {

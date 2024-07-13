@@ -19,7 +19,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<GetDistributionStatusResponse> GetDistributionStatusAsync(CancellationToken cancellationToken)
         {
-            var response = await GetEntityAsync<GetDistributionStatusResponse>(
+            var response = await PostEntityAsync<GetDistributionStatusResponse>(
                "package/GetDistributionStatus",
                new BaseRequest(),
                cancellationToken);
@@ -28,7 +28,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<StartDistributionResponse> StartDistributionAsync(CancellationToken cancellationToken)
         {
-            var response = await GetEntityAsync<StartDistributionResponse>(
+            var response = await PostEntityAsync<StartDistributionResponse>(
                 "distribution/start",
                 new BaseRequest(),
                 cancellationToken);
@@ -37,7 +37,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<StopDistributionResponse> StopDistributionAsync(CancellationToken cancellationToken)
         {
-            var response = await GetEntityAsync<StopDistributionResponse>(
+            var response = await PostEntityAsync<StopDistributionResponse>(
                 "distribution/stop",
                 new BaseRequest(),
                 cancellationToken);

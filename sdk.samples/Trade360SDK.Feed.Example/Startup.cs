@@ -34,7 +34,7 @@ namespace Trade360SDK.Feed.Example
             //Start Distribution Logic
 
             // Start the Inplay feed
-            await _inplayFeed.StartAsync(cancellationToken);
+            await _inplayFeed.StartAsync(connectAtStart: true, cancellationToken);
 
             //// Get the settings for the Prematch feed - look at program.cs initialization
             //var prematchSettings = _settingsMonitor.Get("Prematch");

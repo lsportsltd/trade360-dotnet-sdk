@@ -1,6 +1,6 @@
 ﻿namespace Trade360SDK.Common.Entities.Enums
 {
-    public enum SubscriptionStatusEnum
+    public enum SubscriptionState
     {
         All = 0,
         NotSubscribed = 1,

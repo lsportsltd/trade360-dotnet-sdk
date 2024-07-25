@@ -1,6 +1,6 @@
 ﻿namespace Trade360SDK.Common.Entities.Enums
 {
-    public enum CompetitionTypeEnum
+    public enum CompetitionType
     {
         NotSet = 0,
         Track = 1,

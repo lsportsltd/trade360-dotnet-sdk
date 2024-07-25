@@ -12,7 +12,7 @@ namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public CompetitionTypeEnum Type { get; set; }
+        public CompetitionType Type { get; set; }
         public int TrackId { get; set; }
     }
 }

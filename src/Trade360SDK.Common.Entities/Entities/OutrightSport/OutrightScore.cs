@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Trade360SDK.Common.Entities.Enums;
 
-namespace Trade360SDK.Common.Entities.Outright
+namespace Trade360SDK.Common.Entities.OutrightSport
 {
     public class OutrightScore
     {

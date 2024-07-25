@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Common.Entities.Outright;
+using Trade360SDK.Common.Entities.OutrightSport;
 
 namespace Trade360SDK.SnapshotApi.Entities.Responses
 {

@@ -16,7 +16,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly ConcurrentDictionary<int, IBodyHandler> bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
+        private readonly ConcurrentDictionary<int, IBodyHandler> _bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
         private readonly ILogger? _logger;
 
         public MessageConsumer(ILoggerFactory? loggerFactory)
@@ -40,14 +40,14 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     Body = wrappedMessageJsonObject.Body
                 };
 
-                if (wrappedMessage == null || wrappedMessage.Header == null)
+                if (wrappedMessage.Header == null)
                 {
                     _logger?.LogError("Invalid message format");
                     return;
                 }
 
                 var entityType = wrappedMessage.Header.Type;
-                if (!bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
+                if (!_bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
                 {
                     var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
                         .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
@@ -84,7 +84,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
 
             var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
-            bodyHandlers.AddOrUpdate(entityAttribute.EntityKey, (_) => newBodyHandler, (_, __) => newBodyHandler);
+            _bodyHandlers.AddOrUpdate(entityAttribute.EntityKey, (_) => newBodyHandler, (_, __) => newBodyHandler);
         }
     }
     

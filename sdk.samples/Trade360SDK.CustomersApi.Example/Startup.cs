@@ -6,7 +6,7 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Interfaces;
 
-namespace Trade360SDK.CustomersApi.Examples
+namespace Trade360SDK.CustomersApi.Example
 {
     public class Startup : IHostedService
     {

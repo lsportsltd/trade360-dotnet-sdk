@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using Trade360SDK.Common.Attributes;
-using Trade360SDK.Common.Entities.Outright;
+﻿using Trade360SDK.Common.Attributes;
+using Trade360SDK.Common.Entities.OutrightSport;
 
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(37)]
     public class OutrightFixtureUpdate
     {
-        public IEnumerable<OutrightCompetition<OutrightFixtureEvent>>? Competitions { get; set; }
+        public OutrightCompetition<OutrightFixtureEvent>? Competition { get; set; }
     }
 }

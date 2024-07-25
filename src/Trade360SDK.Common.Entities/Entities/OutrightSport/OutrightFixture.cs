@@ -4,7 +4,7 @@ using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Shared;
 
-namespace Trade360SDK.Common.Entities.Outright
+namespace Trade360SDK.Common.Entities.OutrightSport
 {
     public class OutrightFixture
     {
@@ -20,8 +20,6 @@ namespace Trade360SDK.Common.Entities.Outright
 
         public IEnumerable<Participant>? Participants { get; set; }
 
-        public IEnumerable<NameValuePair>? FixtureExtraData { get; set; }
-
-        public string? ExternalFixtureId { get; set; }
+        public IEnumerable<NameValuePair>? ExtraData { get; set; }
     }
 }

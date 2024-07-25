@@ -1,4 +1,4 @@
-﻿namespace Trade360SDK.Common.Entities.Outright
+﻿namespace Trade360SDK.Common.Entities.OutrightSport
 {
     public class OutrightParticipant
     {

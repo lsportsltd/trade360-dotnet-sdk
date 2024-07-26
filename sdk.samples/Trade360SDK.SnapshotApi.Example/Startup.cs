@@ -10,45 +10,39 @@ namespace Trade360SDK.SnapshotApi.Example
     public class Startup : IHostedService
     {
         private readonly ILogger<Startup> _logger;
-        private readonly ISnapshotApiFactory _snapshotApiFactory;
-        private readonly IOptionsMonitor<SnapshotApiSettings> _settingsMonitor;
+        private readonly ISnapshotInplayApiClient _snapshotInplayApiClient;
+        private readonly ISnapshotPrematchApiClient _snapshotPrematchApiClient;
 
-        public Startup(ILogger<Startup> logger, ISnapshotApiFactory snapshotApiFactory, IOptionsMonitor<SnapshotApiSettings> settingsMonitor)
+        public Startup(ILogger<Startup> logger, ISnapshotInplayApiClient snapshotInplayApiClient, IOptionsMonitor<SnapshotApiSettings> settingsMonitor, ISnapshotPrematchApiClient snapshotPrematchApiClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _snapshotApiFactory = snapshotApiFactory;
-            _settingsMonitor = settingsMonitor;
+            _snapshotInplayApiClient = snapshotInplayApiClient;
+            _snapshotPrematchApiClient = snapshotPrematchApiClient;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var snapshotInplayApiSettings = _settingsMonitor.Get("SnapshotInplaySettings");
-                var snapshotPrematchApiSettings = _settingsMonitor.Get("SnapshotPrematchSettings");
-
-                var inplaySnapshotClient = _snapshotApiFactory.CreateInplayHttpClient(snapshotInplayApiSettings);
-                var prematchSnapshotClient = _snapshotApiFactory.CreatePrematchHttpClient(snapshotPrematchApiSettings);
-
                 // Expose only the GetFixtures method
-                await GetFixtures(prematchSnapshotClient, cancellationToken);
+                await GetFixtures(_snapshotPrematchApiClient, cancellationToken);
 
                 // Uncomment and implement other methods as needed
-                // await GetEvents(prematchSnapshotClient, cancellationToken);
-                // await GetFixtureMarkets(prematchSnapshotClient, cancellationToken);
-                // await GetLivescore(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightFixtures(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightLivescore(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightMarkets(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightEvents(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightLeaguesFixtures(prematchSnapshotClient, cancellationToken);
-                // await GetOutrightLeaguesMarkets(prematchSnapshotClient, cancellationToken);
+                await GetEvents(_snapshotPrematchApiClient, cancellationToken);
+                await GetFixtureMarkets(_snapshotPrematchApiClient, cancellationToken);
+                await GetLivescore(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightFixtures(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightLivescore(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightMarkets(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightEvents(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightLeaguesFixtures(_snapshotPrematchApiClient, cancellationToken);
+                await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
 
                 // Uncomment and implement inplay methods as needed
-                // await GetEvents(inplaySnapshotClient, cancellationToken);
-                // await GetFixtureMarkets(inplaySnapshotClient, cancellationToken);
-                // await GetLivescore(inplaySnapshotClient, cancellationToken);
-                // await GetFixtures(inplaySnapshotClient, cancellationToken);
+                //await GetEvents(_snapshotInplayApiClient, cancellationToken);
+                //await GetFixtureMarkets(_snapshotInplayApiClient, cancellationToken);
+                //await GetLivescore(_snapshotInplayApiClient, cancellationToken);
+                //await GetFixtures(_snapshotInplayApiClient, cancellationToken);
 
             }
             catch (Exception ex)

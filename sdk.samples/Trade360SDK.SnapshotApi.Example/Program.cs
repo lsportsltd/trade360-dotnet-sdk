@@ -21,11 +21,14 @@ internal class Program
             })
             .ConfigureServices((hostContext, services) =>
             {
-                // Configure the settings for the "Inplay" feed using the "Trade360:RmqInplaySettings" section of the configuration file
-                services.Configure<SnapshotApiSettings>("SnapshotInplaySettings", hostContext.Configuration.GetSection("Trade360:SnapshotInplaySettings"));
-                services.Configure<SnapshotApiSettings>("SnapshotPrematchSettings", hostContext.Configuration.GetSection("Trade360:SnapshotPrematchSettings"));
+                var inplaySettings = new SnapshotApiSettings();
+                hostContext.Configuration.GetSection("Trade360:SnapshotInplaySettings").Bind(inplaySettings);
 
-                services.AddT360ApiClient(hostContext.Configuration);
+                var prematchSettings = new SnapshotApiSettings();
+                hostContext.Configuration.GetSection("Trade360:SnapshotPrematchSettings").Bind(prematchSettings);
+
+                services.AddTrade360InplaySnapshotClient(inplaySettings);
+                services.AddTrade360PrematchSnapshotClient(prematchSettings);
                 services.AddHostedService<Startup>();
             });
 }

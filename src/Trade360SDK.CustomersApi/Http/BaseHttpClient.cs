@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Trade360SDK.CustomersApi.Configuration;
 using Trade360SDK.CustomersApi.Entities;
 using Trade360SDK.CustomersApi.Entities.Base;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trade360SDK.CustomersApi.Http
 {
@@ -21,9 +23,9 @@ namespace Trade360SDK.CustomersApi.Http
         private readonly string _username;
         private readonly string _password;
 
-        protected BaseHttpClient(HttpClient httpClient, CustomersApiSettings settings)
+        protected BaseHttpClient(IHttpClientFactory httpClientFactory, CustomersApiSettings settings)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
 
             _packageId = settings.PackageId;
             _username = settings.Username;
@@ -43,7 +45,7 @@ namespace Trade360SDK.CustomersApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonConvert.SerializeObject(request);
+            var requestJson = JsonSerializer.Serialize(request);
             var content = new StringContent(
                 requestJson,
                 Encoding.UTF8,
@@ -53,21 +55,19 @@ namespace Trade360SDK.CustomersApi.Http
             if (!httpResponse.IsSuccessStatusCode)
             {
                 var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
-                var errorResponse = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawErrorResponse);
+                var errorResponse = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawErrorResponse);
 
                 if (errorResponse is { Header: { } })
                 {
                     var errors = errorResponse.Header.Errors?.Select(x => x.Message);
                     throw new Trade360Exception(errors);
                 }
-                else
-                {
-                    httpResponse.EnsureSuccessStatusCode();
-                }
+
+                httpResponse.EnsureSuccessStatusCode();
             }
 
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawResponse);
+            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
 
             if (response?.Header == null)
             {
@@ -89,6 +89,12 @@ namespace Trade360SDK.CustomersApi.Http
         }
 
         protected async Task<TEntity> GetEntityAsync<TEntity>(
+            string uri, CancellationToken cancellationToken) where TEntity : class
+        {
+            return await GetEntityAsync<TEntity>(uri, new BaseRequest(), cancellationToken);
+        }
+
+        protected async Task<TEntity> GetEntityAsync<TEntity>(
           string uri, BaseRequest request, CancellationToken cancellationToken) where TEntity : class
         {
             // Assign common parameters to the request object
@@ -105,7 +111,7 @@ namespace Trade360SDK.CustomersApi.Http
             if (!httpResponse.IsSuccessStatusCode)
             {
                 var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
-                var errorResponse = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawErrorResponse);
+                var errorResponse = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawErrorResponse);
 
                 if (errorResponse is { Header: { } })
                 {
@@ -119,7 +125,7 @@ namespace Trade360SDK.CustomersApi.Http
             }
 
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawResponse);
+            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
 
             if (response?.Header == null)
             {
@@ -142,25 +148,38 @@ namespace Trade360SDK.CustomersApi.Http
 
         private string BuildQueryString(object request)
         {
-            var properties = request.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
             var queryString = new StringBuilder();
 
-            foreach (var prop in properties)
-            {
-                var value = prop.GetValue(request);
-                if (value == null) continue;
-                if (value is System.Collections.IEnumerable enumerable && !(value is string))
+            if (dictionary != null)
+                foreach (var kvp in dictionary)
                 {
-                    foreach (var item in enumerable)
+                    if (kvp.Value is JsonElement jsonElement)
                     {
-                        queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(item.ToString())}&");
+                        if (jsonElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var element in jsonElement.EnumerateArray())
+                            {
+                                queryString.Append(
+                                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(element.ToString())}&");
+                            }
+                        }
+                        else
+                        {
+                            queryString.Append(
+                                $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(jsonElement.ToString())}&");
+                        }
+                    }
+                    else
+                    {
+                        queryString.Append(
+                            $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}&");
                     }
                 }
-                else
-                {
-                    queryString.Append($"{Uri.EscapeDataString(prop.Name)}={Uri.EscapeDataString(value.ToString())}&");
-                }
-            }
 
             // Remove the trailing '&'
             if (queryString.Length > 0)
@@ -170,7 +189,6 @@ namespace Trade360SDK.CustomersApi.Http
 
             return queryString.ToString();
         }
-
 
         public void Dispose()
         {

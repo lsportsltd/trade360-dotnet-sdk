@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.CustomersApi.Configuration;
-using Trade360SDK.CustomersApi.Entities.Base;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
@@ -15,15 +14,16 @@ namespace Trade360SDK.CustomersApi
     public class SubscriptionApiClient : BaseHttpClient, ISubscriptionApiClient
     {
         private readonly IMapper _mapper;
-        public SubscriptionApiClient(HttpClient httpClient, CustomersApiSettings settings, IMapper mapper)
-            : base(httpClient, settings)
+        public SubscriptionApiClient(IHttpClientFactory httpClientFactory, CustomersApiSettings settings, IMapper mapper)
+            : base(httpClientFactory, settings)
         {
+            var httpClient = httpClientFactory.CreateClient();
             httpClient.BaseAddress = new System.Uri(settings.BaseUrl);
             _mapper = mapper;
         }
 
         public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken)
-            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota", new BaseRequest(), cancellationToken);
+            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
 
         public async Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken)
         {

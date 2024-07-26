@@ -19,21 +19,21 @@ namespace Trade360SDK.CustomersApi
         public IMetadataApiClient CreateMetadataHttpClient(CustomersApiSettings settings)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
-            var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-            return new MetadataApiClient(httpClient, settings, mapper);
+            var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+            return new MetadataApiClient(httpClientFactory, settings, mapper);
         }
 
         public IPackageDistributionApiClient CreatePackageDistributionHttpClient(CustomersApiSettings settings)
         {
-            var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-            return new PackageDistributionApiClient(httpClient, settings);
+            var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+            return new PackageDistributionApiClient(httpClientFactory, settings);
         }
 
         public ISubscriptionApiClient CreateSubscriptionHttpClient(CustomersApiSettings settings)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
-            var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-            return new SubscriptionApiClient(httpClient, settings, mapper);
+            var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+            return new SubscriptionApiClient(httpClientFactory, settings, mapper);
         }
     }
 }

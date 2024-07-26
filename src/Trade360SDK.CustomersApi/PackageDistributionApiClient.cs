@@ -10,9 +10,10 @@ namespace Trade360SDK.CustomersApi
 {
     public class PackageDistributionApiClient : BaseHttpClient, IPackageDistributionApiClient
     {
-        public PackageDistributionApiClient(HttpClient httpClient, CustomersApiSettings options)
-            : base(httpClient, options)
+        public PackageDistributionApiClient(IHttpClientFactory httpClientFactory, CustomersApiSettings options)
+            : base(httpClientFactory, options)
         {
+            var httpClient = httpClientFactory.CreateClient();
             httpClient.BaseAddress = new System.Uri(options.BaseUrl);
         }
 

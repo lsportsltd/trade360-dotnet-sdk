@@ -13,12 +13,13 @@ using Trade360SDK.SnapshotApi.Interfaces;
 
 namespace Trade360SDK.SnapshotApi
 {
-    public class InplaySnapshotApiClient : BaseHttpClient, ISnapshotInplayApiClient
+    public class SnapshotInplayApiClient : BaseHttpClient, ISnapshotInplayApiClient
     {
         private readonly IMapper _mapper;
-        public InplaySnapshotApiClient(HttpClient httpClient, SnapshotApiSettings settings, IMapper mapper)
-            : base(httpClient, settings)
+        public SnapshotInplayApiClient(IHttpClientFactory httpClientFactory, SnapshotApiSettings settings, IMapper mapper)
+            : base(httpClientFactory, settings)
         {
+            var httpClient = httpClientFactory.CreateClient();
             httpClient.BaseAddress = new System.Uri(settings.BaseUrl);
             _mapper = mapper;
         }

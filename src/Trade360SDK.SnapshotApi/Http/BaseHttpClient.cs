@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.SnapshotApi.Configuration;
@@ -17,10 +17,10 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly string _username;
         private readonly string _password;
 
-        protected BaseHttpClient(HttpClient httpClient, SnapshotApiSettings settings)
+        protected BaseHttpClient(IHttpClientFactory httpClientFactory, SnapshotApiSettings settings)
         {
-            _httpClient = httpClient;
-
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri(settings.BaseUrl);
             _packageId = settings.PackageId;
             _username = settings.Username;
             _password = settings.Password;
@@ -34,7 +34,7 @@ namespace Trade360SDK.SnapshotApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonConvert.SerializeObject(request);
+            var requestJson = JsonSerializer.Serialize(request);
             var content = new StringContent(
                 requestJson,
                 Encoding.UTF8,
@@ -42,7 +42,7 @@ namespace Trade360SDK.SnapshotApi.Http
             var httpResponse = await _httpClient.PostAsync(uri, content, cancellationToken);
 
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<BaseResponse<TEntity>>(rawResponse);
+            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
 
             if (response == null || response.Header == null)
             {

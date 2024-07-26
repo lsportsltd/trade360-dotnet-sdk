@@ -11,54 +11,37 @@ namespace Trade360SDK.CustomersApi.Example
     public class SampleService : IHostedService
     {
         private readonly ILogger<SampleService> _logger;
-        private readonly ICustomersApiFactory _customerApiFactory;
-        private readonly IOptionsMonitor<CustomersApiSettings> _settingsMonitor;
+        private readonly IMetadataApiClient _metadataApiClient;
+        private readonly ISubscriptionApiClient _subscriptionApiClient;
+        private readonly IPackageDistributionApiClient _packageDistributionApiClient;
 
-        public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor)
+        public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor, IMetadataApiClient metadataApiClient, ISubscriptionApiClient subscriptionApiClient, IPackageDistributionApiClient packageDistributionApiClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _customerApiFactory = customersApiFactory;
-            _settingsMonitor = settingsMonitor;
+            var customersApiSettings = settingsMonitor.Get("CustomersApiInplaySettings");
+            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
+            _metadataApiClient = customersApiFactory.CreateMetadataHttpClient(customersApiSettings);
+            _subscriptionApiClient = customersApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                // Retrieve the API settings for in-play data from the configuration.
-                // You can initialize settings for pre-match type as well, create using the factory more instances for different types
-                var customersApiSettings = _settingsMonitor.Get("CustomersApiInplaySettings");
-                //Initialize Api Clients (Metadata, PackageDistribution, Subscription)
-                var packageDistributionApiClient = _customerApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
-                var metadataApiClient = _customerApiFactory.CreateMetadataHttpClient(customersApiSettings);
-                var subscriptionApiClient = _customerApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
 
 
-                //Subscription Api Examples
-                
-                await SubscribeToFixture(subscriptionApiClient, cancellationToken);
-                await UnsubscribeFromFixture(subscriptionApiClient, cancellationToken);
-                await SubscribeToLeague(subscriptionApiClient, cancellationToken);
-                await UnsubscribeFromLeague(subscriptionApiClient, cancellationToken);
-                await GetInplayFixtureSchedule(subscriptionApiClient, cancellationToken);
-                await SubscribeToOutrightCompetition(subscriptionApiClient, cancellationToken);
-                await UnsubscribeFromOutrightCompetition(subscriptionApiClient, cancellationToken);
-                await GetSubscribedFixtures(subscriptionApiClient, cancellationToken);
+                while (true)
+                {
+                    ShowMenu();
+                    var choice = Console.ReadLine();
 
-                await GetAllManualSuspensionsAsync(subscriptionApiClient, cancellationToken);
-                await AddManualSuspensionAsync(subscriptionApiClient, cancellationToken);
-                await RemoveManualSuspensionAsync(subscriptionApiClient, cancellationToken);
+                    if (choice is "exit") break;
 
-                //Metadata api examples
-                await GetFixtureMetadata(metadataApiClient, cancellationToken);
-                await GetCompetitions(metadataApiClient, cancellationToken);
-                await GetTranslations(metadataApiClient, cancellationToken);
-                await GetDistributionStatus(packageDistributionApiClient, cancellationToken);
-                await StartDistribution(packageDistributionApiClient, cancellationToken);
-                await GetMarkets(metadataApiClient, cancellationToken);
-                await GetSports(metadataApiClient, cancellationToken);
-                await GetLocations(metadataApiClient, cancellationToken);
-                await GetLeagues(metadataApiClient, cancellationToken);
+                    if (choice != null)
+                    {
+                        await HandleMenuChoice(choice, cancellationToken);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -66,11 +49,104 @@ namespace Trade360SDK.CustomersApi.Example
             }
         }
 
+        private void ShowMenu()
+        {
+            Console.WriteLine("Select an option:");
+            Console.WriteLine("1. Metadata API - Get Fixture Metadata");
+            Console.WriteLine("2. Metadata API - Get Competitions");
+            Console.WriteLine("3. Metadata API - Get Translations");
+            Console.WriteLine("4. Metadata API - Get Markets");
+            Console.WriteLine("5. Metadata API - Get Sports");
+            Console.WriteLine("6. Metadata API - Get Locations");
+            Console.WriteLine("7. Metadata API - Get Leagues");
+            Console.WriteLine("8. Subscription API - Subscribe to Fixture");
+            Console.WriteLine("9. Subscription API - Unsubscribe from Fixture");
+            Console.WriteLine("10. Subscription API - Subscribe to League");
+            Console.WriteLine("11. Subscription API - Unsubscribe from League");
+            Console.WriteLine("12. Subscription API - Get Subscribed Fixtures");
+            Console.WriteLine("13. Subscription API - Subscribe to Outright Competition");
+            Console.WriteLine("14. Subscription API - Unsubscribe from Outright Competition");
+            Console.WriteLine("15. Subscription API - Get Inplay Fixture Schedule");
+            Console.WriteLine("16. Subscription API - Get All Manual Suspensions");
+            Console.WriteLine("17. Subscription API - Add Manual Suspension");
+            Console.WriteLine("18. Subscription API - Remove Manual Suspension");
+            Console.WriteLine("19. Package Distribution API - Get Distribution Status");
+            Console.WriteLine("20. Package Distribution API - Start Distribution");
+            Console.WriteLine("Type 'exit' to quit");
+        }
+
+        private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
+        {
+            switch (choice)
+            {
+                case "1":
+                    await GetFixtureMetadata(_metadataApiClient, cancellationToken);
+                    break;
+                case "2":
+                    await GetCompetitions(_metadataApiClient, cancellationToken);
+                    break;
+                case "3":
+                    await GetTranslations(_metadataApiClient, cancellationToken);
+                    break;
+                case "4":
+                    await GetMarkets(_metadataApiClient, cancellationToken);
+                    break;
+                case "5":
+                    await GetSports(_metadataApiClient, cancellationToken);
+                    break;
+                case "6":
+                    await GetLocations(_metadataApiClient, cancellationToken);
+                    break;
+                case "7":
+                    await GetLeagues(_metadataApiClient, cancellationToken);
+                    break;
+                case "8":
+                    await SubscribeToFixture(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "9":
+                    await UnsubscribeFromFixture(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "10":
+                    await SubscribeToLeague(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "11":
+                    await UnsubscribeFromLeague(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "12":
+                    await GetSubscribedFixtures(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "13":
+                    await SubscribeToOutrightCompetition(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "14":
+                    await UnsubscribeFromOutrightCompetition(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "15":
+                    await GetInplayFixtureSchedule(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "16":
+                    await GetAllManualSuspensionsAsync(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "17":
+                    await AddManualSuspensionAsync(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "18":
+                    await RemoveManualSuspensionAsync(_subscriptionApiClient, cancellationToken);
+                    break;
+                case "19":
+                    await GetDistributionStatus(_packageDistributionApiClient, cancellationToken);
+                    break;
+                case "20":
+                    await StartDistribution(_packageDistributionApiClient, cancellationToken);
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+
         private async Task SubscribeToFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Subscribing to fixture. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new FixtureSubscriptionRequestDto
             {
                 Fixtures = new[] { 12345 }
@@ -81,9 +157,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task UnsubscribeFromFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Unsubscribing from fixture. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new FixtureSubscriptionRequestDto
             {
                 Fixtures = new[] { 12345 }
@@ -94,21 +167,17 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task SubscribeToLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Subscribing to league. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new LeagueSubscriptionRequestDto
             {
                 Subscriptions = new List<LeagueSubscription>()
                 {
-                    new LeagueSubscription()
+                    new()
                     {
                         SportId = 6046,
                         LocationId = 142,
                         LeagueId = 5
                     }
                 }
-
             };
             var response = await subscriptionApiClient.SubscribeByLeague(request, cancellationToken);
             Console.WriteLine($"Send Subscription request to {response.Subscription?.Count} fixtures");
@@ -116,14 +185,11 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task UnsubscribeFromLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Unsubscribing from league. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new LeagueSubscriptionRequestDto
             {
                 Subscriptions = new List<LeagueSubscription>()
                 {
-                    new LeagueSubscription()
+                    new()
                     {
                         SportId = 6046,
                         LocationId = 142,
@@ -137,9 +203,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetSubscribedFixtures(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Getting subscribed fixtures. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new GetSubscriptionRequestDto
             {
                 SportIds = new List<int>() { 6046 }
@@ -150,14 +213,11 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task SubscribeToOutrightCompetition(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Subscribing to competition. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new CompetitionSubscriptionRequestDto
             {
                 Subscriptions = new List<CompetitionSubscription>()
                 {
-                    new CompetitionSubscription()
+                    new()
                     {
                         SportId = 6046
                     }
@@ -169,14 +229,11 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task UnsubscribeFromOutrightCompetition(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Unsubscribing from competition. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new CompetitionSubscriptionRequestDto
             {
                 Subscriptions = new List<CompetitionSubscription>()
                 {
-                    new CompetitionSubscription()
+                    new()
                     {
                         SportId = 6046
                     }
@@ -186,12 +243,8 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine("Competition unsubscribed.");
         }
 
-
         private async Task GetInplayFixtureSchedule(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Get fixture schedule response");
-            Console.ReadKey();
-
             var request = new GetFixtureScheduleRequestDto
             {
                 SportIds = new[] { 6046 }
@@ -202,9 +255,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetFixtureMetadata(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Get fixture metadata");
-            Console.ReadKey();
-
             var request = new GetFixtureMetadataRequestDto
             {
                 FromDate = DateTime.Now,
@@ -216,9 +266,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetCompetitions(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Get competitions");
-            Console.ReadKey();
-
             var request = new GetCompetitionsRequestDto
             {
                 LocationIds = new[] { 1 },
@@ -230,9 +277,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetTranslations(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Starting translations");
-            Console.ReadKey();
-
             var request = new GetTranslationsRequestDto
             {
                 SportIds = new[] { 6046 },
@@ -244,27 +288,18 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetDistributionStatus(IPackageDistributionApiClient packageDistributionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Get distribution status");
-            Console.ReadKey();
-
-            var response = await packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
+            await packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
             Console.WriteLine("Distribution status retrieved.");
         }
 
         private async Task StartDistribution(IPackageDistributionApiClient packageDistributionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Starting distribution");
-            Console.ReadKey();
-
-            var response = await packageDistributionApiClient.StartDistributionAsync(cancellationToken);
+            await packageDistributionApiClient.StartDistributionAsync(cancellationToken);
             Console.WriteLine("Distribution started.");
         }
 
         private async Task GetMarkets(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Press any key to receive LSports market entities");
-            Console.ReadKey();
-
             var request = new GetMarketsRequestDto
             {
                 MarketIds = new List<int> { 1, 2 },
@@ -281,9 +316,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetSports(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Press any key to receive LSports sports entities");
-            Console.ReadKey();
-
             var response = await metadataApiClient.GetSportsAsync(cancellationToken);
             Console.WriteLine("Sports entities received:");
             foreach (var sport in response)
@@ -294,9 +326,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetLocations(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Press any key to receive LSports locations entities");
-            Console.ReadKey();
-
             var response = await metadataApiClient.GetLocationsAsync(cancellationToken);
             Console.WriteLine("Locations entities received:");
             foreach (var location in response)
@@ -307,9 +336,6 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetLeagues(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Press any key to receive LSports leagues for football");
-            Console.ReadKey();
-
             var sportsResults = await metadataApiClient.GetSportsAsync(cancellationToken);
             var footballSportEntity = sportsResults.FirstOrDefault(x => x.Name == "Football");
             if (footballSportEntity == null)
@@ -332,28 +358,22 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task GetAllManualSuspensionsAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Getting all manual suspensions. Press any key to continue.");
-            Console.ReadKey();
-
             var response = await subscriptionApiClient.GetAllManualSuspensions(cancellationToken);
             Console.WriteLine("Manual suspensions retrieved.");
         }
 
         private async Task AddManualSuspensionAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Adding manual suspension. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new ChangeManualSuspensionRequestDto
             {
                 Suspensions = new List<Suspension>()
                 {
-                    new Suspension()
+                    new()
                     {
                         FixtureId = 13176576,
                         Markets = new List<Market>
                         {
-                           new Market()
+                           new()
                            {
                                MarketId = 2755,
                                Line = "-0.25"
@@ -368,19 +388,16 @@ namespace Trade360SDK.CustomersApi.Example
 
         private async Task RemoveManualSuspensionAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Removing manual suspension. Press any key to continue.");
-            Console.ReadKey();
-
             var request = new ChangeManualSuspensionRequestDto
             {
                 Suspensions = new List<Suspension>()
                 {
-                    new Suspension()
+                    new()
                     {
                         FixtureId = 13176576,
                         Markets = new List<Market>
                         {
-                           new Market()
+                           new()
                            {
                                MarketId = 1439,
                                Line = "-2.5"

@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Interfaces;
 using Trade360SDK.SnapshotApi.Mapper;
@@ -10,28 +10,48 @@ namespace Trade360SDK.SnapshotApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddT360ApiClient(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddTrade360PrematchSnapshotClient(this IServiceCollection services, SnapshotApiSettings inplaySnapshotApiSettings)
         {
-            // Register HttpClients
-            AddHttpClientWithBaseAddress<ISnapshotInplayApiClient, InplaySnapshotApiClient>(services);
 
-            // Register services
-            services.AddTransient<ISnapshotInplayApiClient, InplaySnapshotApiClient>();
-            services.AddTransient<ISnapshotApiFactory, SnapshotApiFactory>();
+            services.AddHttpClient<ISnapshotPrematchApiClient, SnapshotPrematchApiClient>((serviceProvider, client) =>
+            {
+                client.BaseAddress = new Uri(inplaySnapshotApiSettings.BaseUrl ?? throw new ArgumentNullException());
+            });
+
+
+            services.AddTransient<ISnapshotPrematchApiClient>(provider =>
+            {
+                var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+                var mapper = provider.GetRequiredService<IMapper>();
+                return new SnapshotPrematchApiClient(httpClientFactory, inplaySnapshotApiSettings, mapper);
+            });
+
             services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
         }
 
-        private static void AddHttpClientWithBaseAddress<TClient, TImplementation>(IServiceCollection services)
-            where TClient : class
-            where TImplementation : class, TClient
+        public static IServiceCollection AddTrade360InplaySnapshotClient(this IServiceCollection services, SnapshotApiSettings prematchSnapshotApiSettings)
         {
-            services.AddHttpClient<TClient, TImplementation>((serviceProvider, client) =>
+            // Register HttpClients
+            services.AddHttpClient<ISnapshotInplayApiClient, SnapshotInplayApiClient>((serviceProvider, client) =>
             {
-                var options = serviceProvider.GetRequiredService<IOptions<SnapshotApiSettings>>().Value;
-                client.BaseAddress = new Uri(options.BaseUrl);
+                client.BaseAddress = new Uri(prematchSnapshotApiSettings.BaseUrl ?? throw new ArgumentNullException());
             });
+
+           
+
+            // Register services
+            services.AddTransient<ISnapshotInplayApiClient>(provider =>
+            {
+                var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+                var mapper = provider.GetRequiredService<IMapper>();
+                return new SnapshotInplayApiClient(httpClientFactory, prematchSnapshotApiSettings, mapper);
+            });
+
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            return services;
         }
     }
 }

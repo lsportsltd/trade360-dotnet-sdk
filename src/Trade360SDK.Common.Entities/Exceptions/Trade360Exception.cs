@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Trade360SDK.SnapshotApi
+namespace Trade360SDK.Common.Exceptions
 {
     public class Trade360Exception : Exception
     {

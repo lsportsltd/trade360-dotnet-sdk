@@ -4,6 +4,6 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests
 {
     public class LeagueSubscriptionRequestDto
     {
-        public List<LeagueSubscription> Subscriptions { get; set; }
+        public List<LeagueSubscription>? Subscriptions { get; set; }
     }
 }

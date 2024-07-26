@@ -9,8 +9,8 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
+using Trade360SDK.Common.Exceptions;
 using Trade360SDK.CustomersApi.Entities.Base;
-using Trade360SDK.SnapshotApi;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trade360SDK.CustomersApi.Http

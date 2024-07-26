@@ -4,7 +4,7 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
 {
     public class FixtureSubscriptionCollectionResponse
     {
-        public List<FixtureSubscription> Fixtures { get; set; }
+        public List<FixtureSubscription>? Fixtures { get; set; }
     }
 
     public class FixtureSubscription

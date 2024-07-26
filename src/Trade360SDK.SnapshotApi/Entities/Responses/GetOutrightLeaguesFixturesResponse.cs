@@ -25,7 +25,7 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
     public class CompetitionResponse
     {
         public int FixtureId { get; set; }
-        public OutrightLeagueFixtureSnapshotResponse OutrightLeague { get; set; }
+        public OutrightLeagueFixtureSnapshotResponse? OutrightLeague { get; set; }
     }
 
     public class OutrightLeagueFixtureSnapshotResponse

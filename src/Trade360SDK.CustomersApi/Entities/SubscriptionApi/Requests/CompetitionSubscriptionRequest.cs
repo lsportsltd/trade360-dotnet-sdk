@@ -12,6 +12,6 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests
 
     public class CompetitionSubscriptionRequest : BaseRequest
     {
-        public List<CompetitionSubscription> Subscriptions { get; set; }
+        public List<CompetitionSubscription>? Subscriptions { get; set; }
     }
 }

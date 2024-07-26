@@ -12,19 +12,19 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
     public class FixtureSchedule
     {
         public int FixtureId { get; set; }
-        public Sport Sport { get; set; }
-        public Location Location { get; set; }
-        public League League { get; set; }
+        public Sport? Sport { get; set; }
+        public Location? Location { get; set; }
+        public League? League { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime LastUpdate { get; set; }
         public int Status { get; set; }
-        public List<ParticipantSchedule> Participants { get; set; }
+        public List<ParticipantSchedule>? Participants { get; set; }
     }
 
     public class ParticipantSchedule
     {
         public int Id { get; set; }
         public int Position { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

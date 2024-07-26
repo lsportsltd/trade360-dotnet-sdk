@@ -15,7 +15,7 @@ namespace Trade360SDK.CustomersApi
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(baseUrl ?? throw new ArgumentNullException(nameof(baseUrl)));
+            httpClient.BaseAddress = new Uri(baseUrl ?? throw new ArgumentNullException(nameof(baseUrl)));
         }
 
         public async Task<GetDistributionStatusResponse> GetDistributionStatusAsync(CancellationToken cancellationToken)

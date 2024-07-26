@@ -259,7 +259,7 @@ namespace Trade360SDK.CustomersApi.Example
                 ToDate = DateTime.Now.AddDays(2)
             };
             var response = await metadataApiClient.GetFixtureMetadataAsync(request, cancellationToken);
-            Console.WriteLine("Fixture metadata retrieved.");
+            Console.WriteLine($"{response.SubscribedFixtures?.Count()} Fixture metadata retrieved.");
         }
 
         private async Task GetCompetitions(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)

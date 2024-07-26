@@ -4,7 +4,7 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
 {
     public class CompetitionSubscriptionCollectionResponse
     {
-        public List<CompetitionSubscriptionResponse> Subscription { get; set; }
+        public List<CompetitionSubscriptionResponse>? Subscription { get; set; }
     }
 
     public class CompetitionSubscriptionResponse

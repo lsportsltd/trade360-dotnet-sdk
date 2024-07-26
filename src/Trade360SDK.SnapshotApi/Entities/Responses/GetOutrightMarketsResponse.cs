@@ -20,7 +20,7 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
     public class OutrightMarketResponse
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public IEnumerable<Bet>? Bets { get; set; }
     }
 

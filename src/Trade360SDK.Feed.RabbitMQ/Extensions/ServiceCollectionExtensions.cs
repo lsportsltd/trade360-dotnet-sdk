@@ -10,7 +10,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Extensions
         {
             // Register the factory
             services.AddSingleton<IFeedFactory, RabbitMqFeedFactory>();
-            services.AddT360ApiClient(configuration);
+            services.AddTrade360CustomerApiClient(configuration);
             return services;
         }
     }

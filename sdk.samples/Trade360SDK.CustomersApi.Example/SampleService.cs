@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Interfaces;
@@ -11,25 +11,23 @@ namespace Trade360SDK.CustomersApi.Example
     public class SampleService : IHostedService
     {
         private readonly ILogger<SampleService> _logger;
-        private readonly IMetadataApiClient _metadataApiClient;
-        private readonly ISubscriptionApiClient _subscriptionApiClient;
-        private readonly IPackageDistributionApiClient _packageDistributionApiClient;
+        private readonly IMetadataApiClient _inplayMetadataApiClient;
+        private readonly ISubscriptionApiClient _inplaySubscriptionApiClient;
+        private readonly IPackageDistributionApiClient _inplayPackageDistributionApiClient;
 
-        public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor, IMetadataApiClient metadataApiClient, ISubscriptionApiClient subscriptionApiClient, IPackageDistributionApiClient packageDistributionApiClient)
+        public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<Trade360Settings> settingsMonitor)
         {
+            var settings = settingsMonitor.CurrentValue;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            var customersApiSettings = settingsMonitor.Get("CustomersApiInplaySettings");
-            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(customersApiSettings);
-            _metadataApiClient = customersApiFactory.CreateMetadataHttpClient(customersApiSettings);
-            _subscriptionApiClient = customersApiFactory.CreateSubscriptionHttpClient(customersApiSettings);
+            _inplayPackageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
+            _inplayMetadataApiClient = customersApiFactory.CreateMetadataHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
+            _inplaySubscriptionApiClient = customersApiFactory.CreateSubscriptionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-
-
                 while (true)
                 {
                     ShowMenu();
@@ -80,64 +78,64 @@ namespace Trade360SDK.CustomersApi.Example
             switch (choice)
             {
                 case "1":
-                    await GetFixtureMetadata(_metadataApiClient, cancellationToken);
+                    await GetFixtureMetadata(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "2":
-                    await GetCompetitions(_metadataApiClient, cancellationToken);
+                    await GetCompetitions(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "3":
-                    await GetTranslations(_metadataApiClient, cancellationToken);
+                    await GetTranslations(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "4":
-                    await GetMarkets(_metadataApiClient, cancellationToken);
+                    await GetMarkets(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "5":
-                    await GetSports(_metadataApiClient, cancellationToken);
+                    await GetSports(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "6":
-                    await GetLocations(_metadataApiClient, cancellationToken);
+                    await GetLocations(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "7":
-                    await GetLeagues(_metadataApiClient, cancellationToken);
+                    await GetLeagues(_inplayMetadataApiClient, cancellationToken);
                     break;
                 case "8":
-                    await SubscribeToFixture(_subscriptionApiClient, cancellationToken);
+                    await SubscribeToFixture(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "9":
-                    await UnsubscribeFromFixture(_subscriptionApiClient, cancellationToken);
+                    await UnsubscribeFromFixture(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "10":
-                    await SubscribeToLeague(_subscriptionApiClient, cancellationToken);
+                    await SubscribeToLeague(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "11":
-                    await UnsubscribeFromLeague(_subscriptionApiClient, cancellationToken);
+                    await UnsubscribeFromLeague(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "12":
-                    await GetSubscribedFixtures(_subscriptionApiClient, cancellationToken);
+                    await GetSubscribedFixtures(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "13":
-                    await SubscribeToOutrightCompetition(_subscriptionApiClient, cancellationToken);
+                    await SubscribeToOutrightCompetition(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "14":
-                    await UnsubscribeFromOutrightCompetition(_subscriptionApiClient, cancellationToken);
+                    await UnsubscribeFromOutrightCompetition(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "15":
-                    await GetInplayFixtureSchedule(_subscriptionApiClient, cancellationToken);
+                    await GetInplayFixtureSchedule(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "16":
-                    await GetAllManualSuspensionsAsync(_subscriptionApiClient, cancellationToken);
+                    await GetAllManualSuspensionsAsync(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "17":
-                    await AddManualSuspensionAsync(_subscriptionApiClient, cancellationToken);
+                    await AddManualSuspensionAsync(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "18":
-                    await RemoveManualSuspensionAsync(_subscriptionApiClient, cancellationToken);
+                    await RemoveManualSuspensionAsync(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "19":
-                    await GetDistributionStatus(_packageDistributionApiClient, cancellationToken);
+                    await GetDistributionStatus(_inplayPackageDistributionApiClient, cancellationToken);
                     break;
                 case "20":
-                    await StartDistribution(_packageDistributionApiClient, cancellationToken);
+                    await StartDistribution(_inplayPackageDistributionApiClient, cancellationToken);
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");

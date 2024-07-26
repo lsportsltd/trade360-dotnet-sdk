@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities;
 using Trade360SDK.CustomersApi.Entities.Base;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -20,14 +20,14 @@ namespace Trade360SDK.CustomersApi.Http
         private readonly HttpClient _httpClient;
 
         private readonly int _packageId;
-        private readonly string _username;
-        private readonly string _password;
+        private readonly string? _username;
+        private readonly string? _password;
 
-        protected BaseHttpClient(IHttpClientFactory httpClientFactory, CustomersApiSettings settings)
+        protected BaseHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? settings)
         {
             _httpClient = httpClientFactory.CreateClient();
-
-            _packageId = settings.PackageId;
+            if (baseUrl != null) _httpClient.BaseAddress = new Uri(baseUrl);
+            _packageId = settings!.PackageId;
             _username = settings.Username;
             _password = settings.Password;
         }

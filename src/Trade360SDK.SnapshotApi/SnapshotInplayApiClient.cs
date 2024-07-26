@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Markets;
-using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 using Trade360SDK.SnapshotApi.Entities.Responses;
 using Trade360SDK.SnapshotApi.Http;
@@ -16,11 +17,13 @@ namespace Trade360SDK.SnapshotApi
     public class SnapshotInplayApiClient : BaseHttpClient, ISnapshotInplayApiClient
     {
         private readonly IMapper _mapper;
-        public SnapshotInplayApiClient(IHttpClientFactory httpClientFactory, SnapshotApiSettings settings, IMapper mapper)
-            : base(httpClientFactory, settings)
+
+        public SnapshotInplayApiClient(IHttpClientFactory httpClientFactory, IOptions<Trade360Settings> settings,
+            IMapper mapper)
+            : base(httpClientFactory, settings.Value, settings.Value.InplayPackageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(settings.BaseUrl);
+            httpClient.BaseAddress = new System.Uri(settings.Value.SnapshotApiBaseUrl);
             _mapper = mapper;
         }
 

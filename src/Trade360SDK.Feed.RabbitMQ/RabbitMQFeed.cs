@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
@@ -29,13 +29,12 @@ namespace Trade360SDK.Feed.RabbitMQ
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
-            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(new CustomersApiSettings()
+            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.BaseCustomersApi, new PackageCredentials()
             {
-                BaseUrl = _settings.BaseCustomersApi,
                 PackageId = settings.PackageId,
                 Password = settings.Password,
                 Username = settings.UserName
-             });
+            });
         }
 
         public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new()

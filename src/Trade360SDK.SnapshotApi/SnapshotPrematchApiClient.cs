@@ -1,12 +1,14 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Livescore;
 using Trade360SDK.Common.Entities.Markets;
-using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 using Trade360SDK.SnapshotApi.Entities.Responses;
 using Trade360SDK.SnapshotApi.Http;
@@ -17,11 +19,11 @@ namespace Trade360SDK.SnapshotApi
     public class SnapshotPrematchApiClient : BaseHttpClient, ISnapshotPrematchApiClient
     {
         private readonly IMapper _mapper;
-        public SnapshotPrematchApiClient(IHttpClientFactory httpClientFactory, SnapshotApiSettings settings, IMapper mapper)
-            : base(httpClientFactory, settings)
+        public SnapshotPrematchApiClient(IHttpClientFactory httpClientFactory, IOptions<Trade360Settings> settings, IMapper mapper)
+            : base(httpClientFactory, settings.Value, settings.Value.PrematchPackageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(settings.BaseUrl);
+            httpClient.BaseAddress = new System.Uri(settings.Value.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
             _mapper = mapper;
         }
 

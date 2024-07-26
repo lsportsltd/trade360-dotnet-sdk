@@ -1,11 +1,11 @@
-﻿using Trade360SDK.CustomersApi.Configuration;
+﻿using Trade360SDK.Common.Configuration;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {
     public interface ICustomersApiFactory
     {
-        IMetadataApiClient CreateMetadataHttpClient(CustomersApiSettings settings);
-        IPackageDistributionApiClient CreatePackageDistributionHttpClient(CustomersApiSettings settings);
-        ISubscriptionApiClient CreateSubscriptionHttpClient(CustomersApiSettings settings);
+        IMetadataApiClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
+        IPackageDistributionApiClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
+        ISubscriptionApiClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
     }
 }

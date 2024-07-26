@@ -1,19 +1,17 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Trade360SDK.SnapshotApi.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 using Trade360SDK.SnapshotApi.Interfaces;
 
 namespace Trade360SDK.SnapshotApi.Example
 {
-    public class Startup : IHostedService
+    public class SampleService : IHostedService
     {
-        private readonly ILogger<Startup> _logger;
+        private readonly ILogger<SampleService> _logger;
         private readonly ISnapshotInplayApiClient _snapshotInplayApiClient;
         private readonly ISnapshotPrematchApiClient _snapshotPrematchApiClient;
 
-        public Startup(ILogger<Startup> logger, ISnapshotInplayApiClient snapshotInplayApiClient, IOptionsMonitor<SnapshotApiSettings> settingsMonitor, ISnapshotPrematchApiClient snapshotPrematchApiClient)
+        public SampleService(ILogger<SampleService> logger, ISnapshotInplayApiClient snapshotInplayApiClient, ISnapshotPrematchApiClient snapshotPrematchApiClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _snapshotInplayApiClient = snapshotInplayApiClient;

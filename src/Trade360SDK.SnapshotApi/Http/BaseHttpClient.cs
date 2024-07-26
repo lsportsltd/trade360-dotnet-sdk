@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.SnapshotApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 
 namespace Trade360SDK.SnapshotApi.Http
@@ -17,13 +17,13 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly string _username;
         private readonly string _password;
 
-        protected BaseHttpClient(IHttpClientFactory httpClientFactory, SnapshotApiSettings settings)
+        protected BaseHttpClient(IHttpClientFactory httpClientFactory, Trade360Settings settings, PackageCredentials? packageCredentials)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri(settings.BaseUrl);
-            _packageId = settings.PackageId;
-            _username = settings.Username;
-            _password = settings.Password;
+            _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl);
+            _packageId = packageCredentials.PackageId;
+            _username = packageCredentials.Username;
+            _password = packageCredentials.Password;
         }
 
         protected async Task<TEntity> PostEntityAsync<TEntity>(

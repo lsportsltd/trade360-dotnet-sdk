@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
@@ -14,14 +14,14 @@ namespace Trade360SDK.CustomersApi
     public class SubscriptionApiClient : BaseHttpClient, ISubscriptionApiClient
     {
         private readonly IMapper _mapper;
-        public SubscriptionApiClient(IHttpClientFactory httpClientFactory, CustomersApiSettings settings, IMapper mapper)
-            : base(httpClientFactory, settings)
+        public SubscriptionApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+            : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(settings.BaseUrl);
+            httpClient.BaseAddress = new System.Uri(baseUrl);
             _mapper = mapper;
         }
-
+        
         public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken)
             => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
 

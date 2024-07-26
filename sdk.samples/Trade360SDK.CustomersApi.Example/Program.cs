@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Microsoft.DependencyInjection.Extensions;
 
 namespace Trade360SDK.CustomersApi.Example;
@@ -21,10 +21,9 @@ internal class Program
             })
             .ConfigureServices((hostContext, services) =>
             {
-                // Configure the settings for the "Inplay" feed using the "Trade360:RmqInplaySettings" section of the configuration file
-                services.Configure<CustomersApiSettings>("CustomersApiInplaySettings", hostContext.Configuration.GetSection("Trade360:CustomersApiInplay"));
+                services.Configure<Trade360Settings>(hostContext.Configuration.GetSection("Trade360"));
 
-                services.AddT360ApiClient(hostContext.Configuration);
+                services.AddTrade360CustomerApiClient(hostContext.Configuration);
                 services.AddHostedService<SampleService>();
             });
 }

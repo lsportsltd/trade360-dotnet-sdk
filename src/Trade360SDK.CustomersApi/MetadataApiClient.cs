@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Http;
@@ -16,11 +16,11 @@ namespace Trade360SDK.CustomersApi
     public class MetadataApiClient : BaseHttpClient, IMetadataApiClient
     {
         private readonly IMapper _mapper;
-        public MetadataApiClient(IHttpClientFactory httpClientFactory, CustomersApiSettings options, IMapper mapper)
-            : base(httpClientFactory, options)
+        public MetadataApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+            : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(options.BaseUrl);
+            httpClient.BaseAddress = new System.Uri(baseUrl);
             _mapper = mapper;
         }
 

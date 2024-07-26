@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
-using Trade360SDK.CustomersApi.Configuration;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.CustomersApi
@@ -16,24 +16,24 @@ namespace Trade360SDK.CustomersApi
             _serviceProvider = serviceProvider;
         }
 
-        public IMetadataApiClient CreateMetadataHttpClient(CustomersApiSettings settings)
+        public IMetadataApiClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new MetadataApiClient(httpClientFactory, settings, mapper);
+            return new MetadataApiClient(httpClientFactory, baseUrl, packageCredentials, mapper);
         }
 
-        public IPackageDistributionApiClient CreatePackageDistributionHttpClient(CustomersApiSettings settings)
+        public IPackageDistributionApiClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new PackageDistributionApiClient(httpClientFactory, settings);
+            return new PackageDistributionApiClient(httpClientFactory, baseUrl, packageCredentials);
         }
 
-        public ISubscriptionApiClient CreateSubscriptionHttpClient(CustomersApiSettings settings)
+        public ISubscriptionApiClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new SubscriptionApiClient(httpClientFactory, settings, mapper);
+            return new SubscriptionApiClient(httpClientFactory, baseUrl, packageCredentials, mapper);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Trade360SDK.Common.Entities.Enums
 {
-    public enum MarketTypeEnum
+    public enum MarketType
     {
         All = 0,
         Standard = 1,

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Trade360SDK.CustomersApi.Configuration;
-using Trade360SDK.CustomersApi.Extensions;
+using Trade360SDK.Microsoft.DependencyInjection.Extensions;
 
 namespace Trade360SDK.CustomersApi.Example;
 
@@ -25,6 +25,6 @@ internal class Program
                 services.Configure<CustomersApiSettings>("CustomersApiInplaySettings", hostContext.Configuration.GetSection("Trade360:CustomersApiInplay"));
 
                 services.AddT360ApiClient(hostContext.Configuration);
-                services.AddHostedService<Startup>();
+                services.AddHostedService<SampleService>();
             });
 }

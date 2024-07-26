@@ -38,7 +38,7 @@ namespace Trade360SDK.Feed.RabbitMQ
              });
         }
 
-        public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
+        public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new()
         {
             _consumer.RegisterEntityHandler(entityHandler);
         }

@@ -30,6 +30,11 @@ namespace Trade360SDK.CustomersApi.Http
             _password = settings.Password;
         }
 
+        protected async Task<TEntity> PostEntityAsync<TEntity>(string uri, CancellationToken cancellationToken) where TEntity : class
+        {
+            return await PostEntityAsync<TEntity>(uri, new BaseRequest(), cancellationToken);
+        }
+
         protected async Task<TEntity> PostEntityAsync<TEntity>(
             string uri,
             BaseRequest request, CancellationToken cancellationToken) where TEntity : class

@@ -117,7 +117,7 @@ namespace Trade360SDK.CustomersApi
         {
             var response = await PostEntityAsync<GetManualSuspensionResponse>(
                 "Markets/ManualSuspension/GetAll",
-                new BaseRequest(),
+
                 cancellationToken);
             return response;
         }

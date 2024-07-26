@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Trade360SDK.CustomersApi;
-using Trade360SDK.CustomersApi.Extensions;
-using Trade360SDK.CustomersApi.Interfaces;
+using Trade360SDK.Microsoft.DependencyInjection.Extensions;
 
 namespace Trade360SDK.Feed.RabbitMQ.Extensions
 {

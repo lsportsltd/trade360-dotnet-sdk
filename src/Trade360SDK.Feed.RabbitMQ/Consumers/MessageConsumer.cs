@@ -17,7 +17,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
         private readonly ConcurrentDictionary<int, IBodyHandler> _bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
 
         public MessageConsumer(ILoggerFactory? loggerFactory)
         {
@@ -42,7 +42,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 
                 if (wrappedMessage.Header == null)
                 {
-                    _logger?.LogError("Invalid message format");
+                    _logger.LogError("Invalid message format");
                     return;
                 }
 
@@ -53,11 +53,11 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                         .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
                     if (missedEntityType != null)
                     {
-                        _logger?.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
+                        _logger.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
                     }
                     else
                     {
-                        _logger?.LogWarning($"Received unknown entity type {entityType}");
+                        _logger.LogWarning($"Received unknown entity type {entityType}");
                     }
                     return;
                 }
@@ -66,15 +66,15 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
             catch (JsonException jsonEx)
             {
-                _logger?.LogError(jsonEx, "JSON processing error");
+                _logger.LogError(jsonEx, "JSON processing error");
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Error handling message delivery");
+                _logger.LogError($"Error handling message delivery Exception: {ex.Message} , StackTrace: {ex.StackTrace}");
             }
         }
 
-        public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler)
+        public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new()
         {
             var entityType = typeof(TEntity);
             var entityAttribute = entityType.GetCustomAttribute<Trade360EntityAttribute>();
@@ -84,7 +84,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
 
             var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
-            _bodyHandlers.AddOrUpdate(entityAttribute.EntityKey, (_) => newBodyHandler, (_, __) => newBodyHandler);
+            _bodyHandlers[entityAttribute.EntityKey] = newBodyHandler;
         }
     }
     
@@ -92,23 +92,21 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
     {
         public static WrappedMessageJsonObject ConvertJsonToMessage(string rawJson)
         {
-            using (JsonDocument doc = JsonDocument.Parse(rawJson))
+            using JsonDocument doc = JsonDocument.Parse(rawJson);
+            JsonElement root = doc.RootElement;
+            WrappedMessageJsonObject message = new WrappedMessageJsonObject
             {
-                JsonElement root = doc.RootElement;
-                WrappedMessageJsonObject message = new WrappedMessageJsonObject
-                {
-                    Header = root.GetProperty("Header").ToString(),
-                    Body = root.TryGetProperty("Body", out JsonElement bodyElement) ? bodyElement.ToString() : null
-                };
-                return message;
-            }
+                Header = root.GetProperty("Header").ToString(),
+                Body = root.TryGetProperty("Body", out JsonElement bodyElement) ? bodyElement.ToString() : null
+            };
+            return message;
         }
     }
 
     internal class WrappedMessageJsonObject
     {
-        public string Header { get; set; }
+        public string? Header { get; set; }
         
-        public string Body { get; set; }
+        public string? Body { get; set; }
     }
 }

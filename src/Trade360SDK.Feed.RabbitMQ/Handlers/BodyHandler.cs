@@ -6,15 +6,15 @@ using Trade360SDK.Feed.RabbitMQ.Interfaces;
 
 namespace Trade360SDK.Feed.RabbitMQ.Handlers
 {
-    internal class BodyHandler<T> : IBodyHandler
+    internal class BodyHandler<T> : IBodyHandler where T : new()
     {
         private readonly IEntityHandler<T> _entityHandler;
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
 
-        public BodyHandler(IEntityHandler<T> entityHandler, ILogger? logger)
+        public BodyHandler(IEntityHandler<T> entityHandler, ILogger logger)
         {
-            _entityHandler = entityHandler;
-            _logger = logger;
+            _entityHandler = entityHandler ?? throw new ArgumentNullException(nameof(entityHandler));
+            _logger = (logger ?? throw new ArgumentNullException(nameof(logger)));
         }
 
         public Task ProcessAsync(string? body)
@@ -23,7 +23,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Handlers
             
             try
             {
-                entity = body == null ? Activator.CreateInstance<T>() : JsonSerializer.Deserialize<T>(body);
+                entity = body == null ? new T() : JsonSerializer.Deserialize<T>(body);
             }
             catch (Exception e)
             {

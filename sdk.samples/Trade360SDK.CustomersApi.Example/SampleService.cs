@@ -8,13 +8,13 @@ using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.CustomersApi.Example
 {
-    public class Startup : IHostedService
+    public class SampleService : IHostedService
     {
-        private readonly ILogger<Startup> _logger;
+        private readonly ILogger<SampleService> _logger;
         private readonly ICustomersApiFactory _customerApiFactory;
         private readonly IOptionsMonitor<CustomersApiSettings> _settingsMonitor;
 
-        public Startup(ILogger<Startup> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor)
+        public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<CustomersApiSettings> settingsMonitor)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _customerApiFactory = customersApiFactory;

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Configuration;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.CustomersApi.Mapper;
 
-namespace Trade360SDK.CustomersApi.Extensions
+namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -27,8 +27,7 @@ namespace Trade360SDK.CustomersApi
         public async Task<IEnumerable<Sport>> GetSportsAsync(CancellationToken cancellationToken)
         {
             var sportsCollection = await PostEntityAsync<SportsCollectionResponse>(
-                "sports/get",
-                new BaseRequest(),
+                "Sports/Get",
                 cancellationToken);
             return sportsCollection.Sports ?? Enumerable.Empty<Sport>();
         }
@@ -36,8 +35,7 @@ namespace Trade360SDK.CustomersApi
         public async Task<IEnumerable<Location>> GetLocationsAsync(CancellationToken cancellationToken)
         {
             var locationsCollection = await PostEntityAsync<LocationsCollection>(
-                "locations/get",
-                new BaseRequest(),
+                "Locations/Get",
                 cancellationToken);
             return locationsCollection.Locations ?? Enumerable.Empty<Location>();
         }
@@ -46,7 +44,7 @@ namespace Trade360SDK.CustomersApi
         {
             var request = _mapper.Map<GetLeaguesRequest>(requestDto);
             var leaguesCollection = await PostEntityAsync<LeaguesCollectionResponse>(
-                "leagues/get",
+                "Leagues/get",
                 request,
                 cancellationToken);
             return leaguesCollection.Leagues ?? Enumerable.Empty<League>();
@@ -56,7 +54,7 @@ namespace Trade360SDK.CustomersApi
         {
             var request = _mapper.Map<GetMarketsRequest>(requestDto);
             var leaguesCollection = await PostEntityAsync<MarketsCollectionResponse>(
-                "markets/get",
+                "Markets/get",
                 request,
                 cancellationToken);
             return leaguesCollection.Markets ?? Enumerable.Empty<Market>();

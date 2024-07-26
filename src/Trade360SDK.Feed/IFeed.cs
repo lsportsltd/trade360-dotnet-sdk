@@ -8,6 +8,6 @@ namespace Trade360SDK.Feed
     {
         Task StartAsync(bool connectAtStart, CancellationToken cancellationToken);
         Task StopAsync(CancellationToken cancellationToken);
-        void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler);
+        void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new();
     }
 }

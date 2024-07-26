@@ -32,7 +32,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Handlers
             
             if (entity == null)
             {
-                _logger?.LogError($"Failed to deserialize {typeof(T).Name} entity");
+                _logger.LogError($"Failed to deserialize {typeof(T).Name} entity");
                 
                 return Task.CompletedTask;
             }

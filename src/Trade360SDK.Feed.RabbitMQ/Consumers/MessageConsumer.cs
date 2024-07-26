@@ -32,7 +32,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 
                 var wrappedMessageJsonObject = JsonWrappedMessageJsonObjectConverter.ConvertJsonToMessage(rawMessage);
 
-                var header = JsonSerializer.Deserialize<MessageHeader>(wrappedMessageJsonObject.Header);
+                var header = JsonSerializer.Deserialize<MessageHeader>(wrappedMessageJsonObject.Header ?? throw new InvalidOperationException());
 
                 var wrappedMessage = new WrappedMessage
                 {
@@ -51,14 +51,9 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 {
                     var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
                         .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
-                    if (missedEntityType != null)
-                    {
-                        _logger.LogWarning($"Handler for {missedEntityType.FullName} is not configured");
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"Received unknown entity type {entityType}");
-                    }
+                    _logger.LogWarning(missedEntityType != null
+                        ? $"Handler for {missedEntityType.FullName} is not configured"
+                        : $"Received unknown entity type {entityType}");
                     return;
                 }
 

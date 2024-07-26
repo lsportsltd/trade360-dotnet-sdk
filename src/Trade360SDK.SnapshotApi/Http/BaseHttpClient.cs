@@ -14,14 +14,14 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly HttpClient _httpClient;
 
         private readonly int _packageId;
-        private readonly string _username;
-        private readonly string _password;
+        private readonly string? _username;
+        private readonly string? _password;
 
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, Trade360Settings settings, PackageCredentials? packageCredentials)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl);
-            _packageId = packageCredentials.PackageId;
+            _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
+            _packageId = packageCredentials!.PackageId;
             _username = packageCredentials.Username;
             _password = packageCredentials.Password;
         }

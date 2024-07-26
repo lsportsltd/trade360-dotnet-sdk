@@ -2,9 +2,9 @@
 
 namespace Trade360SDK.Feed.RabbitMQ.Exceptions
 {
-    public class RabbitMQFeedException : Exception
+    public class RabbitMqFeedException : Exception
     {
-        public RabbitMQFeedException(string message) : base(message) { }
-        public RabbitMQFeedException(string message, Exception innerException) : base(message, innerException) { }
+        public RabbitMqFeedException(string message) : base(message) { }
+        public RabbitMqFeedException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

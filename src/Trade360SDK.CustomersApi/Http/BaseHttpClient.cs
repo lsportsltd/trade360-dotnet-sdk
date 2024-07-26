@@ -9,8 +9,8 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
-using Trade360SDK.CustomersApi.Entities;
 using Trade360SDK.CustomersApi.Entities.Base;
+using Trade360SDK.SnapshotApi;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trade360SDK.CustomersApi.Http
@@ -52,40 +52,7 @@ namespace Trade360SDK.CustomersApi.Http
                 "application/json");
             var httpResponse = await _httpClient.PostAsync(uri, content, cancellationToken);
 
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
-                var errorResponse = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawErrorResponse);
-
-                if (errorResponse is { Header: { } })
-                {
-                    var errors = errorResponse.Header.Errors?.Select(x => x.Message);
-                    throw new Trade360Exception(errors);
-                }
-
-                httpResponse.EnsureSuccessStatusCode();
-            }
-
-            var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
-
-            if (response?.Header == null)
-            {
-                throw new InvalidOperationException("'Header' property is missed. Please, ensure that you use Trade360 url");
-            }
-
-            if (response.Header.HttpStatusCode != HttpStatusCode.OK)
-            {
-                var errors = response.Header.Errors?.Select(x => x.Message);
-                throw new Trade360Exception(errors);
-            }
-
-            if (response.Body == null)
-            {
-                throw new InvalidOperationException("'Body' property is missed. Please, ensure that you use Trade360 url");
-            }
-
-            return response.Body;
+            return await HandleResponse<TEntity>(httpResponse);
         }
 
         protected async Task<TEntity> GetEntityAsync<TEntity>(
@@ -108,42 +75,62 @@ namespace Trade360SDK.CustomersApi.Http
 
             var httpResponse = await _httpClient.GetAsync(fullUri, cancellationToken);
 
-            if (!httpResponse.IsSuccessStatusCode)
+            return await HandleResponse<TEntity>(httpResponse);
+        }
+
+        private async Task<TEntity> HandleResponse<TEntity>(HttpResponseMessage httpResponse) where TEntity : class
+        {
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var rawResponse = await httpResponse.Content.ReadAsStringAsync();
+                var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
+
+                if (response?.Header == null)
+                {
+                    throw new InvalidOperationException("'Header' property is missing. Please, ensure that you use the correct URL.");
+                }
+
+                if (response.Body == null)
+                {
+                    throw new InvalidOperationException("'Body' property is missing. Please, ensure that you use the correct URL.");
+                }
+
+                return response.Body;
+            }
+            else
             {
                 var rawErrorResponse = await httpResponse.Content.ReadAsStringAsync();
                 var errorResponse = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawErrorResponse);
 
-                if (errorResponse is { Header: { } })
+                if (errorResponse?.Header?.Errors != null)
                 {
-                    var errors = errorResponse.Header.Errors?.Select(x => x.Message);
-                    throw new Trade360Exception(errors);
+                    var errors = errorResponse.Header.Errors.Select(x => x.Message);
+                    throw new Trade360Exception("API call failed", errors);
                 }
-                else
+
+                // Handle specific status codes if needed
+                switch (httpResponse.StatusCode)
                 {
-                    httpResponse.EnsureSuccessStatusCode();
+                    case HttpStatusCode.BadRequest:
+                        // Handle bad request
+                        throw new Trade360Exception("Bad Request", rawErrorResponse);
+                    case HttpStatusCode.Unauthorized:
+                        // Handle unauthorized
+                        throw new Trade360Exception("Unauthorized", rawErrorResponse);
+                    case HttpStatusCode.Forbidden:
+                        // Handle forbidden
+                        throw new Trade360Exception("Forbidden", rawErrorResponse);
+                    case HttpStatusCode.NotFound:
+                        // Handle not found
+                        throw new Trade360Exception("Not Found", rawErrorResponse);
+                    case HttpStatusCode.InternalServerError:
+                        // Handle server error
+                        throw new Trade360Exception("Internal Server Error", rawErrorResponse);
+                    default:
+                        // Handle other status codes
+                        throw new Trade360Exception(httpResponse.StatusCode.ToString(), rawErrorResponse);
                 }
             }
-
-            var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
-
-            if (response?.Header == null)
-            {
-                throw new InvalidOperationException("'Header' property is missed. Please, ensure that you use Trade360 url");
-            }
-
-            if (response.Header.HttpStatusCode != HttpStatusCode.OK)
-            {
-                var errors = response.Header.Errors?.Select(x => x.Message);
-                throw new Trade360Exception(errors);
-            }
-
-            if (response.Body == null)
-            {
-                throw new InvalidOperationException("'Body' property is missed. Please, ensure that you use Trade360 url");
-            }
-
-            return response.Body;
         }
 
         private string BuildQueryString(object request)
@@ -156,6 +143,7 @@ namespace Trade360SDK.CustomersApi.Http
             var queryString = new StringBuilder();
 
             if (dictionary != null)
+            {
                 foreach (var kvp in dictionary)
                 {
                     if (kvp.Value is JsonElement jsonElement)
@@ -164,22 +152,20 @@ namespace Trade360SDK.CustomersApi.Http
                         {
                             foreach (var element in jsonElement.EnumerateArray())
                             {
-                                queryString.Append(
-                                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(element.ToString())}&");
+                                queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(element.ToString())}&");
                             }
                         }
                         else
                         {
-                            queryString.Append(
-                                $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(jsonElement.ToString())}&");
+                            queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(jsonElement.ToString())}&");
                         }
                     }
                     else
                     {
-                        queryString.Append(
-                            $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}&");
+                        queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}&");
                     }
                 }
+            }
 
             // Remove the trailing '&'
             if (queryString.Length > 0)

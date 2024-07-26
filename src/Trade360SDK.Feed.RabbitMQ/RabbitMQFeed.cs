@@ -22,7 +22,8 @@ namespace Trade360SDK.Feed.RabbitMQ
         private readonly RmqConnectionSettings _settings;
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
 
-        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory, ICustomersApiFactory customersApiFactory)
+        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory,
+            ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
             _consumer = new MessageConsumer(loggerFactory);
@@ -78,7 +79,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error starting RabbitMQFeed.");
-                throw new RabbitMQFeedException("An error occurred while starting the RabbitMQ feed.", ex);
+                throw new RabbitMqFeedException("An error occurred while starting the RabbitMQ feed.", ex);
             }
 
         }
@@ -98,7 +99,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error stopping RabbitMQFeed.");
-                throw new RabbitMQFeedException("An error occurred while stopping the RabbitMQ feed.", ex);
+                throw new RabbitMqFeedException("An error occurred while stopping the RabbitMQ feed.", ex);
             }
 
             return Task.CompletedTask;
@@ -116,7 +117,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while disposing RabbitMQFeed resources. Ensure that all resources are properly released.");
-                throw new RabbitMQFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
+                throw new RabbitMqFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
             }
         }
 

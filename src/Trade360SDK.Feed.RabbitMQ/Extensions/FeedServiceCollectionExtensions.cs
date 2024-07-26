@@ -4,7 +4,7 @@ using Trade360SDK.Microsoft.DependencyInjection.Extensions;
 
 namespace Trade360SDK.Feed.RabbitMQ.Extensions
 {
-    public static class ServiceCollectionExtensions
+    public static class FeedServiceCollectionExtensions
     {
         public static IServiceCollection AddT360RmqFeedSdk(this IServiceCollection services, IConfiguration configuration)
         {

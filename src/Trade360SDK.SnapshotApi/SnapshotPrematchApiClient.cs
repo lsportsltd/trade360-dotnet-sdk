@@ -23,7 +23,7 @@ namespace Trade360SDK.SnapshotApi
             : base(httpClientFactory, settings.Value, settings.Value.PrematchPackageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(settings.Value.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
+            httpClient.BaseAddress = new Uri(settings.Value.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
             _mapper = mapper;
         }
 

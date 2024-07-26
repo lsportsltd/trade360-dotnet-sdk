@@ -150,7 +150,7 @@ namespace Trade360SDK.CustomersApi.Example
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.SubscribeByFixture(request, cancellationToken);
-            Console.WriteLine($"Send subscription request to {response.Fixtures.Count} fixtures");
+            Console.WriteLine($"Send subscription request to {response.Fixtures?.Count} fixtures");
         }
 
         private async Task UnsubscribeFromFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -160,7 +160,7 @@ namespace Trade360SDK.CustomersApi.Example
                 Fixtures = new[] { 12345 }
             };
             var response = await subscriptionApiClient.UnSubscribeByFixture(request, cancellationToken);
-            Console.WriteLine($"Send unSubscription request to {response.Fixtures.Count} fixtures");
+            Console.WriteLine($"Send unSubscription request to {response.Fixtures?.Count} fixtures");
         }
 
         private async Task SubscribeToLeague(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -206,7 +206,7 @@ namespace Trade360SDK.CustomersApi.Example
                 SportIds = new List<int>() { 6046 }
             };
             var response = await subscriptionApiClient.GetSubscriptions(request, cancellationToken);
-            Console.WriteLine("Subscribed fixtures retrieved.");
+            Console.WriteLine($"{response.Fixtures?.Count()} Subscribed fixtures retrieved.");
         }
 
         private async Task SubscribeToOutrightCompetition(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -222,7 +222,7 @@ namespace Trade360SDK.CustomersApi.Example
                 }
             };
             var response = await subscriptionApiClient.SubscribeByCompetition(request, cancellationToken);
-            Console.WriteLine("Competition subscribed.");
+            Console.WriteLine($"{response.Subscription?.Count} Subscribed fixtures retrieved.");
         }
 
         private async Task UnsubscribeFromOutrightCompetition(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -238,7 +238,7 @@ namespace Trade360SDK.CustomersApi.Example
                 }
             };
             var response = await subscriptionApiClient.UnSubscribeByCompetition(request, cancellationToken);
-            Console.WriteLine("Competition unsubscribed.");
+            Console.WriteLine($"{response.Subscription?.Count} Competition unsubscribed.");
         }
 
         private async Task GetInplayFixtureSchedule(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -248,7 +248,7 @@ namespace Trade360SDK.CustomersApi.Example
                 SportIds = new[] { 6046 }
             };
             var response = await subscriptionApiClient.GetInplayFixtureSchedule(request, cancellationToken);
-            Console.WriteLine("Fixture schedule retrieved.");
+            Console.WriteLine($"{response.Fixtures?.Count()} Fixture schedule retrieved.");
         }
 
         private async Task GetFixtureMetadata(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
@@ -270,7 +270,7 @@ namespace Trade360SDK.CustomersApi.Example
                 SubscriptionStatus = 0
             };
             var response = await metadataApiClient.GetCompetitionsAsync(request, cancellationToken);
-            Console.WriteLine("Competitions retrieved.");
+            Console.WriteLine($"{response.Competitions?.Count()} Competitions retrieved.");
         }
 
         private async Task GetTranslations(IMetadataApiClient metadataApiClient, CancellationToken cancellationToken)
@@ -281,7 +281,7 @@ namespace Trade360SDK.CustomersApi.Example
                 Languages = new[] { 4 }
             };
             var response = await metadataApiClient.GetTranslationsAsync(request, cancellationToken);
-            Console.WriteLine("Translations retrieved.");
+            Console.WriteLine($"Count of translations received Sports: {response.Sports?.Count}, Leagues: {response.Leagues?.Count}, Locations: {response.Locations?.Count} Translations retrieved.");
         }
 
         private async Task GetDistributionStatus(IPackageDistributionApiClient packageDistributionApiClient, CancellationToken cancellationToken)
@@ -347,8 +347,9 @@ namespace Trade360SDK.CustomersApi.Example
                 SportIds = new List<int> { footballSportEntity.Id }
             };
             var response = await metadataApiClient.GetLeaguesAsync(request, cancellationToken);
-            Console.WriteLine($"Response returned {response.Count()} leagues:");
-            foreach (var league in response)
+            var enumerable = response.ToList();
+            Console.WriteLine($"Response returned {enumerable.Count} leagues:");
+            foreach (var league in enumerable)
             {
                 Console.WriteLine($"LeagueId: {league.Id}, LeagueName: {league.Name}");
             }
@@ -357,7 +358,7 @@ namespace Trade360SDK.CustomersApi.Example
         private async Task GetAllManualSuspensionsAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
         {
             var response = await subscriptionApiClient.GetAllManualSuspensions(cancellationToken);
-            Console.WriteLine("Manual suspensions retrieved.");
+            Console.WriteLine($"{response.Suspensions?.Count} Manual suspensions retrieved.");
         }
 
         private async Task AddManualSuspensionAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -381,7 +382,7 @@ namespace Trade360SDK.CustomersApi.Example
                 }
             };
             var response = await subscriptionApiClient.AddManualSuspension(request, cancellationToken);
-            Console.WriteLine("Manual suspension added.");
+            Console.WriteLine($"{response.Suspensions?.Count} Manual suspension added.");
         }
 
         private async Task RemoveManualSuspensionAsync(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
@@ -405,7 +406,7 @@ namespace Trade360SDK.CustomersApi.Example
                 }
             };
             var response = await subscriptionApiClient.RemoveManualSuspension(request, cancellationToken);
-            Console.WriteLine("Manual suspension removed.");
+            Console.WriteLine($"{response.Suspensions?.Count} Manual suspension removed.");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -23,7 +24,7 @@ namespace Trade360SDK.SnapshotApi
             : base(httpClientFactory, settings.Value, settings.Value.InplayPackageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(settings.Value.SnapshotApiBaseUrl);
+            httpClient.BaseAddress = new Uri(settings.Value.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
             _mapper = mapper;
         }
 

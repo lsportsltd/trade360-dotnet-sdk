@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Trade360SDK.CustomersApi
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new System.Uri(baseUrl);
+            httpClient.BaseAddress = new System.Uri(baseUrl ?? throw new ArgumentNullException(nameof(baseUrl)));
             _mapper = mapper;
         }
         

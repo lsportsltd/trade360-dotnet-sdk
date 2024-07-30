@@ -21,5 +21,6 @@ namespace Trade360SDK.Common.Entities.OutrightSport
         public IEnumerable<Participant>? Participants { get; set; }
 
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
+        public Subscription? Subscription { get; set; }
     }
 }

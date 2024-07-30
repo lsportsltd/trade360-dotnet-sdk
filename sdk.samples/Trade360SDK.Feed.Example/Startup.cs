@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Trade360SDK.Common.Entities.OutrightSport;
 using Trade360SDK.Feed.Configuration;
-using Trade360SDK.Feed.Example.Handlers.Inplay;
 using Trade360SDK.Feed.Example.Handlers.Prematch;
 
 namespace Trade360SDK.Feed.Example

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Trade360SDK.Feed.Configuration;
+using Trade360SDK.Feed.Example.Handlers.Inplay;
 using Trade360SDK.Feed.Example.Handlers.Prematch;
 
 namespace Trade360SDK.Feed.Example
@@ -21,42 +22,43 @@ namespace Trade360SDK.Feed.Example
 
         public async Task StartAsync(CancellationToken cancellationToken) // Method to start the service
         {
-            // Get the settings for the Inplay feed - look at Program.cs initialization
-            //var inplaySettings = _settingsMonitor.Get("Inplay");
-            //// Create the Inplay feed using the factory and settings
-            //_inplayFeed = _feedFactory.CreateFeed(inplaySettings);
+           // Get the settings for the Inplay feed - look at Program.cs initialization
+
+            var inplaySettings = _settingsMonitor.Get("Inplay");
+            // Create the Inplay feed using the factory and settings
+            _inplayFeed = _feedFactory.CreateFeed(inplaySettings);
 
             //// Add entity handlers to the Inplay feed
-            //_inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
-            //_inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
-            //_inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
+            _inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
+            _inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
+            _inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
 
             //Start Distribution Logic
 
             // Start the Inplay feed
-            // await _inplayFeed.StartAsync(connectAtStart: true, cancellationToken);
+            await _inplayFeed.StartAsync(connectAtStart: true, cancellationToken);
 
-            // Get the settings for the Prematch feed - look at program.cs initialization
-            var prematchSettings = _settingsMonitor.Get("Prematch");
-            // Create the Prematch feed using the factory and settings
-            _prematchFeed = _feedFactory.CreateFeed(prematchSettings);
+            //// Get the settings for the Prematch feed - look at program.cs initialization
+            //var prematchSettings = _settingsMonitor.Get("Prematch");
+            //// Create the Prematch feed using the factory and settings
+            //_prematchFeed = _feedFactory.CreateFeed(prematchSettings);
 
-            // Add entity handlers to the Prematch feed
-            _prematchFeed.AddEntityHandler(new HeartbeatHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new LivescoreUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightLeagueUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightLeagueMarketsUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightFixtureUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightScoreUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightFixtureMarketUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new OutrightSettlementsUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new KeepAliveUpdateHandlerPrematchPrematch());
-            _prematchFeed.AddEntityHandler(new FixtureMarketUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new SettlementUpdateHandlerPrematch());
+            //// Add entity handlers to the Prematch feed
+            //_prematchFeed.AddEntityHandler(new HeartbeatHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new LivescoreUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightLeagueUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightLeagueMarketsUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightFixtureUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightScoreUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightFixtureMarketUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new OutrightSettlementsUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new KeepAliveUpdateHandlerPrematchPrematch());
+            //_prematchFeed.AddEntityHandler(new FixtureMarketUpdateHandlerPrematch());
+            //_prematchFeed.AddEntityHandler(new SettlementUpdateHandlerPrematch());
 
-            // Start the Prematch feed
-            await _prematchFeed.StartAsync(connectAtStart:true, cancellationToken);
+            //// Start the Prematch feed
+            //await _prematchFeed.StartAsync(connectAtStart:true, cancellationToken);
 
             // Output a message to the console and wait for user input to stop the feeds
             Console.WriteLine("Click any key to stop message consumption");

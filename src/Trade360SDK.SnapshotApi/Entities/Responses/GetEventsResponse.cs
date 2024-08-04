@@ -10,5 +10,6 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
         public Fixture? Fixture { get; set; }
         public Livescore? Livescore { get; set; }
         public IEnumerable<Market>? Markets { get; set; }
+        public int FixtureId { get; set; }
     }
 }

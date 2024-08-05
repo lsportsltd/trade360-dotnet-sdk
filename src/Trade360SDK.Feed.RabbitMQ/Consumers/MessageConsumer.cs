@@ -16,29 +16,25 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly ConcurrentDictionary<int, IBodyHandler> _bodyHandlers = new ConcurrentDictionary<int, IBodyHandler>();
+        private readonly ConcurrentDictionary<int, IBodyHandler> _bodyHandlers =
+            new ConcurrentDictionary<int, IBodyHandler>();
+
         private readonly ILogger _logger;
 
         public MessageConsumer(ILoggerFactory? loggerFactory)
         {
-            _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
+            _logger =
+                (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
         }
 
-        public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
+        public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered,
+            string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
         {
+
             try
             {
                 var rawMessage = Encoding.UTF8.GetString(body.Span);
-
-                var wrappedMessageJsonObject = JsonWrappedMessageJsonObjectConverter.ConvertJsonToMessage(rawMessage);
-
-                var header = JsonSerializer.Deserialize<MessageHeader>(wrappedMessageJsonObject.Header ?? throw new InvalidOperationException());
-
-                var wrappedMessage = new WrappedMessage
-                {
-                    Header = header,
-                    Body = wrappedMessageJsonObject.Body
-                };
+                var wrappedMessage = JsonWrappedMessageJsonObjectConverter.ConvertJsonToMessage(rawMessage);
 
                 if (wrappedMessage.Header == null)
                 {
@@ -49,11 +45,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 var entityType = wrappedMessage.Header.Type;
                 if (!_bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
                 {
-                    var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
-                        .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
-                    _logger.LogWarning(missedEntityType != null
-                        ? $"Handler for {missedEntityType.FullName} is not configured"
-                        : $"Received unknown entity type {entityType}");
+                    HandleUnknownEntityType(entityType);
                     return;
                 }
 
@@ -65,7 +57,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error handling message delivery Exception: {ex.Message} , StackTrace: {ex.StackTrace}");
+                _logger.LogError($"Error handling message delivery: {ex.Message}");
             }
         }
 
@@ -81,27 +73,35 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
             _bodyHandlers[entityAttribute.EntityKey] = newBodyHandler;
         }
-    }
-    
-    internal class JsonWrappedMessageJsonObjectConverter
-    {
-        public static WrappedMessageJsonObject ConvertJsonToMessage(string rawJson)
+
+        private void HandleUnknownEntityType(int entityType)
         {
-            using JsonDocument doc = JsonDocument.Parse(rawJson);
-            JsonElement root = doc.RootElement;
-            WrappedMessageJsonObject message = new WrappedMessageJsonObject
-            {
-                Header = root.GetProperty("Header").ToString(),
-                Body = root.TryGetProperty("Body", out JsonElement bodyElement) ? bodyElement.ToString() : null
-            };
-            return message;
+            var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
+                .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
+
+            _logger.LogWarning(missedEntityType != null
+                ? $"Handler for {missedEntityType.FullName} is not configured"
+                : $"Received unknown entity type {entityType}");
         }
     }
 
-    internal class WrappedMessageJsonObject
+}
+
+
+internal class JsonWrappedMessageJsonObjectConverter
+{
+    public static WrappedMessage ConvertJsonToMessage(string rawJson)
     {
-        public string? Header { get; set; }
-        
-        public string? Body { get; set; }
+        using JsonDocument doc = JsonDocument.Parse(rawJson);
+        var root = doc.RootElement;
+
+        var header = JsonSerializer.Deserialize<MessageHeader>(root.GetProperty("Header").GetRawText());
+        var body = root.TryGetProperty("Body", out var bodyElement) ? bodyElement.GetRawText() : null;
+
+        return new WrappedMessage
+        {
+            Header = header,
+            Body = body
+        };
     }
 }

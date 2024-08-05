@@ -57,7 +57,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     return;
                 }
 
-                await bodyHandler.ProcessAsync(wrappedMessage.Body);
+                await bodyHandler.ProcessAsync(wrappedMessage.Body, wrappedMessage.Header);
             }
             catch (JsonException jsonEx)
             {

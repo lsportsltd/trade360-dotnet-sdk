@@ -1,10 +1,11 @@
 using Trade360SDK.Common.Entities.MessageTypes;
+using Trade360SDK.Common.Models;
 
 namespace Trade360SDK.Feed.Example.Handlers.Prematch;
 
 public class LivescoreUpdateHandlerPrematch : IEntityHandler<LivescoreUpdate>
 {
-    public Task ProcessAsync(LivescoreUpdate entity)
+    public Task ProcessAsync(LivescoreUpdate entity, MessageHeader header)
     {
         Console.WriteLine("LivescoreUpdate received");
         return Task.CompletedTask;

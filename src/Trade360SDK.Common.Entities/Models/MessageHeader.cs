@@ -10,7 +10,7 @@ namespace Trade360SDK.Common.Models
 
         public string? MsgGuid { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
 
         public long ServerTimestamp { get; set; }
     }

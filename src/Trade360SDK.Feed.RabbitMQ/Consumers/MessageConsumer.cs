@@ -88,7 +88,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
 }
 
 
-internal class JsonWrappedMessageJsonObjectConverter
+internal class JsonWrappedMessageObjectConverter
 {
     public static WrappedMessage ConvertJsonToMessage(string rawJson)
     {

@@ -13,7 +13,7 @@ namespace Trade360SDK.Common.Models
         public int Type { get; set; }
 
         [XmlElement("MsgSeq")]
-        public int MsgSeq { get; set; }
+        public int? MsgSeq { get; set; }
 
         [XmlElement("MsgGuid")]
         public string? MsgGuid { get; set; }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 
@@ -16,6 +18,7 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly int _packageId;
         private readonly string? _username;
         private readonly string? _password;
+        private readonly string _messageFormat;
 
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, Trade360Settings settings, PackageCredentials? packageCredentials)
         {
@@ -24,6 +27,7 @@ namespace Trade360SDK.SnapshotApi.Http
             _packageId = packageCredentials!.PackageId;
             _username = packageCredentials.Username;
             _password = packageCredentials.Password;
+            _messageFormat = packageCredentials.MessageFormat.ToLower();
         }
 
         protected async Task<TEntity> PostEntityAsync<TEntity>(
@@ -34,15 +38,11 @@ namespace Trade360SDK.SnapshotApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonSerializer.Serialize(request);
-            var content = new StringContent(
-                requestJson,
-                Encoding.UTF8,
-                "application/json");
+            var content = SerializeRequest(request);
             var httpResponse = await _httpClient.PostAsync(uri, content, cancellationToken);
 
             var rawResponse = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<BaseResponse<TEntity>>(rawResponse);
+            var response = DeserializeResponse<BaseResponse<TEntity>>(rawResponse);
 
             if (response == null || response.Header == null)
             {
@@ -55,6 +55,37 @@ namespace Trade360SDK.SnapshotApi.Http
             }
 
             return response.Body;
+        }
+
+        private HttpContent SerializeRequest(BaseRequest request)
+        {
+            if (_messageFormat == "xml")
+            {
+                var xmlSerializer = new XmlSerializer(request.GetType());
+                using var stringWriter = new StringWriter();
+                xmlSerializer.Serialize(stringWriter, request);
+                var xmlContent = stringWriter.ToString();
+                return new StringContent(xmlContent, Encoding.UTF8, "application/xml");
+            }
+            else
+            {
+                var requestJson = JsonSerializer.Serialize(request);
+                return new StringContent(requestJson, Encoding.UTF8, "application/json");
+            }
+        }
+
+        private TEntity? DeserializeResponse<TEntity>(string rawResponse) where TEntity : class
+        {
+            if (_messageFormat == "xml")
+            {
+                var xmlSerializer = new XmlSerializer(typeof(TEntity));
+                using var stringReader = new StringReader(rawResponse);
+                return (TEntity?)xmlSerializer.Deserialize(stringReader);
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<TEntity>(rawResponse);
+            }
         }
 
         public void Dispose()

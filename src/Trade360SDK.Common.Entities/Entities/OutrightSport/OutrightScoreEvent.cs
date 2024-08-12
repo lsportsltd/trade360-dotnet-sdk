@@ -2,6 +2,6 @@
 {
     public class OutrightScoreEvent
     {
-        public OutrightScore? OutrightScore { get; set; }
+        public OutrightLivescoreScore? OutrightScore { get; set; }
     }
 }

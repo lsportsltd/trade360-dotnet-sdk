@@ -3,9 +3,9 @@ using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Common.Entities.OutrightSport
 {
-    public class OutrightScore
+    public class OutrightLivescoreScore
     {
-        public IEnumerable<OutrightLivescoreParticipant>? ParticipantResults { get; set; }
+        public IEnumerable<OutrightParticipantResult>? ParticipantResults { get; set; }
 
         public FixtureStatus Status { get; set; }
     }

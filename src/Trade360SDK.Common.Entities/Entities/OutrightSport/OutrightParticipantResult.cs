@@ -1,6 +1,6 @@
 ﻿namespace Trade360SDK.Common.Entities.OutrightSport
 {
-    public class OutrightParticipant
+    public class OutrightParticipantResult
     {
         public int ParticipantId { get; set; }
 

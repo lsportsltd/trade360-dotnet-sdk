@@ -18,7 +18,7 @@ namespace Trade360SDK.Common.Entities.OutrightSport
 
         public FixtureStatus Status { get; set; }
 
-        public IEnumerable<Participant>? Participants { get; set; }
+        public IEnumerable<OutrightFixtureParticipant>? Participants { get; set; }
 
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
         public Subscription? Subscription { get; set; }

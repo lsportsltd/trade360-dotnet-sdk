@@ -26,7 +26,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
-            _consumer = new MessageConsumer(loggerFactory);
+            _consumer = new MessageConsumer(loggerFactory, settings?.MessageFormat);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
@@ -49,11 +49,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             {
                 if (connectAtStart)
                 {
-                    var result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
-                    if (!result.IsDistributionOn)
-                    {
-                        await _packageDistributionApiClient.StartDistributionAsync(cancellationToken);
-                    }
+                    await EnsureDistributionStartedAsync(cancellationToken);
                 }
 
                 _connection = CreateConnection(_settings);
@@ -119,6 +115,38 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _logger.LogError(ex, "An error occurred while disposing RabbitMQFeed resources. Ensure that all resources are properly released.");
                 throw new RabbitMqFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
             }
+        }
+
+        private async Task EnsureDistributionStartedAsync(CancellationToken cancellationToken)
+        {
+            const int maxRetries = 5;
+            const int delayMilliseconds = 2000;
+
+            for (int attempt = 0; attempt < maxRetries; attempt++)
+            {
+                var result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
+                if (result.IsDistributionOn)
+                {
+                    _logger.LogInformation("Distribution is already on.");
+                    return;
+                }
+
+                _logger.LogInformation("Distribution is off. Attempting to start...");
+                await _packageDistributionApiClient.StartDistributionAsync(cancellationToken);
+
+                await Task.Delay(delayMilliseconds, cancellationToken);
+
+                result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
+                if (result.IsDistributionOn)
+                {
+                    _logger.LogInformation("Successfully started distribution.");
+                    return;
+                }
+
+                _logger.LogWarning($"Attempt {attempt + 1} to start distribution failed.");
+            }
+
+            throw new InvalidOperationException("Failed to start distribution after multiple attempts.");
         }
 
         private IConnection CreateConnection(RmqConnectionSettings settings)

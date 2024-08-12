@@ -5,55 +5,67 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Models;
+using Trade360SDK.Feed.Converters;
 using Trade360SDK.Feed.RabbitMQ.Handlers;
-using Trade360SDK.Feed.RabbitMQ.Interfaces;
 
 namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly ConcurrentDictionary<int, IBodyHandler> _bodyHandlers =
-            new ConcurrentDictionary<int, IBodyHandler>();
-
+        private readonly ConcurrentDictionary<int, IMessageTypeHandler> _bodyHandlers = new ConcurrentDictionary<int, IMessageTypeHandler>();
         private readonly ILogger _logger;
+        private readonly string? _messageFormat;
 
-        public MessageConsumer(ILoggerFactory? loggerFactory)
+        public MessageConsumer(ILoggerFactory? loggerFactory, string? messageFormat)
         {
-            _logger =
-                (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
+            _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
+            _messageFormat = messageFormat;
         }
 
         public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered,
             string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
         {
-
             try
             {
                 var rawMessage = Encoding.UTF8.GetString(body.Span);
-                var wrappedMessage = JsonWrappedMessageJsonObjectConverter.ConvertJsonToMessage(rawMessage);
+                WrappedMessage wrappedMessage = null!;
 
-                if (wrappedMessage.Header == null)
+                if (_messageFormat.Equals("json", StringComparison.OrdinalIgnoreCase))
+                {
+                    wrappedMessage = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(rawMessage);
+                }
+                else if (_messageFormat.Equals("xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    wrappedMessage = XmlWrappedMessageObjectConverter.ConvertXmlToMessage(rawMessage);
+                }
+
+                if (wrappedMessage?.Header == null)
                 {
                     _logger.LogError("Invalid message format");
                     return;
                 }
 
                 var entityType = wrappedMessage.Header.Type;
-                if (!_bodyHandlers.TryGetValue(entityType, out IBodyHandler bodyHandler))
+                if (!_bodyHandlers.TryGetValue(entityType, out IMessageTypeHandler messageTypeHandler))
                 {
                     HandleUnknownEntityType(entityType);
                     return;
                 }
 
-                await bodyHandler.ProcessAsync(wrappedMessage.Body, wrappedMessage.Header);
+                await messageTypeHandler.ProcessAsync(wrappedMessage.Body, wrappedMessage.Header);
             }
             catch (JsonException jsonEx)
             {
                 _logger.LogError(jsonEx, "JSON processing error");
+            }
+            catch (InvalidOperationException xmlEx) when (xmlEx.InnerException is XmlException)
+            {
+                _logger.LogError(xmlEx, "XML processing error");
             }
             catch (Exception ex)
             {
@@ -70,7 +82,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 throw new InvalidOperationException($"{entityType.FullName} isn't trade360 entity. You should use only entities from Trade360SDK.Feed.Entities namespace");
             }
 
-            var newBodyHandler = new BodyHandler<TEntity>(entityHandler, _logger);
+            var newBodyHandler = new MessageTypeHandler<TEntity>(entityHandler, _logger, _messageFormat);
             _bodyHandlers[entityAttribute.EntityKey] = newBodyHandler;
         }
 
@@ -83,25 +95,5 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 ? $"Handler for {missedEntityType.FullName} is not configured"
                 : $"Received unknown entity type {entityType}");
         }
-    }
-
-}
-
-
-internal class JsonWrappedMessageObjectConverter
-{
-    public static WrappedMessage ConvertJsonToMessage(string rawJson)
-    {
-        using JsonDocument doc = JsonDocument.Parse(rawJson);
-        var root = doc.RootElement;
-
-        var header = JsonSerializer.Deserialize<MessageHeader>(root.GetProperty("Header").GetRawText());
-        var body = root.TryGetProperty("Body", out var bodyElement) ? bodyElement.GetRawText() : null;
-
-        return new WrappedMessage
-        {
-            Header = header,
-            Body = body
-        };
     }
 }

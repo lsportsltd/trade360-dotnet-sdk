@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Trade360SDK.Common.Models;
 
-namespace Trade360SDK.Feed.RabbitMQ.Interfaces
+namespace Trade360SDK.Feed.RabbitMQ.Handlers
 {
-    internal interface IBodyHandler
+    internal interface IMessageTypeHandler
     {
         Task ProcessAsync(string? body, MessageHeader header);
     }

@@ -5,7 +5,7 @@ namespace Trade360SDK.Common.Entities.OutrightSport
 {
     public class OutrightScore
     {
-        public IEnumerable<OutrightParticipant>? ParticipantResults { get; set; }
+        public IEnumerable<OutrightLivescoreParticipant>? ParticipantResults { get; set; }
 
         public FixtureStatus Status { get; set; }
     }

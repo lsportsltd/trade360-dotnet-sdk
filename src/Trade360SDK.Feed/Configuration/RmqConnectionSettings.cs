@@ -15,6 +15,7 @@
         public int RequestedHeartbeatSeconds { get; set; } = 30; // Default 30 seconds
         public int NetworkRecoveryInterval { get; set; } = 30; // Default 30 seconds
         public string? BaseCustomersApi { get; set; } = "https://stm-api.lsports.eu";
+        public string? MessageFormat { get; set; } = "json";
     }
 
 }

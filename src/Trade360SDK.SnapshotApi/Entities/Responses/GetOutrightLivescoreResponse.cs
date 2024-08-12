@@ -14,6 +14,6 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
     public class OutrightScoreEventResponse
     {
         public int FixtureId { get; set; }
-        public OutrightScore? OutrightScore { get; set; }
+        public OutrightLivescoreScore? OutrightScore { get; set; }
     }
 }

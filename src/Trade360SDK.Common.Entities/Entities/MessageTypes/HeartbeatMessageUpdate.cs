@@ -3,7 +3,7 @@
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(32)]
-    public class HeartbeatUpdate
+    public class HeartbeatMessageUpdate : MessageUpdate
     {
     }
 }

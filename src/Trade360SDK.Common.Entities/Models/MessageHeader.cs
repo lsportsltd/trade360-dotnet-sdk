@@ -20,5 +20,10 @@ namespace Trade360SDK.Common.Models
 
         [XmlElement("ServerTimestamp")]
         public long ServerTimestamp { get; set; }
+        
+        public DateTime? ReceivedTimestamp { get; set; }
+        
+        public DateTime? SourceTimestamp { get; set; }
+        
     }
 }

@@ -5,7 +5,7 @@ using Trade360SDK.Common.Entities.Fixtures;
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(1)]
-    public class FixtureMetadataUpdate
+    public class FixtureMetadataMessageUpdate : MessageUpdate
     {
         public IEnumerable<FixtureEvent>? Events { get; set; }
     }

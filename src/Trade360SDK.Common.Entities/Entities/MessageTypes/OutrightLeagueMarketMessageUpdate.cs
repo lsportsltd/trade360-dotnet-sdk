@@ -4,7 +4,7 @@ using Trade360SDK.Common.Entities.OutrightLeague;
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(40)]
-    public class OutrightLeagueMarketUpdate
+    public class OutrightLeagueMarketMessageUpdate : MessageUpdate
     {
         public OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>? Competition { get; set; }
     }

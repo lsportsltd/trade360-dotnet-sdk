@@ -3,7 +3,7 @@
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(31)]
-    public class KeepAliveUpdate
+    public class KeepAliveMessageUpdate : MessageUpdate
     {
         public KeepAlive.KeepAlive? KeepAlive { get; set; }
     }

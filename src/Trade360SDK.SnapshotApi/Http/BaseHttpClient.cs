@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi.Entities.Requests;
 
@@ -59,33 +58,13 @@ namespace Trade360SDK.SnapshotApi.Http
 
         private HttpContent SerializeRequest(BaseRequest request)
         {
-            if (_messageFormat == "xml")
-            {
-                var xmlSerializer = new XmlSerializer(request.GetType());
-                using var stringWriter = new StringWriter();
-                xmlSerializer.Serialize(stringWriter, request);
-                var xmlContent = stringWriter.ToString();
-                return new StringContent(xmlContent, Encoding.UTF8, "application/xml");
-            }
-            else
-            {
-                var requestJson = JsonSerializer.Serialize(request);
-                return new StringContent(requestJson, Encoding.UTF8, "application/json");
-            }
+            var requestJson = JsonSerializer.Serialize(request);
+            return new StringContent(requestJson, Encoding.UTF8, "application/json");
         }
 
         private TEntity? DeserializeResponse<TEntity>(string rawResponse) where TEntity : class
         {
-            if (_messageFormat == "xml")
-            {
-                var xmlSerializer = new XmlSerializer(typeof(TEntity));
-                using var stringReader = new StringReader(rawResponse);
-                return (TEntity?)xmlSerializer.Deserialize(stringReader);
-            }
-            else
-            {
-                return JsonSerializer.Deserialize<TEntity>(rawResponse);
-            }
+            return JsonSerializer.Deserialize<TEntity>(rawResponse);
         }
 
         public void Dispose()

@@ -4,8 +4,8 @@ using Trade360SDK.Common.Entities.Markets;
 
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
-    [Trade360Entity(3)]
-    public class MarketMessageUpdate : MessageUpdate
+    [Trade360Entity(35)]
+    public class SettlementUpdate : MessageUpdate
     {
         public IEnumerable<MarketEvent>? Events { get; set; }
     }

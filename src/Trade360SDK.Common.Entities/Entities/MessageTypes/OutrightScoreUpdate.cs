@@ -4,7 +4,7 @@ using Trade360SDK.Common.Entities.OutrightSport;
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
     [Trade360Entity(39)]
-    public class OutrightScoreMessageUpdate : MessageUpdate
+    public class OutrightScoreUpdate : MessageUpdate
     {
         public OutrightCompetition<OutrightScoreEvent>? Competition { get; set; }
     }

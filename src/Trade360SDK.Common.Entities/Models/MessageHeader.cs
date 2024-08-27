@@ -1,4 +1,6 @@
-﻿namespace Trade360SDK.Common.Models
+﻿using System;
+
+namespace Trade360SDK.Common.Models
 {
     public class MessageHeader
     {

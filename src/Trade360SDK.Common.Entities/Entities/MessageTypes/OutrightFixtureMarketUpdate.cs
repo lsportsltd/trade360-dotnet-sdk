@@ -4,8 +4,8 @@ using Trade360SDK.Common.Entities.OutrightSport;
 
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
-    [Trade360Entity(42)]
-    public class OutrightSettlementsMessageUpdate : MessageUpdate
+    [Trade360Entity(41)]
+    public class OutrightFixtureMarketUpdate : MessageUpdate
     {
         public OutrightCompetition<MarketEvent>? Competition { get; set; }
     }

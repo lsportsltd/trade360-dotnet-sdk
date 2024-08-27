@@ -36,7 +36,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     _logger.LogError("Invalid message format");
                     return;
                 }
-                
+
                 wrappedMessage.Header.ReceivedTimestamp = DateTime.UtcNow;
                 wrappedMessage.Header.SourceTimestamp = DateTimeOffset.FromUnixTimeSeconds(properties.Timestamp.UnixTime).UtcDateTime;
 

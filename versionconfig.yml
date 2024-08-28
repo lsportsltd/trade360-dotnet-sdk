@@ -1,6 +1,6 @@
 next-version: 1.0.5
 nugetconfig: './nuget.config'
-solution: './src/STM.Legacy.Core.sln'
+solution: './trade360-dotnet-sdk.sln'
 releaseconfig: 'Release'
 packlocation: './src/**'
 authors: 'Itsik Hackmon'

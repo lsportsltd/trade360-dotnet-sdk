@@ -12,7 +12,7 @@ using Trade360SDK.Feed.RabbitMQ.Validators;
 
 namespace Trade360SDK.Feed.RabbitMQ
 {
-    public class RabbitMqFeed : IFeed, IDisposable
+    public class RabbitMqFeed : IFeed
     {
         private readonly MessageConsumer _consumer;
         private readonly ILogger _logger;
@@ -23,7 +23,7 @@ namespace Trade360SDK.Feed.RabbitMQ
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly ConnectionFactory _factory;
-        private bool _isReconnecting = false; // Flag to prevent multiple reconnections
+        private bool _isReconnecting; // Flag to prevent multiple reconnections
         private readonly object _reconnectionLock = new object(); // Lock for thread safety
 
         public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory,
@@ -208,7 +208,6 @@ namespace Trade360SDK.Feed.RabbitMQ
             }
 
             _logger.LogWarning($"Connection shutdown. ReplyCode: {e.ReplyCode}, ReplyText: {e.ReplyText}");
-            // Attempt to reconnect
             _ = RetryConnectionAsync();
         }
 
@@ -223,7 +222,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             const int maxRetries = 12; // Retry for 2 minutes (12 * 10 seconds)
             const int delayMilliseconds = 10000; // 10-second delay between retries
 
-            for (int attempt = 0; attempt < maxRetries; attempt++)
+            for (var attempt = 0; attempt < maxRetries; attempt++)
             {
                 if (_cts.Token.IsCancellationRequested)
                 {

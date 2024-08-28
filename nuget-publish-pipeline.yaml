@@ -17,12 +17,6 @@ steps:
 - checkout: self
   fetchDepth: 0  # Ensure full clone for GitVersion
 
-# Install the specific .NET SDK version required, or rely on global.json
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '5.x.x'  # Adjust this to the specific .NET SDK version your project requires
-
 - task: gitversion/setup@0
   displayName: GitVersion Setup
   inputs: 

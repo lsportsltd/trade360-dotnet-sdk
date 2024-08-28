@@ -1,0 +1,8 @@
+variables:
+  nugetconfig: './nuget/nuget.config'
+  solution: './src/STM.Legacy.Core.sln'
+  releaseconfig: 'Release'
+  prereleaseconfig: 'Debug'
+  feedname: 'STM/STMFeed'
+  packlocation: './src/**'
+  versionconfig: './versionconfig.yml'

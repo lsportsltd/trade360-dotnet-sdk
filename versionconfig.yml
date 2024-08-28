@@ -1,15 +1,11 @@
-branches:
-  main:
-    regex: ^main$
-    source-branches: []
-    tracks-release-branches: true
-    is-release-branch: true
-    increment: Minor
-  develop:
-    regex: ^develop$
-    source-branches: []
-    tracks-release-branches: false
-    is-release-branch: false
-    increment: Patch
-ignore:
-  sha: []
+next-version: 1.0.5
+nugetconfig: './nuget.config'
+solution: './src/STM.Legacy.Core.sln'
+releaseconfig: 'Release'
+packlocation: './src/**'
+authors: 'Itsik Hackmon'
+company: 'LSports'
+description: 'Trade360 SDK offers essential tools for seamless integration with the Trade360 platform. It simplifies access to all Trade360 feeds, supports all message types, and provides easy implementation for snapshot-API, metadata API subscriptions, distribution management, and order management.'
+tags: 'trade360;sdk;integration;feed;order management;snapshot api'
+license: 'MIT'
+repositoryUrl: 'https://github.com/your/repo'

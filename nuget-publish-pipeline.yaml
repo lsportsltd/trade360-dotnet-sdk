@@ -4,11 +4,24 @@ trigger:
 pool: k8s-agents-ci
 
 variables:
-  - template: variables.yml
+  solution: './trade360-dotnet-sdk.sln'
+  versionconfig: './versionconfig.yml'
+  authors: 'Itsik Hackmon'
+  company: 'LSports'
+  description: 'Trade360 SDK offers essential tools for seamless integration with the Trade360 platform. It simplifies access to all Trade360 feeds, supports all message types, and provides easy implementation for snapshot-API, metadata API subscriptions, distribution management, and order management.'
+  tags: 'trade360;sdk;integration;feed;order management;snapshot api'
+  license: 'MIT'
+  repositoryUrl: 'https://github.com/your/repo'
 
 steps:
 - checkout: self
   fetchDepth: 0  # Ensure full clone for GitVersion
+
+# Install the specific .NET SDK version required, or rely on global.json
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '5.x.x'  # Adjust this to the specific .NET SDK version your project requires
 
 - task: gitversion/setup@0
   displayName: GitVersion Setup
@@ -21,46 +34,44 @@ steps:
     useConfigFile: true
     configFilePath: '$(versionconfig)'
 
-- script: echo current version is $(GitVersion.SemVer).$(GitVersion.BuildMetaData)
-  displayName: 'Display calculated version'
-
 - task: DotNetCoreCLI@2
-  displayName: "Restore Packages"
+  displayName: 'Restore Packages'
   inputs:
     command: 'restore'
     projects: '$(solution)'
-    feedsToUse: 'config'
-    nugetConfigPath: '$(nugetconfig)'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build'
+  displayName: 'Build Solution'
   inputs:
     command: 'build'
     projects: '$(solution)'
-    arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
+    arguments: >
+      --configuration Release
+      /p:PackageVersion=$(GitVersion.FullSemVer)
+      /p:Authors=$(authors)
+      /p:Company=$(company)
+      /p:Description="$(description)"
+      /p:PackageTags="$(tags)"
+      /p:PackageLicenseExpression=$(license)
+      /p:RepositoryUrl=$(repositoryUrl)
 
-- task: DotNetCoreCLI@2
-  displayName: Run Tests
-  inputs:
-    command: 'test'
-    projects: '$(solution)'
-    publishTestResults: true
-    arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+# Pack all projects and generate NuGet packages
+- script: |
+    for project in $(find ./src -name '*.csproj'); do
+        dotnet pack $project \
+        --configuration Release \
+        /p:PackageVersion=$(GitVersion.FullSemVer) \
+        /p:Authors=$(authors) \
+        /p:Company=$(company) \
+        /p:Description="$(description)" \
+        /p:PackageTags="$(tags)" \
+        /p:PackageLicenseExpression=$(license) \
+        /p:RepositoryUrl=$(repositoryUrl) \
+        --output $(Build.ArtifactStagingDirectory)
+    done
+  displayName: 'Pack All Projects'
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage report'
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Pack NuGet Package'
-  inputs:
-    command: 'pack'
-    packagesToPush: '$(solution)'
-    arguments: '--configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
-
+# Push all NuGet packages, skipping duplicates if they already exist
 - task: DotNetCoreCLI@2
   displayName: 'Nuget Push to Internal Feed'
   inputs:
@@ -68,3 +79,4 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: '$(feedname)'
+    arguments: '--skip-duplicate'

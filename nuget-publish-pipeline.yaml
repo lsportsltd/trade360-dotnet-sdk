@@ -7,6 +7,9 @@ variables:
   - template: variables.yml
 
 steps:
+- checkout: self
+  fetchDepth: 0  # Ensure full clone for GitVersion
+
 - task: gitversion/setup@0
   displayName: GitVersion Setup
   inputs: 
@@ -35,7 +38,6 @@ steps:
     command: 'build'
     projects: '$(solution)'
     arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
-    versioningScheme: 'byBuildNumber'
 
 - task: DotNetCoreCLI@2
   displayName: Run Tests

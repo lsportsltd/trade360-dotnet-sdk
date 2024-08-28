@@ -4,6 +4,7 @@ trigger:
 pool: k8s-agents-ci
 
 variables:
+  version: '1.0.4'
   authors: 'Itsik Hackmon'
   company: 'LSports'
   description: 'Trade360 SDK offers essential tools for seamless integration with the Trade360 platform. It simplifies access to all Trade360 feeds, supports all message types, and provides easy implementation for snapshot-API, metadata API subscriptions, distribution management, and order management.'
@@ -36,7 +37,7 @@ steps:
     projects: '$(solution)'
     arguments: >
       --configuration Release
-      /p:PackageVersion=$(GitVersion.FullSemVer)
+      /p:PackageVersion=$(version)
       /p:Authors=$(authors)
       /p:Company=$(company)
       /p:Description="$(description)"
@@ -48,7 +49,7 @@ steps:
     for project in $(find ./src -name '*.csproj'); do
         dotnet pack $project \
         --configuration Release \
-        /p:PackageVersion=$(GitVersion.FullSemVer) \
+        /p:PackageVersion=$(GitVersion.SemVer) \
         /p:Authors=$(authors) \
         /p:Company=$(company) \
         /p:Description="$(description)" \

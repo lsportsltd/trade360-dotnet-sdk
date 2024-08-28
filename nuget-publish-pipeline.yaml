@@ -4,7 +4,13 @@ trigger:
 pool: k8s-agents-ci
 
 variables:
-  - template: variables.yml
+  version: '1.0.4'
+  authors: 'Itsik Hackmon'
+  company: 'LSports'
+  description: 'Trade360 SDK offers essential tools for seamless integration with the Trade360 platform. It simplifies access to all Trade360 feeds, supports all message types, and provides easy implementation for snapshot-API, metadata API subscriptions, distribution management, and order management.'
+  tags: 'trade360;sdk;integration;feed;order management;snapshot api'
+  license: 'MIT'
+  repositoryUrl: 'https://github.com/your/repo'
 
 steps:
 - checkout: self
@@ -25,41 +31,34 @@ steps:
   displayName: 'Display calculated version'
 
 - task: DotNetCoreCLI@2
-  displayName: "Restore Packages"
-  inputs:
-    command: 'restore'
-    projects: '$(solution)'
-    feedsToUse: 'config'
-    nugetConfigPath: '$(nugetconfig)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
+  displayName: 'Restore and Build Solution'
   inputs:
     command: 'build'
     projects: '$(solution)'
-    arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
+    arguments: >
+      --configuration Release
+      /p:PackageVersion=$(version)
+      /p:Authors=$(authors)
+      /p:Company=$(company)
+      /p:Description="$(description)"
+      /p:PackageTags="$(tags)"
+      /p:PackageLicenseExpression=$(license)
+      /p:RepositoryUrl=$(repositoryUrl)
 
-- task: DotNetCoreCLI@2
-  displayName: Run Tests
-  inputs:
-    command: 'test'
-    projects: '$(solution)'
-    publishTestResults: true
-    arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
-
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage report'
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Pack NuGet Package'
-  inputs:
-    command: 'pack'
-    packagesToPush: '$(solution)'
-    arguments: '--configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
+- script: |
+    for project in $(find ./src -name '*.csproj'); do
+        dotnet pack $project \
+        --configuration Release \
+        /p:PackageVersion=$(GitVersion.SemVer) \
+        /p:Authors=$(authors) \
+        /p:Company=$(company) \
+        /p:Description="$(description)" \
+        /p:PackageTags="$(tags)" \
+        /p:PackageLicenseExpression=$(license) \
+        /p:RepositoryUrl=$(repositoryUrl) \
+        --output $(Build.ArtifactStagingDirectory)
+    done
+  displayName: 'Pack All Projects'
 
 - task: DotNetCoreCLI@2
   displayName: 'Nuget Push to Internal Feed'

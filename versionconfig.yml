@@ -1,11 +1,1 @@
 next-version: 1.0.5
-nugetconfig: './nuget.config'
-solution: './trade360-dotnet-sdk.sln'
-releaseconfig: 'Release'
-packlocation: './src/**'
-authors: 'Itsik Hackmon'
-company: 'LSports'
-description: 'Trade360 SDK offers essential tools for seamless integration with the Trade360 platform. It simplifies access to all Trade360 feeds, supports all message types, and provides easy implementation for snapshot-API, metadata API subscriptions, distribution management, and order management.'
-tags: 'trade360;sdk;integration;feed;order management;snapshot api'
-license: 'MIT'
-repositoryUrl: 'https://github.com/your/repo'

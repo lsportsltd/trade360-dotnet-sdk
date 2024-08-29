@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Trade360SDK.Feed\Trade360SDK.Feed.csproj" />
-		<ProjectReference Include="..\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj" />
+		<ProjectReference Include="..\Trade360SDK.Feed\Trade360SDK.Feed.csproj"  PrivateAssets="all"/>
+		<ProjectReference Include="..\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj"  PrivateAssets="all"/>
 	</ItemGroup>
 </Project>

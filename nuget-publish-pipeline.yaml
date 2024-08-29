@@ -28,7 +28,7 @@ steps:
   displayName: "Restore Packages"
   inputs:
     command: 'restore'
-    projects: '$(solution)'
+    projects: '$(project)'
     feedsToUse: 'config'
     nugetConfigPath: '$(nugetconfig)'
 
@@ -36,14 +36,14 @@ steps:
   displayName: 'Build'
   inputs:
     command: 'build'
-    projects: '$(solution)'
+    projects: '$(project)'
     arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
 
 - task: DotNetCoreCLI@2
   displayName: Run Tests
   inputs:
     command: 'test'
-    projects: '$(solution)'
+    projects: '$(project)'
     publishTestResults: true
     arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
 
@@ -57,8 +57,8 @@ steps:
   displayName: 'Pack NuGet Package'
   inputs:
     command: 'pack'
-    packagesToPush: '$(solution)'
-    arguments: '--configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
+    packagesToPush: '$(project)'
+    arguments: '--configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
     outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: DotNetCoreCLI@2

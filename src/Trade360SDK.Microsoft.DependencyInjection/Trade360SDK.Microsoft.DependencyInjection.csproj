@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -11,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Trade360SDK.CustomersApi\Trade360SDK.CustomersApi.csproj" />
-    <ProjectReference Include="..\src\Trade360SDK.SnapshotApi\Trade360SDK.SnapshotApi.csproj" />
+    <ProjectReference Include="..\Trade360SDK.CustomersApi\Trade360SDK.CustomersApi.csproj" />
+    <ProjectReference Include="..\Trade360SDK.SnapshotApi\Trade360SDK.SnapshotApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Trade360SDK.Feed.Configuration;
+using Trade360SDK.Feed.Example.Handlers.Inplay;
 using Trade360SDK.Feed.Example.Handlers.Prematch;
 
 namespace Trade360SDK.Feed.Example
@@ -31,6 +32,8 @@ namespace Trade360SDK.Feed.Example
             //_inplayFeed.AddEntityHandler(new HeartbeatHandlerInplay());
             //_inplayFeed.AddEntityHandler(new FixtureMetadataUpdateHandlerInplay());
             //_inplayFeed.AddEntityHandler(new LivescoreUpdateHandlerInplay());
+            //_inplayFeed.AddEntityHandler( new KeepAliveUpdateHandlerInplay());
+            //_inplayFeed.AddEntityHandler(new SettlementUpdateHandlerInplay());
 
             // Add entity handlers to the Prematch feed
             _prematchFeed!.AddEntityHandler(new HeartbeatHandlerPrematch());
@@ -42,7 +45,7 @@ namespace Trade360SDK.Feed.Example
             _prematchFeed.AddEntityHandler(new OutrightScoreUpdateHandlerPrematch());
             _prematchFeed.AddEntityHandler(new OutrightFixtureMarketUpdateHandlerPrematch());
             _prematchFeed.AddEntityHandler(new OutrightSettlementsUpdateHandlerPrematch());
-            _prematchFeed.AddEntityHandler(new KeepAliveUpdateHandlerPrematchPrematch());
+            _prematchFeed.AddEntityHandler(new KeepAliveUpdateHandlerPrematch());
             _prematchFeed.AddEntityHandler(new FixtureMarketUpdateHandlerPrematch());
             _prematchFeed.AddEntityHandler(new SettlementUpdateHandlerPrematch());
 

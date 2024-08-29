@@ -10,3 +10,4 @@ variables:
   authors: "Itsik Hackmon"
   company: "LSports"
   tags: "RabbitMQ, Trade360, SDK"
+  version: "1.0.6"  # Specify your manual version here

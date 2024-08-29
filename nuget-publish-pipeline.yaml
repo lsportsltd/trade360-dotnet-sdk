@@ -8,21 +8,7 @@ variables:
 
 steps:
 - checkout: self
-  fetchDepth: 0  # Ensure full clone for GitVersion
-
-- task: gitversion/setup@0
-  displayName: GitVersion Setup
-  inputs: 
-    versionSpec: '5.x'
-
-- task: gitversion/execute@0
-  displayName: "Calculate version"
-  inputs:
-    useConfigFile: true
-    configFilePath: '$(versionconfig)'
-
-- script: echo current version is $(GitVersion.SemVer).$(GitVersion.BuildMetaData)
-  displayName: 'Display calculated version'
+  fetchDepth: 0
 
 - task: DotNetCoreCLI@2
   displayName: "Restore Packages"
@@ -37,7 +23,7 @@ steps:
   inputs:
     command: 'build'
     projects: '$(project)'
-    arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData)'
+    arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
 
 - task: DotNetCoreCLI@2
   displayName: Run Tests
@@ -58,7 +44,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPush: '$(project)'
-    arguments: '--configuration "$(releaseconfig)" /p:Version=$(GitVersion.SemVer).$(GitVersion.BuildMetaData) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
+    arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
     outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: DotNetCoreCLI@2

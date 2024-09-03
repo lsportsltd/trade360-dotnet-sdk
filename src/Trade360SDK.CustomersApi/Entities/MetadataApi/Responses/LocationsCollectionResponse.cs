@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
 {
-    public class LocationsCollection
+    public class LocationsCollectionResponse
     {
         public IEnumerable<Location>? Locations { get; set; }
     }

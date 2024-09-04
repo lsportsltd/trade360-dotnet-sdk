@@ -3,9 +3,9 @@ using Trade360SDK.Common.Entities.MessageTypes;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
 
-namespace Trade360SDK.Feed.Example.Handlers.Prematch
+namespace Trade360SDK.Feed.Example.Handlers.Inplay
 {
-    internal class KeepAliveUpdateHandlerPrematch : IEntityHandler<KeepAliveUpdate, PreMatch>
+    internal class KeepAliveUpdateHandlerInplay : IEntityHandler<KeepAliveUpdate, InPlay>
     {
         public Task ProcessAsync(KeepAliveUpdate entity)
         {

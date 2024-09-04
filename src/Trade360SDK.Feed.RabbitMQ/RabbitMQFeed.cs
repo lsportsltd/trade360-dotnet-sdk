@@ -4,10 +4,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
 using Trade360SDK.Feed.RabbitMQ.Exceptions;
+using Trade360SDK.Feed.RabbitMQ.Resolvers;
 using Trade360SDK.Feed.RabbitMQ.Validators;
 
 namespace Trade360SDK.Feed.RabbitMQ
@@ -21,12 +23,13 @@ namespace Trade360SDK.Feed.RabbitMQ
         private string? _consumerTag;
         private readonly RmqConnectionSettings _settings;
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
+        private readonly IHandlerTypeResolver _handlerTypeResolver;
 
-        public RabbitMqFeed(RmqConnectionSettings settings, ILoggerFactory loggerFactory,
+        public RabbitMqFeed(RmqConnectionSettings settings, IHandlerTypeResolver handlerTypeResolver, FlowType flowType, ILoggerFactory loggerFactory,
             ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
-            _consumer = new MessageConsumer(loggerFactory);
+            _consumer = new MessageConsumer(handlerTypeResolver, flowType, loggerFactory);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
@@ -36,11 +39,6 @@ namespace Trade360SDK.Feed.RabbitMQ
                 Password = settings.Password,
                 Username = settings.UserName
             });
-        }
-
-        public void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new()
-        {
-            _consumer.RegisterEntityHandler(entityHandler);
         }
 
         public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
@@ -166,6 +164,5 @@ namespace Trade360SDK.Feed.RabbitMQ
 
             return factory.CreateConnection();
         }
-
     }
 }

@@ -4,17 +4,17 @@ using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed.Example.Handlers.Inplay
 {
-    internal class HeartbeatHandlerInplay : IEntityHandler<HeartbeatUpdate, InPlay>
+    internal class SettlementUpdateHandlerInplay : IEntityHandler<SettlementUpdate, InPlay>
     {
-        public Task ProcessAsync(HeartbeatUpdate entity)
+        public Task ProcessAsync(SettlementUpdate entity)
         {
-            Console.WriteLine("Heartbeat received");
+            Console.WriteLine("SettlementUpdate received");
             return Task.CompletedTask;
         }
 
         public async Task ProcessAsync(object entity, MessageHeader header)
         {
-            await ProcessAsync((HeartbeatUpdate)entity);
+            await ProcessAsync((SettlementUpdate)entity);
         }
     }
 }

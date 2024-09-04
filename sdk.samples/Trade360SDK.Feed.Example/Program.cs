@@ -30,6 +30,10 @@ internal class Program
                 // Add the Trade360 RabbitMQ Feed SDK services to the service collection
                 services.AddT360RmqFeedSdk(hostContext.Configuration);
 
+                services.AddTrade360Handlers();
+
+                services.BuildServiceProvider();
+
                 services.AddHostedService<SampleService>();
             });
 }

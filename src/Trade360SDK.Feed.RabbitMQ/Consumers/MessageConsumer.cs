@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,19 +7,22 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Feed.Converters;
-using Trade360SDK.Feed.RabbitMQ.Handlers;
+using Trade360SDK.Feed.RabbitMQ.Resolvers;
 
 namespace Trade360SDK.Feed.RabbitMQ.Consumers
 {
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly ConcurrentDictionary<int, IMessageTypeHandler> _bodyHandlers = new ConcurrentDictionary<int, IMessageTypeHandler>();
         private readonly ILogger _logger;
+        private readonly IHandlerTypeResolver _handlerTypeResolver;
 
-        public MessageConsumer(ILoggerFactory? loggerFactory)
+        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, FlowType type, ILoggerFactory? loggerFactory)
         {
-            _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
+            _handlerTypeResolver = (handlerTypeResolver ?? throw new ArgumentNullException(nameof(handlerTypeResolver)));
+            _logger =
+                (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
         }
 
         public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered,
@@ -36,18 +38,20 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     _logger.LogError("Invalid message format");
                     return;
                 }
-                
+
                 wrappedMessage.Header.ReceivedTimestamp = DateTime.UtcNow;
-                wrappedMessage.Header.SourceTimestamp = DateTimeOffset.FromUnixTimeSeconds(properties.Timestamp.UnixTime).UtcDateTime;
+                wrappedMessage.Header.SourceTimestamp =
+                    DateTimeOffset.FromUnixTimeSeconds(properties.Timestamp.UnixTime).UtcDateTime;
 
                 var entityType = wrappedMessage.Header.Type;
-                if (!_bodyHandlers.TryGetValue(entityType, out IMessageTypeHandler messageTypeHandler))
-                {
-                    HandleUnknownEntityType(entityType);
-                    return;
-                }
 
-                await messageTypeHandler.ProcessAsync(wrappedMessage.Body, wrappedMessage.Header);
+                Type type = IdentifyType(entityType);
+
+                IHandler handler = IdentifyHandler(entityType, type);
+                
+                var entity = wrappedMessage.Body != null ? JsonSerializer.Deserialize(wrappedMessage.Body, type) : null;
+                
+                await handler.ProcessAsync(entity, wrappedMessage.Header);
             }
             catch (JsonException jsonEx)
             {
@@ -59,23 +63,30 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
         }
 
-        public void RegisterEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new()
+        private Type IdentifyType(int entityType)
         {
-            var entityType = typeof(TEntity);
-            var entityAttribute = entityType.GetCustomAttribute<Trade360EntityAttribute>();
-            if (entityAttribute == null)
-            {
-                throw new InvalidOperationException($"{entityType.FullName} isn't trade360 entity. You should use only entities from Trade360SDK.Feed.Entities namespace");
-            }
+            return _handlerTypeResolver.ResolveMessageType(entityType);
+        }
 
-            var newBodyHandler = new MessageTypeHandler<TEntity>(entityHandler, _logger);
-            _bodyHandlers[entityAttribute.EntityKey] = newBodyHandler;
+        private IHandler IdentifyHandler(int entityType, Type type)
+        {
+            try
+            {
+                return _handlerTypeResolver.GetHandler(type);
+            }
+            catch (Exception e)
+            {
+                HandleUnknownEntityType(entityType);
+                return null;
+            }
         }
 
         private void HandleUnknownEntityType(int entityType)
         {
             var missedEntityType = Assembly.GetExecutingAssembly().GetTypes()
-                .FirstOrDefault(x => x.Namespace == "Trade360SDK.Feed.Entities" && x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
+                .FirstOrDefault(x =>
+                    x.Namespace == "Trade360SDK.Feed.Entities" &&
+                    x.GetCustomAttribute<Trade360EntityAttribute>()?.EntityKey == entityType);
 
             _logger.LogWarning(missedEntityType != null
                 ? $"Handler for {missedEntityType.FullName} is not configured"

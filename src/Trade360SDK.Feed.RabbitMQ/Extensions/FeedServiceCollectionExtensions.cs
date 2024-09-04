@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Trade360SDK.Feed.FeedType;
+using Trade360SDK.Feed.RabbitMQ.Resolvers;
 using Trade360SDK.Microsoft.DependencyInjection.Extensions;
 
 namespace Trade360SDK.Feed.RabbitMQ.Extensions
@@ -10,6 +12,8 @@ namespace Trade360SDK.Feed.RabbitMQ.Extensions
         {
             // Register the factory
             services.AddSingleton<IFeedFactory, RabbitMqFeedFactory>();
+            services.AddSingleton<IHandlerTypeResolver, HandlerTypeResolver<InPlay>>();
+            services.AddSingleton<IHandlerTypeResolver, HandlerTypeResolver<PreMatch>>();
             services.AddTrade360CustomerApiClient(configuration);
             return services;
         }

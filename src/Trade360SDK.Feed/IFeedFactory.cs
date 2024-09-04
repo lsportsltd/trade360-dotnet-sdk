@@ -1,9 +1,10 @@
-﻿using Trade360SDK.Feed.Configuration;
+﻿using Trade360SDK.Common.Entities.Enums;
+using Trade360SDK.Feed.Configuration;
 
 namespace Trade360SDK.Feed
 {
     public interface IFeedFactory
     {
-        public IFeed CreateFeed(RmqConnectionSettings settings);
+        IFeed CreateFeed(RmqConnectionSettings settings, FlowType flowType);
     }
 }

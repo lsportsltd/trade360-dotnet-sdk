@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Feed.Configuration;
 
@@ -10,18 +11,20 @@ namespace Trade360SDK.Feed.Example
         private readonly IFeed? _inplayFeed; // Inplay feed instance
         private readonly IFeed? _prematchFeed; // Prematch feed instance
 
-        public SampleService(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> settingsMonitor)
+        public SampleService(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> rmqSettingsMonitor, IOptionsMonitor<Trade360Settings> customerSettingsMonitor)
         {
 
             // Get the settings for the Prematch or Inplay feed - look at program.cs initialization
-            var inplaySettings = settingsMonitor.Get("Inplay");
-            var prematchSettings = settingsMonitor.Get("Prematch");
+            var inplaySettings = rmqSettingsMonitor.Get("Inplay");
+            var prematchSettings = rmqSettingsMonitor.Get("Prematch");
 
+            var customerSetting = customerSettingsMonitor.Get("customerSettings");
+            
             // Create the Prematch feed using the factory and settings
-            _prematchFeed = feedFactory.CreateFeed(prematchSettings, FlowType.PreMatch);
-            //
+            _prematchFeed = feedFactory.CreateFeed(prematchSettings, customerSetting, FlowType.PreMatch);
+            
             //// Create the Inplay feed using the factory and settings
-            _inplayFeed = feedFactory.CreateFeed(inplaySettings, FlowType.InPlay);
+            _inplayFeed = feedFactory.CreateFeed(inplaySettings, customerSetting, FlowType.InPlay);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) // Method to start the service

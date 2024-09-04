@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
@@ -18,7 +19,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             _serviceProvider = serviceProvider;
         }
 
-        public IFeed CreateFeed(RmqConnectionSettings settings, FlowType flowType)
+        public IFeed CreateFeed(RmqConnectionSettings settings, Trade360Settings trade360Settings, FlowType flowType)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var customerApiFactory = _serviceProvider.GetRequiredService<ICustomersApiFactory>();
@@ -31,7 +32,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             {
                 handlerTypeResolver = _serviceProvider.GetRequiredService<HandlerTypeResolver<PreMatch>>();
             }
-            return new RabbitMqFeed(settings, handlerTypeResolver, flowType, loggerFactory, customerApiFactory);
+            return new RabbitMqFeed(settings, trade360Settings, handlerTypeResolver, flowType, loggerFactory, customerApiFactory);
         }
     }
 }

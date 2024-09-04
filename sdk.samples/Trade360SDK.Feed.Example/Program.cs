@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Trade360SDK.Common.Configuration;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Extensions;
 
@@ -26,6 +27,10 @@ internal class Program
 
                 // Configure the settings for the "Prematch" feed using the "Trade360:RmqPrematchSettings" section of the configuration file
                 services.Configure<RmqConnectionSettings>("Prematch", hostContext.Configuration.GetSection("Trade360:RmqPrematchSettings"));
+                
+                services.Configure<Trade360Settings>("customerSettings", hostContext.Configuration.GetSection("Trade360Settings"));
+                
+                //services.Configure<Trade360Settings>("customerPreMatchSetting", hostContext.Configuration.GetSection("Trade360Settings:PreMatchPackageCredentials"));
 
                 // Add the Trade360 RabbitMQ Feed SDK services to the service collection
                 services.AddT360RmqFeedSdk(hostContext.Configuration);

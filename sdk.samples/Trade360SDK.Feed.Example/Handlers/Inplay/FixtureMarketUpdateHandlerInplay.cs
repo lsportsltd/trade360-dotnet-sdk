@@ -14,6 +14,6 @@ internal class FixtureMarketUpdateHandlerInplay : IEntityHandler<MarketUpdate, I
 
     public async Task ProcessAsync(object entity, MessageHeader header)
     {
-        await ProcessAsync((MarketUpdate)entity, header);
+        await ProcessAsync((MarketUpdate)entity);
     }
 }

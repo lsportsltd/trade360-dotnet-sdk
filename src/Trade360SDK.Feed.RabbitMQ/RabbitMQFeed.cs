@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Enums;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
@@ -25,7 +26,7 @@ namespace Trade360SDK.Feed.RabbitMQ
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
         private readonly IHandlerTypeResolver _handlerTypeResolver;
 
-        public RabbitMqFeed(RmqConnectionSettings settings, IHandlerTypeResolver handlerTypeResolver, FlowType flowType, ILoggerFactory loggerFactory,
+        public RabbitMqFeed(RmqConnectionSettings settings, Trade360Settings trade360Settings, IHandlerTypeResolver handlerTypeResolver, FlowType flowType, ILoggerFactory loggerFactory,
             ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
@@ -33,12 +34,22 @@ namespace Trade360SDK.Feed.RabbitMQ
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
-            _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.BaseCustomersApi, new PackageCredentials()
+            if (trade360Settings != null)
             {
-                PackageId = settings.PackageId,
-                Password = settings.Password,
-                Username = settings.UserName
-            });
+                _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(
+                    trade360Settings.CustomersApiBaseUrl, new PackageCredentials()
+                    {
+                        PackageId = flowType == FlowType.InPlay
+                            ? trade360Settings.InplayPackageCredentials.PackageId
+                            : trade360Settings.PrematchPackageCredentials.PackageId,
+                        Password = flowType == FlowType.InPlay
+                            ? trade360Settings.InplayPackageCredentials.Password
+                            : trade360Settings.PrematchPackageCredentials.Password,
+                        Username = flowType == FlowType.InPlay
+                            ? trade360Settings.InplayPackageCredentials.Username
+                            : trade360Settings.PrematchPackageCredentials.Username
+                    });
+            }
         }
 
         public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
@@ -47,6 +58,10 @@ namespace Trade360SDK.Feed.RabbitMQ
             {
                 if (connectAtStart)
                 {
+                    if (_packageDistributionApiClient == null)
+                    {
+                        throw new ArgumentException("No CustomersApi configuration specified. See CustomersApi sample service.");
+                    }
                     await EnsureDistributionStartedAsync(cancellationToken);
                 }
 
@@ -122,29 +137,51 @@ namespace Trade360SDK.Feed.RabbitMQ
 
             for (int attempt = 0; attempt < maxRetries; attempt++)
             {
-                var result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
-                if (result.IsDistributionOn)
-                {
-                    _logger.LogInformation("Distribution is already on.");
-                    return;
-                }
+                GetDistributionStatusResponse result;
+                if (await GetDistributionEnabled("Distribution is already on.", cancellationToken)) return;
 
                 _logger.LogInformation("Distribution is off. Attempting to start...");
-                await _packageDistributionApiClient.StartDistributionAsync(cancellationToken);
+                
+                await StartDistribution(cancellationToken);
 
                 await Task.Delay(delayMilliseconds, cancellationToken);
-
-                result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
-                if (result.IsDistributionOn)
-                {
-                    _logger.LogInformation("Successfully started distribution.");
-                    return;
-                }
+                
+                if (await GetDistributionEnabled("Successfully started distribution.", cancellationToken)) return;
 
                 _logger.LogWarning($"Attempt {attempt + 1} to start distribution failed.");
             }
 
             throw new InvalidOperationException("Failed to start distribution after multiple attempts.");
+        }
+
+        private async Task StartDistribution(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _packageDistributionApiClient.StartDistributionAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed StartDistribution. {ex}");
+            }
+        }
+
+        private async Task<bool> GetDistributionEnabled(string successfulLogMessage, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _packageDistributionApiClient.GetDistributionStatusAsync(cancellationToken);
+                if (result.IsDistributionOn)
+                {
+                    _logger.LogInformation(successfulLogMessage);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Got inappropriate GetDistributionEnabled response. Check configuration. {ex}");
+            }
+            return false;
         }
 
         private IConnection CreateConnection(RmqConnectionSettings settings)

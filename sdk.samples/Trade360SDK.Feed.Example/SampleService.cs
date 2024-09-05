@@ -14,10 +14,9 @@ namespace Trade360SDK.Feed.Example
         public SampleService(IFeedFactory feedFactory, IOptionsMonitor<RmqConnectionSettings> rmqSettingsMonitor, IOptionsMonitor<Trade360Settings> customerSettingsMonitor)
         {
 
-            // Get the settings for the Prematch or Inplay feed - look at program.cs initialization
+            // Get the settings for the Prematch or Inplay feed and customersApi - look at program.cs initialization
             var inplaySettings = rmqSettingsMonitor.Get("Inplay");
             var prematchSettings = rmqSettingsMonitor.Get("Prematch");
-
             var customerSetting = customerSettingsMonitor.Get("customerSettings");
             
             // Create the Prematch feed using the factory and settings
@@ -29,7 +28,7 @@ namespace Trade360SDK.Feed.Example
 
         public async Task StartAsync(CancellationToken cancellationToken) // Method to start the service
         {
-            // Start the Prematch feed
+            // Start the InPlay feed
             await _inplayFeed.StartAsync(connectAtStart:true, cancellationToken);
             
             // Start the Prematch feed

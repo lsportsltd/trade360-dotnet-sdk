@@ -41,13 +41,13 @@ namespace Trade360SDK.Feed.RabbitMQ
                     {
                         PackageId = flowType == FlowType.InPlay
                             ? trade360Settings.InplayPackageCredentials.PackageId
-                            : trade360Settings.PrematchPackageCredentials.PackageId,
+                            : flowType == FlowType.PreMatch ? trade360Settings.PrematchPackageCredentials.PackageId : throw new ArgumentException("Not recognized flow type"),
                         Password = flowType == FlowType.InPlay
                             ? trade360Settings.InplayPackageCredentials.Password
-                            : trade360Settings.PrematchPackageCredentials.Password,
+                            : flowType == FlowType.PreMatch ? trade360Settings.PrematchPackageCredentials.Password : throw new ArgumentException("Not recognized flow type"),
                         Username = flowType == FlowType.InPlay
                             ? trade360Settings.InplayPackageCredentials.Username
-                            : trade360Settings.PrematchPackageCredentials.Username
+                            : flowType == FlowType.PreMatch ? trade360Settings.PrematchPackageCredentials.Username : throw new ArgumentException("Not recognized flow type")
                     });
             }
         }
@@ -129,6 +129,24 @@ namespace Trade360SDK.Feed.RabbitMQ
                 throw new RabbitMqFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
             }
         }
+        
+        private IConnection CreateConnection(RmqConnectionSettings settings)
+        {
+            var factory = new ConnectionFactory
+            {
+                HostName = settings.Host,
+                Port = settings.Port,
+                VirtualHost = settings.VirtualHost,
+                UserName = settings.UserName,
+                Password = settings.Password,
+                RequestedHeartbeat = TimeSpan.FromSeconds(settings.RequestedHeartbeatSeconds),
+                NetworkRecoveryInterval = TimeSpan.FromSeconds(settings.NetworkRecoveryInterval),
+                DispatchConsumersAsync = settings.DispatchConsumersAsync,
+                AutomaticRecoveryEnabled = settings.AutomaticRecoveryEnabled
+            };
+
+            return factory.CreateConnection();
+        }
 
         private async Task EnsureDistributionStartedAsync(CancellationToken cancellationToken)
         {
@@ -182,24 +200,6 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _logger.LogError($"Got inappropriate GetDistributionEnabled response. Check configuration. {ex}");
             }
             return false;
-        }
-
-        private IConnection CreateConnection(RmqConnectionSettings settings)
-        {
-            var factory = new ConnectionFactory
-            {
-                HostName = settings.Host,
-                Port = settings.Port,
-                VirtualHost = settings.VirtualHost,
-                UserName = settings.UserName,
-                Password = settings.Password,
-                RequestedHeartbeat = TimeSpan.FromSeconds(settings.RequestedHeartbeatSeconds),
-                NetworkRecoveryInterval = TimeSpan.FromSeconds(settings.NetworkRecoveryInterval),
-                DispatchConsumersAsync = settings.DispatchConsumersAsync,
-                AutomaticRecoveryEnabled = settings.AutomaticRecoveryEnabled
-            };
-
-            return factory.CreateConnection();
         }
     }
 }

@@ -12,8 +12,10 @@ namespace Trade360SDK.Feed.RabbitMQ.Extensions
         {
             // Register the factory
             services.AddSingleton<IFeedFactory, RabbitMqFeedFactory>();
+            // Add resolvers to find the appropriate client's handlers
             services.AddSingleton<HandlerTypeResolver<InPlay>>();
             services.AddSingleton<HandlerTypeResolver<PreMatch>>();
+            // Add CustomersApi client
             services.AddTrade360CustomerApiClient(configuration);
             return services;
         }

@@ -28,13 +28,13 @@ internal class Program
                 // Configure the settings for the "Prematch" feed using the "Trade360:RmqPrematchSettings" section of the configuration file
                 services.Configure<RmqConnectionSettings>("Prematch", hostContext.Configuration.GetSection("Trade360:RmqPrematchSettings"));
                 
+                // Configure the settings for CustomersApi using the "Trade360:Trade360Settings" section of the configuration file
                 services.Configure<Trade360Settings>("customerSettings", hostContext.Configuration.GetSection("Trade360Settings"));
                 
-                //services.Configure<Trade360Settings>("customerPreMatchSetting", hostContext.Configuration.GetSection("Trade360Settings:PreMatchPackageCredentials"));
-
                 // Add the Trade360 RabbitMQ Feed SDK services to the service collection
                 services.AddT360RmqFeedSdk(hostContext.Configuration);
 
+                // Add your handlers to handle message updates
                 services.AddTrade360Handlers();
 
                 services.BuildServiceProvider();

@@ -24,7 +24,11 @@ namespace Trade360SDK.Feed.RabbitMQ
         private string? _consumerTag;
         private readonly RmqConnectionSettings _settings;
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly ConnectionFactory _factory;
         private readonly IHandlerTypeResolver _handlerTypeResolver;
+        private bool _isReconnecting; // Flag to prevent multiple reconnections
+        private readonly object _reconnectionLock = new object(); // Lock for thread safety
 
         public RabbitMqFeed(RmqConnectionSettings settings, Trade360Settings trade360Settings, IHandlerTypeResolver handlerTypeResolver, FlowType flowType, ILoggerFactory loggerFactory,
             ICustomersApiFactory customersApiFactory)
@@ -52,6 +56,23 @@ namespace Trade360SDK.Feed.RabbitMQ
                             : flowType == FlowType.PreMatch ? trade360Settings.PrematchPackageCredentials.Username : throw new ArgumentException("Not recognized flow type")
                     });
             }
+            
+            // Initialize connection factory
+            _factory = new ConnectionFactory
+            {
+                HostName = _settings.Host,
+                Port = _settings.Port,
+                VirtualHost = _settings.VirtualHost,
+                UserName = _settings.UserName,
+                Password = _settings.Password,
+                RequestedHeartbeat = TimeSpan.FromSeconds(_settings.RequestedHeartbeatSeconds),
+                NetworkRecoveryInterval = TimeSpan.FromSeconds(_settings.NetworkRecoveryInterval),
+                DispatchConsumersAsync = _settings.DispatchConsumersAsync,
+                AutomaticRecoveryEnabled = true, // Enable automatic connection recovery
+                TopologyRecoveryEnabled = true // Disable topology recovery to catch the event ourselves
+            };
+
+            CreateAndSetupConnection();
         }
 
         public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
@@ -91,7 +112,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             try
             {
                 _cts.Cancel(); // Cancel any ongoing recovery attempts
-
+                
                 if (_channel != null && !string.IsNullOrEmpty(_consumerTag))
                 {
                     _channel.BasicCancel(_consumerTag);
@@ -128,25 +149,7 @@ namespace Trade360SDK.Feed.RabbitMQ
                 throw new RabbitMqFeedException("An error occurred while disposing the RabbitMQ feed. See inner exception for details.", ex);
             }
         }
-        
-        private IConnection CreateConnection(RmqConnectionSettings settings)
-        {
-            var factory = new ConnectionFactory
-            {
-                HostName = settings.Host,
-                Port = settings.Port,
-                VirtualHost = settings.VirtualHost,
-                UserName = settings.UserName,
-                Password = settings.Password,
-                RequestedHeartbeat = TimeSpan.FromSeconds(settings.RequestedHeartbeatSeconds),
-                NetworkRecoveryInterval = TimeSpan.FromSeconds(settings.NetworkRecoveryInterval),
-                DispatchConsumersAsync = settings.DispatchConsumersAsync,
-                AutomaticRecoveryEnabled = settings.AutomaticRecoveryEnabled
-            };
-
-            return factory.CreateConnection();
-        }
-
+       
         private async Task EnsureDistributionStartedAsync(CancellationToken cancellationToken)
         {
             const int maxRetries = 5;
@@ -205,6 +208,76 @@ namespace Trade360SDK.Feed.RabbitMQ
                 _logger.LogError($"Got inappropriate GetDistributionEnabled response. Check configuration. {ex}");
             }
             return false;
+        }
+        
+        private void CreateAndSetupConnection()
+        {
+            _connection = _factory.CreateConnection();
+            _connection.ConnectionShutdown += OnConnectionShutdown;
+
+            // Create and configure the channel
+            _channel = _connection.CreateModel();
+
+            _channel.BasicQos(prefetchSize: 0, prefetchCount: _settings.PrefetchCount, global: false);
+            _consumer.Model = _channel;
+        }
+        
+        private void OnConnectionShutdown(object? sender, ShutdownEventArgs e)
+        {
+            if (e.ReplyCode == 200) // Normal shutdown
+            {
+                _logger.LogInformation("Connection closed by server.");
+                return;
+            }
+
+            _logger.LogWarning($"Connection shutdown. ReplyCode: {e.ReplyCode}, ReplyText: {e.ReplyText}");
+            _ = RetryConnectionAsync();
+        }
+
+        private async Task RetryConnectionAsync()
+        {
+            lock (_reconnectionLock)
+            {
+                if (_isReconnecting) return; // Already reconnecting, exit to prevent multiple attempts
+                _isReconnecting = true;
+            }
+
+            const int maxRetries = 12; // Retry for 2 minutes (12 * 10 seconds)
+            const int delayMilliseconds = 10000; // 10-second delay between retries
+
+            for (var attempt = 0; attempt < maxRetries; attempt++)
+            {
+                if (_cts.Token.IsCancellationRequested)
+                {
+                    _logger.LogInformation("RabbitMQ feed recovery operation was canceled.");
+                    _isReconnecting = false;
+                    return;
+                }
+
+                try
+                {
+                    CreateAndSetupConnection();
+
+                    _consumerTag = _channel.BasicConsume(
+                        queue: $"_{_settings.PackageId}_",
+                        autoAck: _settings.AutoAck,
+                        consumer: _consumer);
+
+                    _logger.LogInformation("Reconnected to RabbitMQ and resumed consuming.");
+                    _isReconnecting = false;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Attempt {attempt + 1} to reconnect to RabbitMQ failed. Retrying in {delayMilliseconds / 1000} seconds...");
+                }
+
+                await Task.Delay(delayMilliseconds, _cts.Token);
+            }
+
+            _logger.LogError("Failed to reconnect to RabbitMQ after multiple attempts.");
+            _isReconnecting = false;
+            throw new RabbitMqFeedException("Failed to reconnect to RabbitMQ after multiple attempts.");
         }
     }
 }

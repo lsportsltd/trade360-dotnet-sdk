@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.Example", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Example", "sdk.samples\Trade360SDK.SnapshotApi.Example\Trade360SDK.SnapshotApi.Example.csproj", "{A3A7E388-2FCD-4A6F-9B81-BCBBFDD6B15A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Microsoft.DependencyInjection", "Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj", "{D0651137-2737-48AD-8E2B-F62933AC0C88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Microsoft.DependencyInjection", "src\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj", "{D0651137-2737-48AD-8E2B-F62933AC0C88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

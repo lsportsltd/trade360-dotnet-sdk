@@ -1,0 +1,13 @@
+variables:
+  nugetconfig: './nuget/nuget.config'
+  project: './src/Trade360SDK.Feed.RabbitMQ/Trade360SDK.Feed.RabbitMQ.csproj'  # Target specific project
+  releaseconfig: 'Release'
+  prereleaseconfig: 'Debug'
+  feedname: 'STM/STMFeed'
+  packlocation: './src/Trade360SDK.Feed.RabbitMQ/bin/Release'  # Adjusted to project output
+  versionconfig: './versionconfig.yml'
+  description: "This SDK provides RabbitMQ feed handling functionality for the Trade360 product."
+  authors: "Itsik Hackmon"
+  company: "LSports"
+  tags: "RabbitMQ, Trade360, SDK"
+  version: "1.0.9"  # Specify your manual version here

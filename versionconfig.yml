@@ -1,0 +1,15 @@
+branches:
+  main:
+    regex: ^main$
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: true
+    increment: Minor
+  develop:
+    regex: ^develop$
+    source-branches: []
+    tracks-release-branches: false
+    is-release-branch: false
+    increment: Patch
+ignore:
+  sha: []

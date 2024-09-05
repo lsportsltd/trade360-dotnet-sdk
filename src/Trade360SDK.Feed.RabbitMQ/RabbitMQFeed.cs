@@ -32,8 +32,10 @@ namespace Trade360SDK.Feed.RabbitMQ
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
             _consumer = new MessageConsumer(handlerTypeResolver, flowType, loggerFactory);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
             // Validate settings
             RmqConnectionSettingsValidator.Validate(_settings);
+            
             if (trade360Settings != null)
             {
                 _packageDistributionApiClient = customersApiFactory.CreatePackageDistributionHttpClient(
@@ -65,19 +67,6 @@ namespace Trade360SDK.Feed.RabbitMQ
                     await EnsureDistributionStartedAsync(cancellationToken);
                 }
 
-                _connection = CreateConnection(_settings);
-
-                if (!_connection.IsOpen)
-                {
-                    _logger.LogError("Failed to connect to RabbitMQ.");
-                    throw new InvalidOperationException("Failed to connect to RabbitMQ.");
-                }
-
-                _channel = _connection.CreateModel();
-                _channel.BasicQos(prefetchSize: 0, prefetchCount: _settings.PrefetchCount, global: false);
-
-                _consumer.Model = _channel;
-
                 _consumerTag = _channel.BasicConsume(
                     queue: $"_{_settings.PackageId}_",
                     autoAck: _settings.AutoAck,
@@ -85,24 +74,34 @@ namespace Trade360SDK.Feed.RabbitMQ
 
                 _logger.LogInformation("Connected to RabbitMQ and started consuming.");
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("RabbitMQ feed start operation was canceled.");
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error starting RabbitMQFeed.");
                 throw new RabbitMqFeedException("An error occurred while starting the RabbitMQ feed.", ex);
             }
-
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             try
             {
+                _cts.Cancel(); // Cancel any ongoing recovery attempts
+
                 if (_channel != null && !string.IsNullOrEmpty(_consumerTag))
                 {
                     _channel.BasicCancel(_consumerTag);
                 }
 
-                _connection?.Close();
+                if (_connection?.IsOpen == true)
+                {
+                    _connection.Close(); // Close the connection before disposing
+                }
+
                 _logger.LogInformation("RabbitMQ connection closed.");
             }
             catch (Exception ex)
@@ -111,7 +110,7 @@ namespace Trade360SDK.Feed.RabbitMQ
                 throw new RabbitMqFeedException("An error occurred while stopping the RabbitMQ feed.", ex);
             }
 
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
         public void Dispose()
@@ -155,8 +154,13 @@ namespace Trade360SDK.Feed.RabbitMQ
 
             for (int attempt = 0; attempt < maxRetries; attempt++)
             {
-                GetDistributionStatusResponse result;
                 if (await GetDistributionEnabled("Distribution is already on.", cancellationToken)) return;
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    _logger.LogInformation("Distribution start operation was canceled.");
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
 
                 _logger.LogInformation("Distribution is off. Attempting to start...");
                 
@@ -171,6 +175,7 @@ namespace Trade360SDK.Feed.RabbitMQ
 
             throw new InvalidOperationException("Failed to start distribution after multiple attempts.");
         }
+
 
         private async Task StartDistribution(CancellationToken cancellationToken)
         {

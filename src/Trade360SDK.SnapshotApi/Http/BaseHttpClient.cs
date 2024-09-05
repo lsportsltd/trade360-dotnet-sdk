@@ -17,7 +17,6 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly int _packageId;
         private readonly string? _username;
         private readonly string? _password;
-        private readonly string _messageFormat;
 
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, Trade360Settings settings, PackageCredentials? packageCredentials)
         {
@@ -26,7 +25,6 @@ namespace Trade360SDK.SnapshotApi.Http
             _packageId = packageCredentials!.PackageId;
             _username = packageCredentials.Username;
             _password = packageCredentials.Password;
-            _messageFormat = packageCredentials.MessageFormat.ToLower();
         }
 
         protected async Task<TEntity> PostEntityAsync<TEntity>(

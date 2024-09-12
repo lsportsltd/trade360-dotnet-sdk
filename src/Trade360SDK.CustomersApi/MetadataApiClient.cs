@@ -35,7 +35,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<IEnumerable<Location>> GetLocationsAsync(CancellationToken cancellationToken)
         {
-            var locationsCollection = await PostEntityAsync<LocationsCollection>(
+            var locationsCollection = await PostEntityAsync<LocationsCollectionResponse>(
                 "Locations/Get",
                 cancellationToken);
             return locationsCollection.Locations ?? Enumerable.Empty<Location>();

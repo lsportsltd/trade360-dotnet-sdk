@@ -1,7 +1,10 @@
 ﻿namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
 {
-    public class StartDistributionResponse
+    public class GetDistributionStatusResponse
     {
-        public string? Message { get; set; }
+        public bool IsDistributionOn { get; set; }
+        public string[]? Consumers { get; set; }
+        public int NumberMessagesInQueue { get; set; }
+        public double MessagesPerSecond { get; set; }
     }
 }

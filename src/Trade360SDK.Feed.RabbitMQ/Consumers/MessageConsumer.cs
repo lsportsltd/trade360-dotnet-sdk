@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Feed.Converters;
+using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Handlers;
 
 namespace Trade360SDK.Feed.RabbitMQ.Consumers
@@ -16,10 +17,12 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
         private readonly ConcurrentDictionary<int, IMessageTypeHandler> _bodyHandlers = new ConcurrentDictionary<int, IMessageTypeHandler>();
+        private readonly RmqConnectionSettings _settings;
         private readonly ILogger _logger;
 
-        public MessageConsumer(ILoggerFactory? loggerFactory)
+        public MessageConsumer(ILoggerFactory? loggerFactory, RmqConnectionSettings settings)
         {
+            _settings = settings;
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
         }
 
@@ -48,14 +51,23 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 }
 
                 await messageTypeHandler.ProcessAsync(wrappedMessage.Body, wrappedMessage.Header);
+                
+                if (_settings.AutoAck == false)
+                    Model.BasicAck(deliveryTag, false);
             }
             catch (JsonException jsonEx)
             {
                 _logger.LogError(jsonEx, "JSON processing error");
+
+                if (_settings.AutoAck == false)
+                    Model.BasicReject(deliveryTag, true);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error handling message delivery: {ex.Message}");
+
+                if (_settings.AutoAck == false)
+                    Model.BasicReject(deliveryTag, true);
             }
         }
 

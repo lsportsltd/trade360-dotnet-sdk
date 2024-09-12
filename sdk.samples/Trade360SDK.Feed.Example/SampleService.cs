@@ -47,7 +47,7 @@ namespace Trade360SDK.Feed.Example
             _prematchFeed.AddEntityHandler(new SettlementUpdateHandlerPrematch());
 
             // Start the Prematch feed
-            await _prematchFeed.StartAsync(connectAtStart:true, cancellationToken);
+            await _prematchFeed.StartAsync(connectAtStart: true, cancellationToken);
 
             // Output a message to the console and wait for user input to stop the feeds
             Console.WriteLine("Click any key to stop message consumption");

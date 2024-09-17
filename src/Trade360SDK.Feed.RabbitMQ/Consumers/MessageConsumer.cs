@@ -21,7 +21,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
         private readonly IHandlerTypeResolver _handlerTypeResolver;
         private readonly RmqConnectionSettings _settings;
 
-        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, FlowType type, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
+        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
         {
             _handlerTypeResolver = (handlerTypeResolver ?? throw new ArgumentNullException(nameof(handlerTypeResolver)));
             _settings = settings;

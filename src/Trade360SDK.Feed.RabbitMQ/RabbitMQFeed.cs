@@ -34,7 +34,7 @@ namespace Trade360SDK.Feed.RabbitMQ
             ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
-            _consumer = new MessageConsumer(handlerTypeResolver, flowType, settings, loggerFactory);
+            _consumer = new MessageConsumer(handlerTypeResolver, settings, loggerFactory);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             // Validate settings

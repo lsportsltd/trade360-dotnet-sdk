@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Feed.Converters;
+using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
 
 namespace Trade360SDK.Feed.RabbitMQ.Consumers
@@ -17,10 +19,12 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
     {
         private readonly ILogger _logger;
         private readonly IHandlerTypeResolver _handlerTypeResolver;
+        private readonly RmqConnectionSettings _settings;
 
-        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, FlowType type, ILoggerFactory? loggerFactory)
+        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, FlowType type, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
         {
             _handlerTypeResolver = (handlerTypeResolver ?? throw new ArgumentNullException(nameof(handlerTypeResolver)));
+            _settings = settings;
             _logger =
                 (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
         }
@@ -52,14 +56,23 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 var entity = wrappedMessage.Body != null ? JsonSerializer.Deserialize(wrappedMessage.Body, type) : null;
                 
                 await handler.ProcessAsync(entity, wrappedMessage.Header);
+                
+                if (_settings.AutoAck == false)
+                    Model.BasicAck(deliveryTag, false);
             }
             catch (JsonException jsonEx)
             {
                 _logger.LogError(jsonEx, "JSON processing error");
+
+                if (_settings.AutoAck == false)
+                    Model.BasicReject(deliveryTag, true);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error handling message delivery: {ex.Message}");
+
+                if (_settings.AutoAck == false)
+                    Model.BasicReject(deliveryTag, true);
             }
         }
 

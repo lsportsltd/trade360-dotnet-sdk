@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Common.Entities.Livescore
 {
     public class Statistic
     {
-        public StatisticType Type { get; set; }
+        public int Type { get; set; }
 
         public IEnumerable<Result>? Results { get; set; }
 

@@ -23,16 +23,16 @@ namespace Trade360SDK.Feed.RabbitMQ
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var customerApiFactory = _serviceProvider.GetRequiredService<ICustomersApiFactory>();
-            IHandlerTypeResolver handlerTypeResolver = null;
+            IMessageProcessorContainer messageProcessorContainer = null;
             if (flowType == FlowType.InPlay)
             {
-                handlerTypeResolver = _serviceProvider.GetRequiredService<HandlerTypeResolver<InPlay>>();
+                messageProcessorContainer = _serviceProvider.GetRequiredService<MessageProcessorContainer<InPlay>>();
             } 
             else if (flowType == FlowType.PreMatch)
             {
-                handlerTypeResolver = _serviceProvider.GetRequiredService<HandlerTypeResolver<PreMatch>>();
+                messageProcessorContainer = _serviceProvider.GetRequiredService<MessageProcessorContainer<PreMatch>>();
             }
-            return new RabbitMqFeed(settings, trade360Settings, handlerTypeResolver, flowType, loggerFactory, customerApiFactory);
+            return new RabbitMqFeed(settings, trade360Settings, messageProcessorContainer, flowType, loggerFactory, customerApiFactory);
         }
     }
 }

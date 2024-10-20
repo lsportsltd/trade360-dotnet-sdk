@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Entities.Enums;
+using Trade360SDK.Common.Helpers;
 using Trade360SDK.Feed.Converters;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
@@ -18,12 +20,15 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
     internal class MessageConsumer : AsyncDefaultBasicConsumer
     {
         private readonly ILogger _logger;
-        private readonly IHandlerTypeResolver _handlerTypeResolver;
+        private readonly IMessageProcessorContainer _messageProcessorContainer;
         private readonly RmqConnectionSettings _settings;
+        private readonly Dictionary<int, Type> _messageUpdateTypes;
 
-        public MessageConsumer(IHandlerTypeResolver handlerTypeResolver, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
+        public MessageConsumer(IMessageProcessorContainer messageProcessorContainer, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
         {
-            _handlerTypeResolver = (handlerTypeResolver ?? throw new ArgumentNullException(nameof(handlerTypeResolver)));
+            _messageUpdateTypes = Trade360AttributeHelper.GetAttributes()
+                .ToDictionary(t => t.GetCustomAttribute<Trade360EntityAttribute>().EntityKey, t => t);
+            _messageProcessorContainer = (messageProcessorContainer ?? throw new ArgumentNullException(nameof(messageProcessorContainer)));
             _settings = settings;
             _logger =
                 (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
@@ -47,15 +52,16 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 wrappedMessage.Header.SourceTimestamp =
                     DateTimeOffset.FromUnixTimeSeconds(properties.Timestamp.UnixTime).UtcDateTime;
 
-                var entityType = wrappedMessage.Header.Type;
-
-                Type type = IdentifyType(entityType);
-
-                IHandler handler = IdentifyHandler(entityType, type);
+                var id = wrappedMessage.Header.Type;
                 
-                var entity = wrappedMessage.Body != null ? JsonSerializer.Deserialize(wrappedMessage.Body, type) : null;
+                var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);
                 
-                await handler.ProcessAsync(entity, wrappedMessage.Header);
+                Type? type = IdentifyType(id);
+
+                if (type != null)
+                {
+                    await messageProcessor.ProcessAsync(type, wrappedMessage?.Header, wrappedMessage?.Body);
+                }
                 
                 if (_settings.AutoAck == false)
                     Model.BasicAck(deliveryTag, false);
@@ -76,22 +82,15 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             }
         }
 
-        private Type IdentifyType(int entityType)
+        private Type? IdentifyType(int entityType)
         {
-            return _handlerTypeResolver.ResolveMessageType(entityType);
-        }
-
-        private IHandler IdentifyHandler(int entityType, Type type)
-        {
-            try
-            {
-                return _handlerTypeResolver.GetHandler(type);
-            }
-            catch (Exception e)
+            _messageUpdateTypes.TryGetValue(entityType, out var messageType);
+            if (messageType == null)
             {
                 HandleUnknownEntityType(entityType);
-                return null;
             }
+
+            return messageType;
         }
 
         private void HandleUnknownEntityType(int entityType)

@@ -6,15 +6,10 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
     internal class FixtureMarketUpdateHandlerPrematch : IEntityHandler<MarketUpdate, PreMatch>
     {
-        public Task ProcessAsync(MarketUpdate entity)
+        public Task ProcessAsync(MessageHeader? header, MarketUpdate? entity)
         {
             Console.WriteLine("MarketUpdate received");
             return Task.CompletedTask;
-        }
-
-        public async Task ProcessAsync(object entity, MessageHeader header)
-        {
-            await ProcessAsync((MarketUpdate)entity);
         }
     }
 }

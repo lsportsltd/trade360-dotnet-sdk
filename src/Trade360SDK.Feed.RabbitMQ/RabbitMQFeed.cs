@@ -26,15 +26,14 @@ namespace Trade360SDK.Feed.RabbitMQ
         private readonly IPackageDistributionApiClient _packageDistributionApiClient;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly ConnectionFactory _factory;
-        private readonly IHandlerTypeResolver _handlerTypeResolver;
         private bool _isReconnecting; // Flag to prevent multiple reconnections
         private readonly object _reconnectionLock = new object(); // Lock for thread safety
 
-        public RabbitMqFeed(RmqConnectionSettings settings, Trade360Settings trade360Settings, IHandlerTypeResolver handlerTypeResolver, FlowType flowType, ILoggerFactory loggerFactory,
+        public RabbitMqFeed(RmqConnectionSettings settings, Trade360Settings trade360Settings, IMessageProcessorContainer messageProcessorContainer, FlowType flowType, ILoggerFactory loggerFactory,
             ICustomersApiFactory customersApiFactory)
         {
             _logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger(this.GetType());
-            _consumer = new MessageConsumer(handlerTypeResolver, settings, loggerFactory);
+            _consumer = new MessageConsumer(messageProcessorContainer, settings, loggerFactory);
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             // Validate settings

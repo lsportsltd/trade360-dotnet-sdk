@@ -6,14 +6,9 @@ namespace Trade360SDK.Feed.Example.Handlers.Inplay;
 
 internal class FixtureMarketUpdateHandlerInplay : IEntityHandler<MarketUpdate, InPlay>
 {
-    public Task ProcessAsync(MarketUpdate entity)
+    public Task ProcessAsync(MessageHeader? header, MarketUpdate? entity)
     {
         Console.WriteLine("FixtureMetadataUpdate received");
         return Task.CompletedTask;
-    }
-
-    public async Task ProcessAsync(object entity, MessageHeader header)
-    {
-        await ProcessAsync((MarketUpdate)entity);
     }
 }

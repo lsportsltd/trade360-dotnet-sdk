@@ -6,8 +6,8 @@ using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed
 {
-    public interface IEntityHandler<in TEntity, TFlow> : IHandler where TFlow : IFlow 
+    public interface IEntityHandler<in TType, TFlow> where TFlow : IFlow where TType : class
     {
-        Task ProcessAsync(TEntity entity);
+        Task ProcessAsync(MessageHeader? header, TType? entity);
     }
 }

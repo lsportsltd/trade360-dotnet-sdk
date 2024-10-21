@@ -54,10 +54,10 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     // Directly cast to long since you know it's always a long
                     var rmqTimestampInMs = (long)timestampObj;
                     var platformTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(rmqTimestampInMs).UtcDateTime;
-                    wrappedMessage.Header.PlatformTimestamp = platformTimestamp;
+                    wrappedMessage.Header.MessageBrokerTimestamp = platformTimestamp;
                 }
 
-                wrappedMessage.Header.BasicDeliverTimestamp = DateTime.UtcNow;
+                wrappedMessage.Header.MessageTimestamp = DateTime.UtcNow;
                 
                 var id = wrappedMessage.Header.Type;
                 

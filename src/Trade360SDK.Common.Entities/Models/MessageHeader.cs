@@ -9,7 +9,7 @@ namespace Trade360SDK.Common.Models
         public int? MsgSeq { get; set; }
         public string? MsgGuid { get; set; }
         public long? ServerTimestamp { get; set; }
-        public DateTime? PlatformTimestamp { get; set; }
-        public DateTime? BasicDeliverTimestamp { get; set; }
+        public DateTime? MessageBrokerTimestamp { get; set; }
+        public DateTime? MessageTimestamp { get; set; }
     }
 }

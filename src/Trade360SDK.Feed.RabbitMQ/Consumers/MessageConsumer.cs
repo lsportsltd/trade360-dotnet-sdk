@@ -23,6 +23,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
         private readonly IMessageProcessorContainer _messageProcessorContainer;
         private readonly RmqConnectionSettings _settings;
         private readonly Dictionary<int, Type> _messageUpdateTypes;
+        private readonly DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public MessageConsumer(IMessageProcessorContainer messageProcessorContainer, RmqConnectionSettings settings, ILoggerFactory? loggerFactory)
         {
@@ -48,10 +49,16 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     return;
                 }
 
-                wrappedMessage.Header.ReceivedTimestamp = DateTime.UtcNow;
-                wrappedMessage.Header.SourceTimestamp =
-                    DateTimeOffset.FromUnixTimeSeconds(properties.Timestamp.UnixTime).UtcDateTime;
+                if (properties.Headers.TryGetValue("timestamp_in_ms", out var timestampObj) && timestampObj != null)
+                {
+                    // Directly cast to long since you know it's always a long
+                    var rmqTimestampInMs = (long)timestampObj;
+                    var platformTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(rmqTimestampInMs).UtcDateTime;
+                    wrappedMessage.Header.PlatformTimestamp = platformTimestamp;
+                }
 
+                wrappedMessage.Header.BasicDeliverTimestamp = DateTime.UtcNow;
+                
                 var id = wrappedMessage.Header.Type;
                 
                 var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);

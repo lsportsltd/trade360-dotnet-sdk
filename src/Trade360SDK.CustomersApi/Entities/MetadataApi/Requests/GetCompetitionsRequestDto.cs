@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using Trade360SDK.Common.Entities.Enums;
-using Trade360SDK.CustomersApi.Entities.Base;
 
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
 {
-    public class GetCompetitionsRequestDto : BaseRequest
+    public class GetCompetitionsRequestDto
     {
         public IEnumerable<int>? SportIds { get; set; }
         public IEnumerable<int>? LocationIds { get; set; }
         public SubscriptionState SubscriptionStatus { get; set; }
+        public int LanguageId { get; set; }
 
     }
 }

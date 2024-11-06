@@ -12,7 +12,7 @@ namespace Trade360SDK.CustomersApi.Interfaces
         Task<IEnumerable<Location>> GetLocationsAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Sport>> GetSportsAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Market>> GetMarketsAsync(GetMarketsRequestDto request, CancellationToken cancellationToken);
-        Task<TransactionResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken);
+        Task<TranslationResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken);
         Task<CompetitionCollectionResponse> GetCompetitionsAsync(GetCompetitionsRequestDto requestDto, CancellationToken cancellationToken);
         Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken);
     }

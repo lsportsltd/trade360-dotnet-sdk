@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
 {
-    public class TransactionResponse
+    public class TranslationResponse
     {
         public Dictionary<string, List<LocalizedValue>>? Sports { get; set; }
         public Dictionary<string, List<LocalizedValue>>? Leagues { get; set; }

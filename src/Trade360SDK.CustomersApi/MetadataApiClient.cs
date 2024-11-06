@@ -61,12 +61,12 @@ namespace Trade360SDK.CustomersApi
             return leaguesCollection.Markets ?? Enumerable.Empty<Market>();
         }
 
-        public async Task<TransactionResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<TranslationResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<GetTranslationsRequest>(requestDto);
 
             GetTranslationsRequestValidator.Validate(request);
-            var response = await PostEntityAsync<TransactionResponse>(
+            var response = await PostEntityAsync<TranslationResponse>(
                 "Translation/Get",
                 request,
                 cancellationToken);

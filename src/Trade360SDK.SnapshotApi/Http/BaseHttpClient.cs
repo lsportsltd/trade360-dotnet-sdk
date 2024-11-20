@@ -56,7 +56,7 @@ namespace Trade360SDK.SnapshotApi.Http
 
         private HttpContent SerializeRequest(BaseRequest request)
         {
-            var requestJson = JsonSerializer.Serialize(request);
+            var requestJson = JsonSerializer.Serialize(request, request.GetType());
             return new StringContent(requestJson, Encoding.UTF8, "application/json");
         }
 

@@ -8,7 +8,7 @@ namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
         public IEnumerable<int>? SportIds { get; set; }
         public IEnumerable<int>? LocationIds { get; set; }
         public SubscriptionState SubscriptionStatus { get; set; }
-        public int LanguageId { get; set; }
+        public int? LanguageId { get; set; }
 
     }
 }

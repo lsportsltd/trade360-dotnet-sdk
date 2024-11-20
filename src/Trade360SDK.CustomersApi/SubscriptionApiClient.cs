@@ -23,7 +23,7 @@ namespace Trade360SDK.CustomersApi
         }
         
         public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken)
-            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
+            => PostEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
 
         public async Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken)
         {

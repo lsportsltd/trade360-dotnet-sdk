@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
+namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
 {
     public class PackageQuotaResponse
     {

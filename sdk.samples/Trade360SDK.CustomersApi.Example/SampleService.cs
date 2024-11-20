@@ -68,8 +68,10 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine("16. Subscription API - Get All Manual Suspensions");
             Console.WriteLine("17. Subscription API - Add Manual Suspension");
             Console.WriteLine("18. Subscription API - Remove Manual Suspension");
-            Console.WriteLine("19. Package Distribution API - Get Distribution Status");
-            Console.WriteLine("20. Package Distribution API - Start Distribution");
+            Console.WriteLine("19. Subscription API - Get Package Quota");
+            Console.WriteLine("20. Package Distribution API - Get Distribution Status");
+            Console.WriteLine("21. Package Distribution API - Start Distribution");
+
             Console.WriteLine("Type 'exit' to quit");
         }
 
@@ -132,15 +134,24 @@ namespace Trade360SDK.CustomersApi.Example
                     await RemoveManualSuspensionAsync(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "19":
-                    await GetDistributionStatus(_inplayPackageDistributionApiClient, cancellationToken);
+                    await GetPackageQuota(_inplaySubscriptionApiClient, cancellationToken);
                     break;
                 case "20":
+                    await GetDistributionStatus(_inplayPackageDistributionApiClient, cancellationToken);
+                    break;
+                case "21":
                     await StartDistribution(_inplayPackageDistributionApiClient, cancellationToken);
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
                     break;
             }
+        }
+
+        private async Task GetPackageQuota(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)
+        {
+            var response = await subscriptionApiClient.GetPackageQuotaAsync(cancellationToken);
+            Console.WriteLine($"Send GetPackageQuota request.");
         }
 
         private async Task SubscribeToFixture(ISubscriptionApiClient subscriptionApiClient, CancellationToken cancellationToken)

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 

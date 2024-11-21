@@ -13,5 +13,6 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
         public int SportId { get; set; }
         public int LocationId { get; set; }
         public bool Success { get; set; }
+        public string? Message { get; set; }
     }
 }

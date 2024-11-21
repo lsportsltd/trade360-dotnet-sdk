@@ -4,7 +4,9 @@ using Microsoft.Extensions.Options;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
+using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 using Trade360SDK.CustomersApi.Interfaces;
+using Suspension = Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests.Suspension;
 
 namespace Trade360SDK.CustomersApi.Example
 {
@@ -71,7 +73,6 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine("19. Subscription API - Get Package Quota");
             Console.WriteLine("20. Package Distribution API - Get Distribution Status");
             Console.WriteLine("21. Package Distribution API - Start Distribution");
-
             Console.WriteLine("Type 'exit' to quit");
         }
 
@@ -381,7 +382,7 @@ namespace Trade360SDK.CustomersApi.Example
                     new()
                     {
                         FixtureId = 13176576,
-                        Markets = new List<Market>
+                        Markets = new List<SuspendedMarket>
                         {
                            new()
                            {
@@ -405,7 +406,7 @@ namespace Trade360SDK.CustomersApi.Example
                     new()
                     {
                         FixtureId = 13176576,
-                        Markets = new List<Market>
+                        Markets = new List<SuspendedMarket>
                         {
                            new()
                            {

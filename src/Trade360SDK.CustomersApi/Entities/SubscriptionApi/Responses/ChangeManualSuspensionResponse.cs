@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
 {
@@ -13,11 +14,7 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
         public string? Reason { get; set; }
         public int? FixtureId { get; set; }
         public List<SuspendedMarket>? Markets { get; set; }
+        public DateTime? CreationDate { get; set; }
     }
 
-    public class SuspendedMarket
-    {
-        public int MarketId { get; set; }
-        public string? Line { get; set; }
-    }
 }

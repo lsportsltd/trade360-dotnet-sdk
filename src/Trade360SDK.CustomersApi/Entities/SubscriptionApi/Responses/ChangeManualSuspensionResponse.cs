@@ -13,6 +13,9 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses
         public bool Succeeded { get; set; }
         public string? Reason { get; set; }
         public int? FixtureId { get; set; }
+        public int? SportId { get; set; }
+        public int? LocationId { get; set; }
+        public int? CompetitionId { get; set; }
         public List<SuspendedMarket>? Markets { get; set; }
         public DateTime? CreationDate { get; set; }
     }

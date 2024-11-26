@@ -84,15 +84,5 @@ namespace Trade360SDK.CustomersApi
             return response;
         }
 
-        public async Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken)
-        {
-            var request = _mapper.Map<GetFixtureMetadataRequest>(requestDto);
-
-            var response = await GetEntityAsync<GetFixtureMetadataCollectionResponse>(
-                "Fixtures/GetSubscribedMetaData",
-                request,
-                cancellationToken);
-            return response;
-        }
     }
 }

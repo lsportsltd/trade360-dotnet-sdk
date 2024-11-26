@@ -7,7 +7,7 @@ using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {
-    public interface ISubscriptionApiClient
+    public interface ISubscriptionHttpClient
     {
         Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken);
         Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken);

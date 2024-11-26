@@ -13,10 +13,10 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 
 namespace Trade360SDK.CustomersApi
 {
-    public class SubscriptionApiClient : BaseHttpClient, ISubscriptionApiClient
+    public class SubscriptionHttpClient : BaseHttpClient, ISubscriptionHttpClient
     {
         private readonly IMapper _mapper;
-        public SubscriptionApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+        public SubscriptionHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();

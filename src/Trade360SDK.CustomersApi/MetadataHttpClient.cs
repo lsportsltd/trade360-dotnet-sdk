@@ -14,10 +14,10 @@ using Trade360SDK.CustomersApi.Validators;
 
 namespace Trade360SDK.CustomersApi
 {
-    public class MetadataApiClient : BaseHttpClient, IMetadataApiClient
+    public class MetadataHttpClient : BaseHttpClient, IMetadataHttpClient
     {
         private readonly IMapper _mapper;
-        public MetadataApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+        public MetadataHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();

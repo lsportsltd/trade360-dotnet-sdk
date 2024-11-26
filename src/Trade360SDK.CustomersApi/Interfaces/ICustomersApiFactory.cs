@@ -4,8 +4,8 @@ namespace Trade360SDK.CustomersApi.Interfaces
 {
     public interface ICustomersApiFactory
     {
-        IMetadataApiClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
-        IPackageDistributionApiClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
-        ISubscriptionApiClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
+        IMetadataHttpClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
+        IPackageDistributionHttpClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
+        ISubscriptionHttpClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials);
     }
 }

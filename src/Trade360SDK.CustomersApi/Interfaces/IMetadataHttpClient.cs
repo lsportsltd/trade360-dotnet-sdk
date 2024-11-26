@@ -6,7 +6,7 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {
-    public interface IMetadataApiClient
+    public interface IMetadataHttpClient
     {
         Task<IEnumerable<League>> GetLeaguesAsync(GetLeaguesRequestDto request, CancellationToken cancellationToken);
         Task<IEnumerable<Location>> GetLocationsAsync(CancellationToken cancellationToken);

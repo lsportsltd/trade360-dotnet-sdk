@@ -16,6 +16,10 @@ namespace Trade360SDK.CustomersApi.Example
         private readonly IMetadataHttpClient _prematchMetadataHttpClient;
         private readonly ISubscriptionHttpClient _prematchSubscriptionHttpClient;
         private readonly IPackageDistributionHttpClient _prematchPackageDistributionHttpClient;
+        private readonly IMetadataHttpClient _inplayMetadataApiClient;
+        private readonly ISubscriptionHttpClient _inplaySubscriptionHttpClient;
+        private readonly IPackageDistributionHttpClient _inplayPackageDistributionHttpClient;
+
 
         public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<Trade360Settings> settingsMonitor)
         {
@@ -24,6 +28,9 @@ namespace Trade360SDK.CustomersApi.Example
             _prematchPackageDistributionHttpClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.CustomersApiBaseUrl, settings.PrematchPackageCredentials);
             _prematchMetadataHttpClient = customersApiFactory.CreateMetadataHttpClient(settings.CustomersApiBaseUrl, settings.PrematchPackageCredentials);
             _prematchSubscriptionHttpClient = customersApiFactory.CreateSubscriptionHttpClient(settings.CustomersApiBaseUrl, settings.PrematchPackageCredentials);
+            _inplayPackageDistributionHttpClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
+            _inplayMetadataApiClient = customersApiFactory.CreateMetadataHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
+            _inplaySubscriptionHttpClient = customersApiFactory.CreateSubscriptionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -88,7 +95,7 @@ namespace Trade360SDK.CustomersApi.Example
                     await GetCompetitions(_prematchMetadataHttpClient, cancellationToken);
                     break;
                 case "3":
-                    await GetTranslations(_prematchMetadataHttpClient, cancellationToken);
+                    await GetTranslations(_prematchMetadataHttpClient, cancellationToken); 
                     break;
                 case "4":
                     await GetMarkets(_prematchMetadataHttpClient, cancellationToken);
@@ -124,7 +131,7 @@ namespace Trade360SDK.CustomersApi.Example
                     await UnsubscribeFromOutrightCompetition(_prematchSubscriptionHttpClient, cancellationToken);
                     break;
                 case "15":
-                    await GetInplayFixtureSchedule(_prematchSubscriptionHttpClient, cancellationToken);
+                    await GetInplayFixtureSchedule(_inplaySubscriptionHttpClient, cancellationToken);
                     break;
                 case "16":
                     await GetAllManualSuspensionsAsync(_prematchSubscriptionHttpClient, cancellationToken);
@@ -136,7 +143,7 @@ namespace Trade360SDK.CustomersApi.Example
                     await RemoveManualSuspensionAsync(_prematchSubscriptionHttpClient, cancellationToken);
                     break;
                 case "19":
-                    await GetPackageQuota(_prematchSubscriptionHttpClient, cancellationToken);
+                    await GetPackageQuota(_inplaySubscriptionHttpClient, cancellationToken);
                     break;
                 case "20":
                     await GetDistributionStatus(_prematchPackageDistributionHttpClient, cancellationToken);

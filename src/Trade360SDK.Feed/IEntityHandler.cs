@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Models;
+using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed
 {
-    public interface IEntityHandler<in T>
+    public interface IEntityHandler<in TType, TFlow> where TFlow : IFlow where TType : class
     {
-        Task ProcessAsync(T entity, MessageHeader header);
+        Task ProcessAsync(MessageHeader? header, TType? entity);
     }
 }

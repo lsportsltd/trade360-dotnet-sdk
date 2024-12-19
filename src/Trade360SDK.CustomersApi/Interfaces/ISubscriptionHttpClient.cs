@@ -1,13 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {
-    public interface ISubscriptionApiClient
+    public interface ISubscriptionHttpClient
     {
+        Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken);
         Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken);
         Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken);
         Task<FixtureSubscriptionCollectionResponse> SubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken);

@@ -9,9 +9,9 @@ using Trade360SDK.CustomersApi.Interfaces;
 
 namespace Trade360SDK.CustomersApi
 {
-    public class PackageDistributionApiClient : BaseHttpClient, IPackageDistributionApiClient
+    public class PackageDistributionHttpClient : BaseHttpClient, IPackageDistributionHttpClient
     {
-        public PackageDistributionApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials)
+        public PackageDistributionHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();

@@ -23,7 +23,7 @@ namespace Trade360SDK.Feed.RabbitMQ
         private IModel? _channel;
         private string? _consumerTag;
         private readonly RmqConnectionSettings _settings;
-        private readonly IPackageDistributionApiClient _packageDistributionApiClient;
+        private readonly IPackageDistributionHttpClient _packageDistributionApiClient;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly ConnectionFactory _factory;
         private bool _isReconnecting; // Flag to prevent multiple reconnections

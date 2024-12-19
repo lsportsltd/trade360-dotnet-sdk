@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Trade360SDK.CustomersApi.Entities.Base;
 
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
 {
-    public class GetTranslationsRequest : BaseRequest
+    public class GetTranslationsRequest : BaseMetadataRequest
     {
         public IEnumerable<int>? SportIds { get; set; }
         public IEnumerable<int>? LocationIds { get; set; }

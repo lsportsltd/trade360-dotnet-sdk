@@ -29,7 +29,7 @@ internal class Program
                 services.Configure<RmqConnectionSettings>("Prematch", hostContext.Configuration.GetSection("Trade360:RmqPrematchSettings"));
                 
                 // Configure the settings for CustomersApi using the "Trade360:Trade360Settings" section of the configuration file
-                services.Configure<Trade360Settings>("customerSettings", hostContext.Configuration.GetSection("Trade360Settings"));
+                services.Configure<Trade360Settings>("CustomerSettings", hostContext.Configuration.GetSection("Trade360Settings"));
                 
                 // Add the Trade360 RabbitMQ Feed SDK services to the service collection
                 services.AddT360RmqFeedSdk(hostContext.Configuration);

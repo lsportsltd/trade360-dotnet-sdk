@@ -61,12 +61,11 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 
                 var id = wrappedMessage.Header.Type;
                 
-                var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);
-                
                 Type? type = IdentifyType(id);
 
                 if (type != null)
                 {
+                    var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);
                     await messageProcessor.ProcessAsync(type, wrappedMessage?.Header, wrappedMessage?.Body);
                 }
                 

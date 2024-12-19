@@ -17,7 +17,7 @@ namespace Trade360SDK.Feed.Example
             // Get the settings for the Prematch or Inplay feed and customersApi - look at program.cs initialization
             var inplaySettings = rmqSettingsMonitor.Get("Inplay");
             var prematchSettings = rmqSettingsMonitor.Get("Prematch");
-            var customerSetting = customerSettingsMonitor.Get("customerSettings");
+            var customerSetting = customerSettingsMonitor.Get("CustomerSettings");
             
             // Create the Prematch feed using the factory and settings
             _prematchFeed = feedFactory.CreateFeed(prematchSettings, customerSetting, FlowType.PreMatch);

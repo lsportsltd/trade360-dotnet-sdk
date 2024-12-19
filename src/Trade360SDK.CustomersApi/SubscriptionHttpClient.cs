@@ -4,18 +4,19 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
-using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 using Trade360SDK.CustomersApi.Http;
 using Trade360SDK.CustomersApi.Interfaces;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
+using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 
 namespace Trade360SDK.CustomersApi
 {
-    public class SubscriptionApiClient : BaseHttpClient, ISubscriptionApiClient
+    public class SubscriptionHttpClient : BaseHttpClient, ISubscriptionHttpClient
     {
         private readonly IMapper _mapper;
-        public SubscriptionApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+        public SubscriptionHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
@@ -24,7 +25,7 @@ namespace Trade360SDK.CustomersApi
         }
         
         public Task<PackageQuotaResponse> GetPackageQuotaAsync(CancellationToken cancellationToken)
-            => GetEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
+            => PostEntityAsync<PackageQuotaResponse>("/package/GetPackageQuota",  cancellationToken);
 
         public async Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken)
         {
@@ -140,6 +141,17 @@ namespace Trade360SDK.CustomersApi
 
             var response = await PostEntityAsync<ChangeManualSuspensionResponse>(
                 "Markets/ManualSuspension/Deactivate ",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+        public async Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetFixtureMetadataRequest>(requestDto);
+
+            var response = await GetEntityAsync<GetFixtureMetadataCollectionResponse>(
+                "Fixtures/GetSubscribedMetaData",
                 request,
                 cancellationToken);
             return response;

@@ -14,10 +14,10 @@ using Trade360SDK.CustomersApi.Validators;
 
 namespace Trade360SDK.CustomersApi
 {
-    public class MetadataApiClient : BaseHttpClient, IMetadataApiClient
+    public class MetadataHttpClient : BaseHttpClient, IMetadataHttpClient
     {
         private readonly IMapper _mapper;
-        public MetadataApiClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+        public MetadataHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
             var httpClient = httpClientFactory.CreateClient();
@@ -61,12 +61,12 @@ namespace Trade360SDK.CustomersApi
             return leaguesCollection.Markets ?? Enumerable.Empty<Market>();
         }
 
-        public async Task<TransactionResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<TranslationResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<GetTranslationsRequest>(requestDto);
 
             GetTranslationsRequestValidator.Validate(request);
-            var response = await PostEntityAsync<TransactionResponse>(
+            var response = await PostEntityAsync<TranslationResponse>(
                 "Translation/Get",
                 request,
                 cancellationToken);
@@ -84,15 +84,5 @@ namespace Trade360SDK.CustomersApi
             return response;
         }
 
-        public async Task<GetFixtureMetadataCollectionResponse> GetFixtureMetadataAsync(GetFixtureMetadataRequestDto requestDto, CancellationToken cancellationToken)
-        {
-            var request = _mapper.Map<GetFixtureMetadataRequest>(requestDto);
-
-            var response = await GetEntityAsync<GetFixtureMetadataCollectionResponse>(
-                "Fixtures/GetSubscribedMetaData",
-                request,
-                cancellationToken);
-            return response;
-        }
     }
 }

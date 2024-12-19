@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
@@ -45,7 +44,7 @@ namespace Trade360SDK.CustomersApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonSerializer.Serialize(request);
+            var requestJson = JsonSerializer.Serialize(request, request.GetType());
             var content = new StringContent(
                 requestJson,
                 Encoding.UTF8,
@@ -135,10 +134,7 @@ namespace Trade360SDK.CustomersApi.Http
 
         private string BuildQueryString(object request)
         {
-            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            });
+            var json = JsonSerializer.Serialize(request, request.GetType());
             var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
             var queryString = new StringBuilder();
 

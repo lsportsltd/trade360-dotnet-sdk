@@ -2,7 +2,7 @@
 
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
 {
-    public class GetFixtureMetadataRequest : BaseRequest
+    public class GetFixtureMetadataRequest : BaseMetadataRequest
     {
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }

@@ -4,7 +4,7 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {
-    public interface IPackageDistributionApiClient
+    public interface IPackageDistributionHttpClient
     {
         Task<StartDistributionResponse> StartDistributionAsync(CancellationToken cancellationToken);
         Task<StopDistributionResponse> StopDistributionAsync(CancellationToken cancellationToken);

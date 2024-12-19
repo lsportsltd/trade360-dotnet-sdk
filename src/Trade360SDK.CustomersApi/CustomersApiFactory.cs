@@ -16,24 +16,24 @@ namespace Trade360SDK.CustomersApi
             _serviceProvider = serviceProvider;
         }
 
-        public IMetadataApiClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
+        public IMetadataHttpClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new MetadataApiClient(httpClientFactory, baseUrl, packageCredentials, mapper);
+            return new MetadataHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
         }
 
-        public IPackageDistributionApiClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
+        public IPackageDistributionHttpClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new PackageDistributionApiClient(httpClientFactory, baseUrl, packageCredentials);
+            return new PackageDistributionHttpClient(httpClientFactory, baseUrl, packageCredentials);
         }
 
-        public ISubscriptionApiClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
+        public ISubscriptionHttpClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new SubscriptionApiClient(httpClientFactory, baseUrl, packageCredentials, mapper);
+            return new SubscriptionHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
         }
     }
 }

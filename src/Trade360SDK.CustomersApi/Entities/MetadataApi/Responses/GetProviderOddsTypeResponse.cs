@@ -1,7 +1,9 @@
+using Trade360SDK.Common.Entities.Enums;
+
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
 {
     public class GetProviderOddsTypeResponse
     {
-        public int ProviderOddsType { get; set; }
+        public ProviderOddsServiceType ProviderOddsType { get; set; }
     }
 }

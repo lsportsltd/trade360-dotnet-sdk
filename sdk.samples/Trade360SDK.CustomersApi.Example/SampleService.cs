@@ -391,8 +391,8 @@ namespace Trade360SDK.CustomersApi.Example
         
         private async Task GetProviderOddsType(IPackageQueryHttpClient packageQueryHttpClient, CancellationToken cancellationToken)
         {
-            await packageQueryHttpClient.GetProviderOddsType(cancellationToken);
-            Console.WriteLine($"Send GetProviderOddsType request.");
+            var response = await packageQueryHttpClient.GetProviderOddsType(cancellationToken);
+            Console.WriteLine($"ProviderOddsType is {response.ProviderOddsType}.");
         }
 
         private async Task AddManualSuspensionAsync(ISubscriptionHttpClient subscriptionApiClient, CancellationToken cancellationToken)

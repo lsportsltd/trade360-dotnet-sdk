@@ -35,12 +35,5 @@ namespace Trade360SDK.CustomersApi
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             return new SubscriptionHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
         }
-
-        public IPackageQueryHttpClient CreatePackageQueryHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
-        {
-            var mapper = _serviceProvider.GetRequiredService<IMapper>();
-            var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new PackageQueryHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
-        }
     }
 }

@@ -80,7 +80,6 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine("19. Subscription API - Get Package Quota");
             Console.WriteLine("20. Package Distribution API - Get Distribution Status");
             Console.WriteLine("21. Package Distribution API - Start Distribution");
-            Console.WriteLine("22. Package Information API - Get ProviderOdds type");
             Console.WriteLine("Type 'exit' to quit");
 
         }

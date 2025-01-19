@@ -16,14 +16,13 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
     public class MessageProcessor<TType, TFlow> : IMessageProcessor where TFlow : IFlow where TType : class
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IEntityHandler<TType, TFlow> _entityHandler;
+       
         private readonly ILogger<MessageProcessor<TType, TFlow>> _logger;
 
-        public MessageProcessor(IEntityHandler<TType, TFlow> entityHandler, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public MessageProcessor(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<MessageProcessor<TType, TFlow>>();
             _serviceProvider = serviceProvider;
-            _entityHandler = entityHandler;
         }
         
         

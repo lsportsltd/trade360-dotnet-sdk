@@ -9,6 +9,8 @@ namespace Trade360SDK.Common.Entities.Markets
         public string? Name { get; set; }
 
         public IEnumerable<Bet>? Bets { get; set; }
+        
+        public IEnumerable<ProviderMarket>? ProviderMarkets { get; set; }
 
         public string? MainLine { get; set; }
     }

@@ -19,8 +19,6 @@ namespace Trade360SDK.CustomersApi.Example
         private readonly IMetadataHttpClient _inplayMetadataApiClient;
         private readonly ISubscriptionHttpClient _inplaySubscriptionHttpClient;
         private readonly IPackageDistributionHttpClient _inplayPackageDistributionHttpClient;
-        private readonly IPackageQueryHttpClient _prematchPackageQueryHttpClient;
-        private readonly IPackageQueryHttpClient _inplayPackageQueryHttpClient;
 
 
         public SampleService(ILogger<SampleService> logger, ICustomersApiFactory customersApiFactory, IOptionsMonitor<Trade360Settings> settingsMonitor)
@@ -33,8 +31,6 @@ namespace Trade360SDK.CustomersApi.Example
             _inplayPackageDistributionHttpClient = customersApiFactory.CreatePackageDistributionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
             _inplayMetadataApiClient = customersApiFactory.CreateMetadataHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
             _inplaySubscriptionHttpClient = customersApiFactory.CreateSubscriptionHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
-            _prematchPackageQueryHttpClient = customersApiFactory.CreatePackageQueryHttpClient(settings.CustomersApiBaseUrl, settings.PrematchPackageCredentials);
-            _inplayPackageQueryHttpClient = customersApiFactory.CreatePackageQueryHttpClient(settings.CustomersApiBaseUrl, settings.InplayPackageCredentials);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -155,9 +151,6 @@ namespace Trade360SDK.CustomersApi.Example
                     break;
                 case "21":
                     await StartDistribution(_prematchPackageDistributionHttpClient, cancellationToken);
-                    break;
-                case "22":
-                    await GetProviderOddsType(_prematchPackageQueryHttpClient, cancellationToken);
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
@@ -389,12 +382,6 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine($"{response.Suspensions?.Count} Manual suspensions retrieved.");
         }
         
-        private async Task GetProviderOddsType(IPackageQueryHttpClient packageQueryHttpClient, CancellationToken cancellationToken)
-        {
-            var response = await packageQueryHttpClient.GetProviderOddsType(cancellationToken);
-            Console.WriteLine($"ProviderOddsType is {response.ProviderOddsType}.");
-        }
-
         private async Task AddManualSuspensionAsync(ISubscriptionHttpClient subscriptionApiClient, CancellationToken cancellationToken)
         {
             var request = new ChangeManualSuspensionRequestDto

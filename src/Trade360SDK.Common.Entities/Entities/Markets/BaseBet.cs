@@ -19,6 +19,18 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public string? Price { get; set; }
         
+        public string? PriceIN { get; set; }
+
+        public string? PriceUS { get; set; }
+
+        public string? PriceUK { get; set; }
+
+        public string? PriceMA { get; set; }
+
+        public string? PriceHK { get; set; }
+        
+        public string? PriceVolume { get; set; }
+        
         public SettlementType? Settlement { get; set; }
         
         public int? SuspensionReason { get; set; }
@@ -30,5 +42,7 @@ namespace Trade360SDK.Common.Entities.Markets
         public int? ParticipantId { get; set; }
 
         public string? PlayerName { get; set; }
+        
+        public int? IsChanged { get; set; } = -1;
     }
 }

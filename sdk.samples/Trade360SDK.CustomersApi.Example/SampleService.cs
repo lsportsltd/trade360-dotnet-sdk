@@ -380,7 +380,7 @@ namespace Trade360SDK.CustomersApi.Example
             var response = await subscriptionApiClient.GetAllManualSuspensions(cancellationToken);
             Console.WriteLine($"{response.Suspensions?.Count} Manual suspensions retrieved.");
         }
-        
+
         private async Task AddManualSuspensionAsync(ISubscriptionHttpClient subscriptionApiClient, CancellationToken cancellationToken)
         {
             var request = new ChangeManualSuspensionRequestDto

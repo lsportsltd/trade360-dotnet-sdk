@@ -8,7 +8,7 @@ internal class FixtureMarketUpdateHandlerInplay : IEntityHandler<MarketUpdate, I
 {
     public Task ProcessAsync(MessageHeader? header, MarketUpdate? entity)
     {
-        Console.WriteLine("FixtureMetadataUpdate received");
+        Console.WriteLine("MarketUpdate received");
         return Task.CompletedTask;
     }
 }

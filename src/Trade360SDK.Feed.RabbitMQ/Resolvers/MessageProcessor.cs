@@ -16,7 +16,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
     public class MessageProcessor<TType, TFlow> : IMessageProcessor where TFlow : IFlow where TType : class
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IEntityHandler<TType, TFlow> _entityHandler;
+       
         private readonly ILogger<MessageProcessor<TType, TFlow>> _logger;
 
         public MessageProcessor(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
@@ -46,7 +46,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
             {
                 if (!string.IsNullOrEmpty(body))
                 {
-                    _logger.LogWarning("Failed to deserialize message body {body}.");
+                    _logger.LogWarning($"Failed to deserialize message body {body}.");
                 }
                 message = null;
             }

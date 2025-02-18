@@ -30,7 +30,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
             services.AddHttpClient<ISubscriptionHttpClient, SubscriptionHttpClient>()
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
-            
+
             services.AddTransient<ICustomersApiFactory, CustomersApiFactory>();
             services.AddAutoMapper(typeof(MappingProfile));
             return services;

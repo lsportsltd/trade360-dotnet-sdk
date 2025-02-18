@@ -9,16 +9,16 @@ namespace Trade360SDK.Common.Entities.Markets
         
         public string? ProviderBetId { get; set; }
 
-        public double? PriceIN { get; set; }
+        public string? PriceIN { get; set; }
 
-        public double? PriceUS { get; set; }
+        public string? PriceUS { get; set; }
 
-        public double? PriceUK { get; set; }
+        public string? PriceUK { get; set; }
 
-        public double? PriceMA { get; set; }
+        public string? PriceMA { get; set; }
 
-        public double? PriceHK { get; set; }
+        public string? PriceHK { get; set; }
 
-        public int IsChanged { get; set; } = -1;
+        public int? IsChanged { get; set; } = -1;
     }
 }

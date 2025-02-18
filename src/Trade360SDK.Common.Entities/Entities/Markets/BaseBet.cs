@@ -15,9 +15,9 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public BetStatus Status { get; set; }
 
-        public double? StartPrice { get; set; }
+        public string? StartPrice { get; set; }
 
-        public double? Price { get; set; }
+        public string? Price { get; set; }
         
         public SettlementType? Settlement { get; set; }
         

@@ -46,7 +46,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
             {
                 if (!string.IsNullOrEmpty(body))
                 {
-                    _logger.LogWarning("Failed to deserialize message body {body}.");
+                    _logger.LogWarning($"Failed to deserialize message body {body}.");
                 }
                 message = null;
             }

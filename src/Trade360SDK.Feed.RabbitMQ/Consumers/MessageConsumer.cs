@@ -49,7 +49,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     return;
                 }
 
-                if (properties.Headers.TryGetValue("ServerTimestamp", out var timestampObj) && timestampObj != null)
+                if (properties.Headers.TryGetValue("timestamp_in_ms", out var timestampObj) && timestampObj != null)
                 {
                     // Directly cast to long since you know it's always a long
                     var rmqTimestampInMs = (long)timestampObj;

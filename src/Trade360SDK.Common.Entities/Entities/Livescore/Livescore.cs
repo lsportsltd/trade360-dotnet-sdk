@@ -12,5 +12,9 @@ namespace Trade360SDK.Common.Entities.Livescore
         public IEnumerable<Statistic>? Statistics { get; set; }
 
         public IEnumerable<NameValuePair>? LivescoreExtraData { get; set; }
+        
+        public CurrentIncident? CurrentIncident { get; set; }
+        
+        public IEnumerable<DangerIndicator>? DangerTriggers { get; set; }
     }
 }

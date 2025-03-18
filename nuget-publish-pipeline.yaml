@@ -1,5 +1,5 @@
 trigger:
-- main
+  - main
 
 pool: k8s-agents-ci
 
@@ -7,51 +7,73 @@ variables:
   - template: variables.yml
 
 steps:
-- checkout: self
-  fetchDepth: 0
+  - checkout: self
+    fetchDepth: 0
 
-- task: DotNetCoreCLI@2
-  displayName: "Restore Packages"
-  inputs:
-    command: 'restore'
-    projects: '$(project)'
-    feedsToUse: 'config'
-    nugetConfigPath: '$(nugetconfig)'
+  - task: DotNetCoreCLI@2
+    displayName: "Restore Packages"
+    inputs:
+      command: 'restore'
+      projects: '$(project)'
+      feedsToUse: 'config'
+      nugetConfigPath: '$(nugetconfig)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
-  inputs:
-    command: 'build'
-    projects: '$(project)'
-    arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
+  - task: DotNetCoreCLI@2
+    displayName: 'Build'
+    inputs:
+      command: 'build'
+      projects: '$(project)'
+      arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
 
-- task: DotNetCoreCLI@2
-  displayName: Run Tests
-  inputs:
-    command: 'test'
-    projects: '$(project)'
-    publishTestResults: true
-    arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: 'test'
+      projects: '$(project)'
+      publishTestResults: true
+      arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage report'
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage report'
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Pack NuGet Package'
-  inputs:
-    command: 'pack'
-    packagesToPush: '$(project)'
-    arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
+  - script: |
+      # Turn off command echoing to prevent secrets from appearing in logs
+      set +x
 
-- task: DotNetCoreCLI@2
-  displayName: 'Nuget Push to Internal Feed'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: '$(feedname)'
-    arguments: '--skip-duplicate --no-symbols'
+      # Fetch NuGet API key silently
+      echo "##[command]Fetching NuGet API key from SSM..."
+      NUGET_API_KEY=$(aws ssm get-parameter \
+        --name "/devopsr/nuget/publish_token" \
+        --with-decryption \
+        --query "Parameter.Value" \
+        --output text 2>/dev/null)
+
+      # Set the API key as a secret variable
+      echo "##vso[task.setvariable variable=nugetApiKey;issecret=true]$NUGET_API_KEY"
+
+      # Print safe message
+      echo "##[section]Successfully retrieved and set all credentials"
+    displayName: 'Get AWS credentials and NuGet API key'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Pack NuGet Package'
+    inputs:
+      command: 'pack'
+      packagesToPush: '$(project)'
+      arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
+      outputDir: '$(Build.ArtifactStagingDirectory)'
+
+  - task: NuGetAuthenticate@1
+    displayName: 'NuGet Authenticate'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Nuget Push to NuGet.org'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'NuGet.org'
+      arguments: '--api-key $(nugetApiKey) --source https://api.nuget.org/v3/index.json --skip-duplicate'

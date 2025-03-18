@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <Version>1.0.10</Version>
+    <Version>1.0.0</Version>
     <Authors>LSports Trade360</Authors>
     <Company>LSports</Company>
     <NeutralLanguage>en</NeutralLanguage>

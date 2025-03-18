@@ -72,4 +72,4 @@ steps:
       command: 'push'
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
       nuGetFeedType: 'external'
-      arguments: '--api-key $(nugetApiKey) --source https://api.nuget.org/v3/index.json --skip-duplicate'
+      arguments: '--api-key $(nugetApiKey) --source "https://api.nuget.org/v3/index.json" --skip-duplicate'

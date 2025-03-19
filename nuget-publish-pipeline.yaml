@@ -80,5 +80,6 @@ steps:
           --no-symbols
       done
     displayName: 'Push NuGet Packages'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     env:
       NUGET_API_KEY: $(nugetApiKey)

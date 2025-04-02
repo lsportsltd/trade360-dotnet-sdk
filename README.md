@@ -159,7 +159,7 @@ The AddTrade360Handlers can be used to inject handlers as following:
 
 .AddScoped<IEntityHandler<LivescoreUpdate, InPlay>, LivescoreUpdateHandlerInplay>()
 
-Explanation: According to this mapping Trade360 feed will now to map every InPlay Livescore message to your LivescoreUpdateHandlerInplay. This means that any livescore of inplay message will arrive to LivescoreUpdateHandlerInplay.
+Explanation: According to this mapping Trade360 feed will know to map every InPlay Livescore message to your LivescoreUpdateHandlerInplay. This means that any livescore sent to inplay package will arrive to LivescoreUpdateHandlerInplay.
 
 AddTrade360Handlers can look as following:
 

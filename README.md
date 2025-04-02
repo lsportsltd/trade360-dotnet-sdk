@@ -121,7 +121,75 @@ After setting the correct configuration, add the following to your dependency in
 services.AddT360RmqFeedSdk();
 services.AddTrade360Handlers();
 ```
-AddTrade360Handlers is an optional method in which handler mapping is happening.
+
+For example: CreateHostBuilder can look like this:
+
+```csharp
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                // Configure the settings for the "Inplay" feed using the "Trade360:RmqInplaySettings" section of the configuration file
+                services.Configure<RmqConnectionSettings>("Inplay", hostContext.Configuration.GetSection("Trade360:RmqInplaySettings"));
+
+                // Configure the settings for the "Prematch" feed using the "Trade360:RmqPrematchSettings" section of the configuration file
+                services.Configure<RmqConnectionSettings>("Prematch", hostContext.Configuration.GetSection("Trade360:RmqPrematchSettings"));
+                
+                // Configure the settings for CustomersApi using the "Trade360:Trade360Settings" section of the configuration file
+                services.Configure<Trade360Settings>("CustomerSettings", hostContext.Configuration.GetSection("Trade360Settings"));
+                
+                // Add the Trade360 RabbitMQ Feed SDK services to the service collection
+                services.AddT360RmqFeedSdk(hostContext.Configuration);
+
+                // Add your handlers to handle message updates
+                services.AddTrade360Handlers();
+
+                services.BuildServiceProvider();
+
+                services.AddHostedService<SampleService>();
+            });
+```
+
+AddTrade360Handlers is an optional method in which handler mapping is happening. You can define your own ServiceCollectionExtension to inject your handlers.
+The AddTrade360Handlers can be used to inject handlers as following:
+
+.AddScoped<IEntityHandler<LivescoreUpdate, InPlay>, LivescoreUpdateHandlerInplay>()
+
+Explanation: According to this mapping Trade360 feed will now to map every InPlay Livescore message to your LivescoreUpdateHandlerInplay. This means that any livescore of inplay message will arrive to LivescoreUpdateHandlerInplay.
+
+AddTrade360Handlers can look as following:
+
+```csharp
+public static IServiceCollection AddTrade360Handlers(this IServiceCollection services)
+    {
+        services
+            .AddScoped<IEntityHandler<FixtureMetadataUpdate, InPlay>, FixtureMetadataUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<HeartbeatUpdate, InPlay>, HeartbeatHandlerInplay>()
+            .AddScoped<IEntityHandler<LivescoreUpdate, InPlay>, LivescoreUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<KeepAliveUpdate, InPlay>, KeepAliveUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<SettlementUpdate, InPlay>, SettlementUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<MarketUpdate, InPlay>, FixtureMarketUpdateHandlerInplay>();
+        
+        services
+            .AddScoped<IEntityHandler<FixtureMetadataUpdate, PreMatch>, FixtureMetadataUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<HeartbeatUpdate, PreMatch>, HeartbeatHandlerPrematch>()
+            .AddScoped<IEntityHandler<LivescoreUpdate, PreMatch>, LivescoreUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<SettlementUpdate, PreMatch>, SettlementUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<MarketUpdate, PreMatch>, FixtureMarketUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightFixtureUpdate, PreMatch>, OutrightFixtureUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightLeagueUpdate, PreMatch>, OutrightLeagueUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightScoreUpdate, PreMatch>, OutrightScoreUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightSettlementsUpdate, PreMatch>, OutrightSettlementsUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightLeagueMarketUpdate, PreMatch>, OutrightLeagueMarketsUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>, OutrightFixtureMarketUpdateHandlerPrematch>();
+        
+        return services;
+    }
+```
 
 #### Implementing The Connection
 
@@ -215,44 +283,13 @@ As demonstrated above, we are injecting the IFeedFactory and creating the IFeed 
     _inplayFeed = feedFactory.CreateFeed(inplaySettings, customerSetting, FlowType.InPlay);
     ```
 
-3. **Add handlers for each type of message in AddTrade360Handlers extension method**:
-    ```csharp
-namespace Trade360SDK.Feed.Example;
-
-public static class ServiceCollectionExtensions
-{
-    public static IServiceCollection AddTrade360Handlers(this IServiceCollection services)
-    {
-        services
-            .AddScoped<IEntityHandler<FixtureMetadataUpdate, InPlay>, FixtureMetadataUpdateHandlerInplay>()
-            .AddScoped<IEntityHandler<HeartbeatUpdate, InPlay>, HeartbeatHandlerInplay>()
-            .AddScoped<IEntityHandler<LivescoreUpdate, InPlay>, LivescoreUpdateHandlerInplay>()
-            .AddScoped<IEntityHandler<KeepAliveUpdate, InPlay>, KeepAliveUpdateHandlerInplay>()
-            .AddScoped<IEntityHandler<SettlementUpdate, InPlay>, SettlementUpdateHandlerInplay>()
-            .AddScoped<IEntityHandler<MarketUpdate, InPlay>, FixtureMarketUpdateHandlerInplay>();
-    
-        services
-            .AddScoped<IEntityHandler<FixtureMetadataUpdate, PreMatch>, FixtureMetadataUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<HeartbeatUpdate, PreMatch>, HeartbeatHandlerPrematch>()
-            .AddScoped<IEntityHandler<LivescoreUpdate, PreMatch>, LivescoreUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<SettlementUpdate, PreMatch>, SettlementUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<MarketUpdate, PreMatch>, FixtureMarketUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightFixtureUpdate, PreMatch>, OutrightFixtureUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightLeagueUpdate, PreMatch>, OutrightLeagueUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightScoreUpdate, PreMatch>, OutrightScoreUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightSettlementsUpdate, PreMatch>, OutrightSettlementsUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightLeagueMarketUpdate, PreMatch>, OutrightLeagueMarketsUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>, OutrightFixtureMarketUpdateHandlerPrematch>();
-
-        return services;
-    }
-}
-    ```
-
-4. **Start the connection**:
+3. **Start the connection**:
     ```csharp
     await _inplayFeed.StartAsync(connectAtStart:true, cancellationToken);
     ```
+
+Note: You can use Trade360SDK from nuget.org and not just using the source code of the libraries.
+
 
 
 ### Using the Snapshot API <a name = "usage_snapshot_api"></a>

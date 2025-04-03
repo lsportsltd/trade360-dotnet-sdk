@@ -66,14 +66,20 @@ steps:
       arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
       outputDir: '$(Build.ArtifactStagingDirectory)'
 
-  - task: NuGetAuthenticate@1
-    displayName: 'NuGet Authenticate'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Nuget Push to NuGet.org'
-    inputs:
-      command: 'push'
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      nuGetFeedType: 'external'
-      publishFeedCredentials: 'NuGet.org'
-      arguments: '--api-key $(nugetApiKey) --source https://api.nuget.org/v3/index.json --skip-duplicate'
+  - script: |
+      echo "Pushing NuGet packages to nuget.org..."
+      # Set the API key as an environment variable
+      export NUGET_API_KEY=$(nugetApiKey)
+      
+      for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
+        echo "Pushing package: $package"
+        dotnet nuget push "$package" \
+          --api-key "$NUGET_API_KEY" \
+          --source "https://api.nuget.org/v3/index.json" \
+          --skip-duplicate \
+          --no-symbols
+      done
+    displayName: 'Push NuGet Packages'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    env:
+      NUGET_API_KEY: $(nugetApiKey)

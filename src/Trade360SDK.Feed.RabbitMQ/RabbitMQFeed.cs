@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.Common.Entities.Enums;
-using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Consumers;
@@ -70,8 +69,6 @@ namespace Trade360SDK.Feed.RabbitMQ
                 AutomaticRecoveryEnabled = true, // Enable automatic connection recovery
                 TopologyRecoveryEnabled = true // Disable topology recovery to catch the event ourselves
             };
-
-            CreateAndSetupConnection();
         }
 
         public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
@@ -86,7 +83,9 @@ namespace Trade360SDK.Feed.RabbitMQ
                     }
                     await EnsureDistributionStartedAsync(cancellationToken);
                 }
-
+            
+                CreateAndSetupConnection();
+                
                 _consumerTag = _channel.BasicConsume(
                     queue: $"_{_settings.PackageId}_",
                     autoAck: _settings.AutoAck,

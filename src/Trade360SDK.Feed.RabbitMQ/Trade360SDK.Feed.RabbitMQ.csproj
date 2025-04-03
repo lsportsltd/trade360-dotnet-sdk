@@ -3,6 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
+		<PackageVersion>1.0.1</PackageVersion>
+		<PackageReleaseNotes>
+			- 1.0.1 version includes a bug fix for the RabbitMQFeed related to the initial connection with RabbitMQ.
+		</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -14,5 +14,6 @@ namespace Trade360SDK.CustomersApi.Interfaces
         Task<IEnumerable<Market>> GetMarketsAsync(GetMarketsRequestDto request, CancellationToken cancellationToken);
         Task<TranslationResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken);
         Task<CompetitionCollectionResponse> GetCompetitionsAsync(GetCompetitionsRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<Incident>> GetIncidentsAsync(GetIncidentsRequestDto requestDto, CancellationToken cancellationToken);
     }
 }

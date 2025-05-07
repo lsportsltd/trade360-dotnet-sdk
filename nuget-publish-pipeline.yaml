@@ -5,7 +5,7 @@ pool: k8s-agents-ci
 
 variables:
   - template: variables.yml
-
+    
 steps:
   - checkout: self
     fetchDepth: 0

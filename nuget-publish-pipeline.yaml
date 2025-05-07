@@ -6,17 +6,6 @@ pool: k8s-agents-ci
 variables:
   - template: variables.yml
     
-    
-stages:
-  - template: kubernetes/ci-docker.yaml@pipeline-templates
-    parameters:
-      imageName: stm-pending-subscription-maintenance-job
-      serviceName: stm-pending-subscription-maintenance-job
-      group: trd
-      domain: trade360-application
-      product: stm
-      team: guns-n-roses
-
 steps:
   - checkout: self
     fetchDepth: 0

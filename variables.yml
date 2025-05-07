@@ -11,3 +11,8 @@ variables:
   company: "LSports"
   tags: "RabbitMQ, Trade360, SDK"
   version: "1.0.9"  # Specify your manual version here
+  serviceName: trade360-dotnet-sdk
+  group: trd
+  domain: trade360-sdk
+  product: stm
+  team: guns-n-roses

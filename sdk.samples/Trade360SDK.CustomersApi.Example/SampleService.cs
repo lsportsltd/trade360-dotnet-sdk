@@ -82,33 +82,6 @@ namespace Trade360SDK.CustomersApi.Example
                 _logger.LogError(ex, "An error occurred while retrieving data");
             }
         }
-
-        // private void ShowMenu()
-        // {
-        //     Console.WriteLine("Select an option:");
-        //     Console.WriteLine("1. Metadata API - Get Fixture Metadata");
-        //     Console.WriteLine("2. Metadata API - Get Competitions");
-        //     Console.WriteLine("3. Metadata API - Get Translations");
-        //     Console.WriteLine("4. Metadata API - Get Markets");
-        //     Console.WriteLine("5. Metadata API - Get Sports");
-        //     Console.WriteLine("6. Metadata API - Get Locations");
-        //     Console.WriteLine("7. Metadata API - Get Leagues");
-        //     Console.WriteLine("8. Subscription API - Subscribe to Fixture");
-        //     Console.WriteLine("9. Subscription API - Unsubscribe from Fixture");
-        //     Console.WriteLine("10. Subscription API - Subscribe to League");
-        //     Console.WriteLine("11. Subscription API - Unsubscribe from League");
-        //     Console.WriteLine("12. Subscription API - Get Subscribed Fixtures");
-        //     Console.WriteLine("13. Subscription API - Subscribe to Outright Competition"); //TODO: Double check models. + Outright league
-        //     Console.WriteLine("14. Subscription API - Unsubscribe from Outright Competition"); //TODO: Double check models. + Outright league
-        //     Console.WriteLine("15. Subscription API - Get Inplay Fixture Schedule");
-        //     Console.WriteLine("16. Subscription API - Get All Manual Suspensions");
-        //     Console.WriteLine("17. Subscription API - Add Manual Suspension");
-        //     Console.WriteLine("18. Subscription API - Remove Manual Suspension");
-        //     Console.WriteLine("19. Subscription API - Get Package Quota");
-        //     Console.WriteLine("20. Package Distribution API - Get Distribution Status");
-        //     Console.WriteLine("21. Package Distribution API - Start Distribution");
-        //     Console.WriteLine("Type 'exit' to quit");
-        // }
         
         private void ShowMenu()
         {
@@ -119,79 +92,6 @@ namespace Trade360SDK.CustomersApi.Example
             }
             Console.WriteLine("Type 'exit' to quit");
         }
-
-        // private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
-        // {
-        //     switch (choice)
-        //     {
-        //         case "1":
-        //             await GetFixtureMetadata(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "2":
-        //             await GetCompetitions(_prematchMetadataHttpClient, cancellationToken);
-        //             break;
-        //         case "3":
-        //             await GetTranslations(_prematchMetadataHttpClient, cancellationToken); 
-        //             break;
-        //         case "4":
-        //             await GetMarkets(_prematchMetadataHttpClient, cancellationToken);
-        //             break;
-        //         case "5":
-        //             await GetSports(_prematchMetadataHttpClient, cancellationToken);
-        //             break;
-        //         case "6":
-        //             await GetLocations(_prematchMetadataHttpClient, cancellationToken);
-        //             break;
-        //         case "7":
-        //             await GetLeagues(_prematchMetadataHttpClient, cancellationToken);
-        //             break;
-        //         case "8":
-        //             await SubscribeToFixture(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "9":
-        //             await UnsubscribeFromFixture(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "10":
-        //             await SubscribeToLeague(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "11":
-        //             await UnsubscribeFromLeague(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "12":
-        //             await GetSubscribedFixtures(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "13":
-        //             await SubscribeToOutrightCompetition(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "14":
-        //             await UnsubscribeFromOutrightCompetition(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "15":
-        //             await GetInplayFixtureSchedule(_inplaySubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "16":
-        //             await GetAllManualSuspensionsAsync(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "17":
-        //             await AddManualSuspensionAsync(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "18":
-        //             await RemoveManualSuspensionAsync(_prematchSubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "19":
-        //             await GetPackageQuota(_inplaySubscriptionHttpClient, cancellationToken);
-        //             break;
-        //         case "20":
-        //             await GetDistributionStatus(_prematchPackageDistributionHttpClient, cancellationToken);
-        //             break;
-        //         case "21":
-        //             await StartDistribution(_prematchPackageDistributionHttpClient, cancellationToken);
-        //             break;
-        //         default:
-        //             Console.WriteLine("Invalid choice. Please try again.");
-        //             break;
-        //     }
-        // }
         
         private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
         {
@@ -485,11 +385,11 @@ namespace Trade360SDK.CustomersApi.Example
         {
             var request = new GetIncidentsRequestDto
             {
-                Filters = new IncidentFilter
+                Filter = new IncidentFilterDto
                 {
                     Ids = null,
                     Sports = null,
-                    CreationDate = null,
+                    From = null,
                     SearchText = null
                 }
             };
@@ -508,8 +408,18 @@ namespace Trade360SDK.CustomersApi.Example
             _logger.LogInformation("Service is stopping.");
             return Task.CompletedTask;
         }
-
-
+        
+        #region Helper's
+        private static string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            if (field != null && Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+            {
+                return attribute.Description;
+            }
+            return value.ToString();
+        }
+        
         private enum MenuOption
         {
             [Description("Metadata API - Get Fixture Metadata")]
@@ -578,15 +488,6 @@ namespace Trade360SDK.CustomersApi.Example
             [Description("Package Distribution API - Start Distribution")]
             StartDistribution
         }
-        
-        private static string GetEnumDescription(Enum value)
-        {
-            var field = value.GetType().GetField(value.ToString());
-            if (field != null && Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-            {
-                return attribute.Description;
-            }
-            return value.ToString();
-        }
+        #endregion
     }
 }

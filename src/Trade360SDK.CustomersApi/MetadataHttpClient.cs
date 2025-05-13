@@ -88,7 +88,7 @@ namespace Trade360SDK.CustomersApi
         {
             var request = _mapper.Map<GetIncidentsRequest>(requestDto);
             var response = await PostEntityAsync<GetIncidentsResponse>("Incidents/Get", request, cancellationToken);
-            return response.Incidents ?? Enumerable.Empty<Incident>();
+            return response.Data ?? Enumerable.Empty<Incident>();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
 {
     public class GetIncidentsResponse {
-        public IEnumerable<Incident>? Incidents { get; set; }
+        public IEnumerable<Incident>? Data { get; set; }
     }
         
     public class Incident

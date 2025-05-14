@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
+using Trade360SDK.Common.Entities.Incidents;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Http;
@@ -84,5 +85,11 @@ namespace Trade360SDK.CustomersApi
             return response;
         }
 
+        public async Task<IEnumerable<Incident>> GetIncidentsAsync(GetIncidentsRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetIncidentsRequest>(requestDto);
+            var response = await PostEntityAsync<GetIncidentsResponse>("Incidents/Get", request, cancellationToken);
+            return response.Data ?? Enumerable.Empty<Incident>();
+        }
     }
 }

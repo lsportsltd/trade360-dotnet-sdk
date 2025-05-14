@@ -30,11 +30,11 @@ stages:
           # Set the API key as an environment variable
           export NUGET_API_KEY=$(nugetApiKey)
           
-      for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
-        echo "Pushing package: $package"
-        dotnet nuget push "$package" \
-          --api-key "$NUGET_API_KEY" \
-          --source "https://api.nuget.org/v3/index.json" \
-          --skip-duplicate \
-          --no-symbols
-      done
+          for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
+            echo "Pushing package: $package"
+            dotnet nuget push "$package" \
+              --api-key "$NUGET_API_KEY" \
+              --source "https://api.nuget.org/v3/index.json" \
+              --skip-duplicate \
+              --no-symbols
+          done

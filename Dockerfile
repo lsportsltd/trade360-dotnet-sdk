@@ -21,6 +21,8 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
+RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ')"
+
 FROM build AS publish
 WORKDIR /src/trade360-dotnet-sdk
 RUN dotnet publish -c Release --no-restore -o /app/publish

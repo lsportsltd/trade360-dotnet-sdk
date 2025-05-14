@@ -19,11 +19,17 @@ stages:
       domain: trade360-sdk
       product: stm
       team: guns-n-roses
-  - script: |
-      echo "Pushing NuGet packages to nuget.org..."
-      # Set the API key as an environment variable
-      export NUGET_API_KEY=$(nugetApiKey)
-      
+  - stage: PublishToNuGet
+    displayName: 'Push NuGet Packages'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    env:
+      NUGET_API_KEY: $(nugetApiKey)
+    steps:
+      - script: |
+          echo "Pushing NuGet packages to nuget.org..."
+          # Set the API key as an environment variable
+          export NUGET_API_KEY=$(nugetApiKey)
+          
       for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
         echo "Pushing package: $package"
         dotnet nuget push "$package" \
@@ -32,7 +38,3 @@ stages:
           --skip-duplicate \
           --no-symbols
       done
-    displayName: 'Push NuGet Packages'
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-    env:
-      NUGET_API_KEY: $(nugetApiKey)

@@ -8,6 +8,8 @@ using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 using Trade360SDK.CustomersApi.Interfaces;
 using Suspension = Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests.Suspension;
 using System.ComponentModel;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trade360SDK.CustomersApi.Example
 {
@@ -388,19 +390,18 @@ namespace Trade360SDK.CustomersApi.Example
                 Filter = new IncidentFilterDto
                 {
                     Ids = null,
-                    Sports = null,
+                    Sports = new List<int> {6046},
                     From = null,
                     SearchText = null
                 }
             };
             
             var response = await metadataApiClient.GetIncidentsAsync(request, cancellationToken);
-            var incidentsList = response.ToList();
-            Console.WriteLine($"Response returned {incidentsList.Count} Incidents:");
-            foreach (var incident in incidentsList)
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
             {
-                Console.WriteLine($"IncidentId: {incident.IncidentId}, LeagueName: {incident.IncidentName}");
-            }
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

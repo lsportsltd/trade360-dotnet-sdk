@@ -1,0 +1,38 @@
+resources:
+  repositories:
+    - repository: pipeline-templates
+      type: github
+      name: lsportsltd/devops-pipeline-templates
+      endpoint: lsportsltd
+      
+trigger:
+  - main
+  - update-ci
+
+stages:
+  - template: kubernetes/ci-docker.yaml@pipeline-templates
+    parameters:
+      serviceName: trade360_dotnet_sdk
+      dockerUT: true
+      cloud: aws
+      group: trd
+      domain: trade360-sdk
+      product: stm
+      team: guns-n-roses
+  - script: |
+      echo "Pushing NuGet packages to nuget.org..."
+      # Set the API key as an environment variable
+      export NUGET_API_KEY=$(nugetApiKey)
+      
+      for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
+        echo "Pushing package: $package"
+        dotnet nuget push "$package" \
+          --api-key "$NUGET_API_KEY" \
+          --source "https://api.nuget.org/v3/index.json" \
+          --skip-duplicate \
+          --no-symbols
+      done
+    displayName: 'Push NuGet Packages'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    env:
+      NUGET_API_KEY: $(nugetApiKey)

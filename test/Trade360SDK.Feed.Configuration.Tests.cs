@@ -1,7 +1,7 @@
 using Trade360SDK.Feed.Configuration;
 using Xunit;
 
-namespace Trade360SDK.Feed.Tests
+namespace Trade360SDK.Feed.Test
 {
     public class RmqConnectionSettingsTests
     {

@@ -12,6 +12,9 @@ RUN dotnet build --no-restore --configuration Release
 # ---- Test & Coverage Stage ----
 FROM build AS test
 RUN dotnet add tests/Trade360SDK.Common.Tests package coverlet.collector
+# Ensure coverage directory exists before running tests
+RUN mkdir -p tests/Trade360SDK.Common.Tests/coverage
+RUN mkdir -p coverage
 RUN dotnet test tests/Trade360SDK.Common.Tests/Trade360SDK.Common.Tests.csproj \
     --no-build --configuration Release \
     /p:CollectCoverage=true \

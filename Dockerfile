@@ -1,53 +1,52 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-
+# ---- Base .NET SDK ----
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG TOKEN
-WORKDIR /.
+
+# Set working directory
+WORKDIR /src
+
+# Copy project files
 COPY . .
+
+# NuGet token (if needed for private feeds)
+ARG TOKEN
+ENV TOKEN=${TOKEN}
+
+# Codacy args
+ARG CODACY_TOKEN
+ARG SERVICE_NAME=trade360-dotnet-sdk
+
+# Restore dependencies
 RUN dotnet restore --configfile ./nuget/nuget.config
+
+# Build the project (Release)
 RUN dotnet build -c Release --no-restore
 
-FROM build as test
-ARG CODACY_TOKEN
-# Run tests
+# Test with coverage
 RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-# Codacy Config
+# Move coverage file to known location for Codacy
+RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/coverage.cobertura.xml \;
+
+# Codacy environment variables
 ENV CODACY_API_TOKEN=${CODACY_TOKEN}
 ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
-ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
+ENV CODACY_PROJECT_NAME=${SERVICE_NAME}
 
-RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh \
-    && bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
+# Send coverage report to Codacy
+RUN apt-get update && apt-get install -y --no-install-recommends wget bash && \
+    wget -qO - https://coverage.codacy.com/get.sh | bash -s -- report -l CSharp -r ./coverage/coverage.cobertura.xml
 
-FROM build AS publish
-WORKDIR /src/LSports.STM.Snapshot.Application
+# Publish the application
 RUN dotnet publish -c Release --no-restore -o /app/publish
 
-FROM base AS final
+# ---- Runtime Image ----
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 
-# DATADOG Config
-
-# Set environment variables so the Tracer can actually work and collect the traces from the app
-ENV CORECLR_ENABLE_PROFILING=1
-ENV CORECLR_PROFILER={846F5F1C-F9AE-4B07-969E-05C26BC060D8}
-ENV CORECLR_PROFILER_PATH=/app/datadog/linux-x64/Datadog.Trace.ClrProfiler.Native.so
-ENV DD_DOTNET_TRACER_HOME=/app/datadog
-
-# The following env var is to enable Trace - Logs correlation
-ENV DD_LOGS_INJECTION=1
-
-#This ensures the consumer span is correctly closed immediately after the message is consumed from the topic, and the metadata (such as partition and offset) is recorded correctly. 
-#Spans created from Kafka messages using the SpanContextExtractor API are children of the producer span, and siblings of the consumer span.
-ENV DD_TRACE_KAFKA_CREATE_CONSUMER_SCOPE_ENABLED=false
-
-# Script to create the directory for the log files
-RUN /app/datadog/createLogPath.sh
-
+# Set entrypoint (update DLL name as needed)
 ENTRYPOINT ["dotnet", "trade360-dotnet-sdk.Application.dll"]
+

@@ -3,6 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
+		<PackageVersion>1.0.1</PackageVersion>
+		<PackageReleaseNotes>
+			- 1.0.1 version includes a new customer api endpoint for GetIncidents.
+		</PackageReleaseNotes>
 	</PropertyGroup>
 
   <ItemGroup>

@@ -36,8 +36,7 @@ ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=${SERVICE_NAME}
 
 # Send coverage report to Codacy
-RUN apt-get update && apt-get install -y --no-install-recommends wget bash && \
-    wget -qO - https://coverage.codacy.com/get.sh | bash -s -- report -l CSharp -r ./coverage/coverage.cobertura.xml
+RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ') --commit-uuid $(git rev-parse HEAD)"
 
 # Publish the application
 RUN dotnet publish -c Release --no-restore -o /app/publish

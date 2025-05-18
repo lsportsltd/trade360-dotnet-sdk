@@ -21,7 +21,8 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
-RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ')"
+RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh \
+    && bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
 
 # DATADOG Config
 

@@ -24,6 +24,14 @@ ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh \
     && bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
 
+FROM build AS publish
+WORKDIR /src/LSports.STM.Snapshot.Application
+RUN dotnet publish -c Release --no-restore -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
 # DATADOG Config
 
 # Set environment variables so the Tracer can actually work and collect the traces from the app

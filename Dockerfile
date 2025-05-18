@@ -11,6 +11,9 @@ RUN dotnet build -c Release --no-restore
 FROM build as test
 ARG CODACY_TOKEN
 
+# Install Java for Codacy coverage reporter
+RUN apt-get update && apt-get install -y default-jre
+
 # Run tests
 RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
 

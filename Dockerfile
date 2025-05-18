@@ -6,20 +6,24 @@ WORKDIR /src
 COPY . .
 ARG TOKEN
 ENV TOKEN=${TOKEN}
+# Clean any previous build artifacts for a clean build
+RUN dotnet clean
 RUN dotnet restore
 RUN dotnet build --no-restore --configuration Release
 
 # ---- Test & Coverage Stage ----
 FROM build AS test
+# Ensure test project has coverlet.collector (idempotent)
 RUN dotnet add tests/Trade360SDK.Common.Tests package coverlet.collector
-# Ensure coverage directory exists before running tests
-RUN mkdir -p tests/Trade360SDK.Common.Tests/coverage
+# Ensure coverage directory exists at root
 RUN mkdir -p coverage
+# Run tests and collect coverage; fail if no tests are found or on misconfiguration
 RUN dotnet test tests/Trade360SDK.Common.Tests/Trade360SDK.Common.Tests.csproj \
     --no-build --configuration Release \
     /p:CollectCoverage=true \
     /p:CoverletOutputFormat=cobertura \
-    /p:CoverletOutput=./coverage/coverage.cobertura.xml
+    /p:CoverletOutput=./coverage/coverage.cobertura.xml \
+    --logger "trx;LogFileName=TestResults.trx"
 
 # (Optional) Coverage upload to Codacy (uncomment if you want to upload in Docker build)
 ARG CODACY_TOKEN

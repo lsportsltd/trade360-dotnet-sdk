@@ -19,7 +19,7 @@ ENV CODACY_API_TOKEN=${CODACY_TOKEN}
 ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
-RUN wget -qO - https://coverage.codacy.com/get.sh | bash -s -- report -l CSharp -r ./coverage/coverage.cobertura.xml
+RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ') --commit-uuid $(git rev-parse HEAD)"
 
 # ---- Publish Stage ----
 FROM build AS publish

@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -24,6 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Example", "sdk.samples\Trade360SDK.SnapshotApi.Example\Trade360SDK.SnapshotApi.Example.csproj", "{A3A7E388-2FCD-4A6F-9B81-BCBBFDD6B15A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Microsoft.DependencyInjection", "src\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj", "{D0651137-2737-48AD-8E2B-F62933AC0C88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Common.Tests", "tests/Trade360SDK.Common.Tests/Trade360SDK.Common.Tests.csproj", "{B1A1B1A1-B1A1-B1A1-B1A1-B1A1B1A1B1A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

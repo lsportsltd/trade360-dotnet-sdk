@@ -18,6 +18,9 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
     {
         public static IServiceCollection AddTrade360CustomerApiClient(this IServiceCollection services, IConfiguration configuration)
         {
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
             // Register HttpClients with resiliency policies
             services.AddHttpClient<IMetadataHttpClient, MetadataHttpClient>()
                 .AddPolicyHandler(GetRetryPolicy())

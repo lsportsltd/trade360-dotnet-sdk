@@ -9,6 +9,6 @@ namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
         public IEnumerable<int>? LeagueIds { get; set; }
         public IEnumerable<int>? MarketIds { get; set; }
         public IEnumerable<int>? ParticipantIds { get; set; }
-        public IEnumerable<int>? Languages { get; set; }
+        public IEnumerable<string>? Languages { get; set; }
     }
 }

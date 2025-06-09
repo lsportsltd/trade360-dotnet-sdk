@@ -251,7 +251,7 @@ namespace Trade360SDK.CustomersApi.Example
             var request = new GetTranslationsRequestDto
             {
                 SportIds = new[] { 6046 },
-                Languages = new[] { 4 }
+                Languages = new[] { "4" }
             };
             var response = await metadataApiClient.GetTranslationsAsync(request, cancellationToken);
             Console.WriteLine($"Count of translations received Sports: {response.Sports?.Count}, Leagues: {response.Leagues?.Count}, Locations: {response.Locations?.Count} Translations retrieved.");

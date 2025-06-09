@@ -12,20 +12,20 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 public class MessageProcessorTests
 {
     private readonly Mock<IServiceProvider> _mockServiceProvider;
-    private readonly Mock<ILoggerFactory> _mockLoggerFactory;
-    private readonly Mock<ILogger> _mockLogger;
     private readonly Mock<IEntityHandler<TestEntity, TestFlow>> _mockEntityHandler;
 
     public MessageProcessorTests()
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
-        _mockLogger = new Mock<ILogger>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var mockLogger = new Mock<ILogger>();
         _mockEntityHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
 
-        _mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>()))
-                         .Returns(_mockLogger.Object);
+        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>()))
+                         .Returns(mockLogger.Object);
 
+        _mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory)))
+                           .Returns(mockLoggerFactory.Object);
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(IEntityHandler<TestEntity, TestFlow>)))
                            .Returns(_mockEntityHandler.Object);
     }
@@ -43,7 +43,8 @@ public class MessageProcessorTests
     [Fact]
     public void Constructor_ShouldInitializeCorrectly()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
 
         processor.Should().NotBeNull();
     }
@@ -51,7 +52,8 @@ public class MessageProcessorTests
     [Fact]
     public void GetTypeOfTType_ShouldReturnCorrectType()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
 
         var result = processor.GetTypeOfTType();
 
@@ -61,7 +63,8 @@ public class MessageProcessorTests
     [Fact]
     public void GetTypeOfTFlow_ShouldReturnCorrectType()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
 
         var result = processor.GetTypeOfTFlow();
 
@@ -71,7 +74,8 @@ public class MessageProcessorTests
     [Fact]
     public async Task ProcessAsync_WithValidJson_ShouldDeserializeAndCallHandler()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
         var entity = new TestEntity { Name = "Test", Id = 1 };
         var json = JsonSerializer.Serialize(entity);
@@ -84,7 +88,15 @@ public class MessageProcessorTests
     [Fact]
     public async Task ProcessAsync_WithInvalidJson_ShouldCallHandlerWithNull()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var mockLogger = new Mock<ILogger>();
+        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory))).Returns(mockLoggerFactory.Object);
+        mockServiceProvider.Setup(sp => sp.GetService(typeof(IEntityHandler<TestEntity, TestFlow>))).Returns(_mockEntityHandler.Object);
+        
+        var processor = new MessageProcessor<TestEntity, TestFlow>(mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
         var invalidJson = "{ invalid json }";
 
@@ -96,7 +108,8 @@ public class MessageProcessorTests
     [Fact]
     public async Task ProcessAsync_WithNullBody_ShouldCallHandlerWithNull()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
         await processor.ProcessAsync(typeof(TestEntity), header, null);
@@ -107,7 +120,8 @@ public class MessageProcessorTests
     [Fact]
     public async Task ProcessAsync_WithEmptyBody_ShouldCallHandlerWithNull()
     {
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
         await processor.ProcessAsync(typeof(TestEntity), header, string.Empty);
@@ -121,7 +135,8 @@ public class MessageProcessorTests
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(IEntityHandler<TestEntity, TestFlow>)))
                            .Returns((IEntityHandler<TestEntity, TestFlow>?)null);
 
-        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
         Func<Task> act = async () => await processor.ProcessAsync(typeof(TestEntity), header, "{}");

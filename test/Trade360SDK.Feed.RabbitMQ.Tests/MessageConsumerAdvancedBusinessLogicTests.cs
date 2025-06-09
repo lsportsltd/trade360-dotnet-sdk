@@ -12,7 +12,6 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 public class MessageConsumerAdvancedBusinessLogicTests
 {
     private readonly Mock<IMessageProcessorContainer> _mockProcessorContainer;
-    private readonly Mock<ILoggerFactory> _mockLoggerFactory;
     private readonly Mock<ILogger> _mockLogger;
     private readonly Mock<IModel> _mockChannel;
     private readonly Mock<IMessageProcessor> _mockProcessor;
@@ -21,7 +20,7 @@ public class MessageConsumerAdvancedBusinessLogicTests
     public MessageConsumerAdvancedBusinessLogicTests()
     {
         _mockProcessorContainer = new Mock<IMessageProcessorContainer>();
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockLogger = new Mock<ILogger>();
         _mockChannel = new Mock<IModel>();
         _mockProcessor = new Mock<IMessageProcessor>();
@@ -39,7 +38,7 @@ public class MessageConsumerAdvancedBusinessLogicTests
             NetworkRecoveryInterval = 20
         };
 
-        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
         _mockProcessorContainer.Setup(x => x.GetMessageProcessor(It.IsAny<int>())).Returns(_mockProcessor.Object);
     }
 
@@ -80,11 +79,11 @@ public class MessageConsumerAdvancedBusinessLogicTests
     [Fact]
     public void MessageConsumer_BusinessLogic_ShouldValidateLoggerFactory()
     {
-        _mockLoggerFactory.Should().NotBeNull();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockLogger.Should().NotBeNull();
         
-        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
-        var logger = _mockLoggerFactory.Object.CreateLogger(typeof(object));
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        var logger = mockLoggerFactory.Object.CreateLogger(typeof(object));
         logger.Should().Be(_mockLogger.Object);
     }
 

@@ -77,6 +77,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -97,6 +98,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -117,6 +119,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseOutrightRequest>(requestDto), Times.Once);
@@ -137,6 +140,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseOutrightRequest>(requestDto), Times.Once);
@@ -157,6 +161,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -177,6 +182,7 @@ public class SnapshotPrematchApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);

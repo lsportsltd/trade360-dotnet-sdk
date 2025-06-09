@@ -12,24 +12,21 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class CustomersApiFactoryTests
 {
     private readonly Mock<IServiceProvider> _mockServiceProvider;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<HttpClient> _mockHttpClient;
 
     public CustomersApiFactoryTests()
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
-        _mockMapper = new Mock<IMapper>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockHttpClient = new Mock<HttpClient>();
+        var mockMapper = new Mock<IMapper>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClient = new Mock<HttpClient>();
 
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(IMapper)))
-                           .Returns(_mockMapper.Object);
+                           .Returns(mockMapper.Object);
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(IHttpClientFactory)))
-                           .Returns(_mockHttpClientFactory.Object);
+                           .Returns(mockHttpClientFactory.Object);
 
-        _mockHttpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>()))
-                             .Returns(_mockHttpClient.Object);
+        mockHttpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>()))
+                             .Returns(mockHttpClient.Object);
     }
 
     [Fact]

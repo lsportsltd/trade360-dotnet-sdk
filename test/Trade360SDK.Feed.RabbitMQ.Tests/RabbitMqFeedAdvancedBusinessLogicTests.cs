@@ -15,7 +15,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 
 public class RabbitMqFeedAdvancedBusinessLogicTests
 {
-    private readonly Mock<ILoggerFactory> _mockLoggerFactory;
+
     private readonly Mock<ILogger> _mockLogger;
     private readonly Mock<IMessageProcessorContainer> _mockProcessorContainer;
     private readonly Mock<ICustomersApiFactory> _mockCustomersApiFactory;
@@ -25,13 +25,10 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
 
     public RabbitMqFeedAdvancedBusinessLogicTests()
     {
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockLogger = new Mock<ILogger>();
         _mockProcessorContainer = new Mock<IMessageProcessorContainer>();
         _mockCustomersApiFactory = new Mock<ICustomersApiFactory>();
         _mockDistributionClient = new Mock<IPackageDistributionHttpClient>();
-
-        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
         _mockCustomersApiFactory.Setup(x => x.CreatePackageDistributionHttpClient(It.IsAny<string>(), It.IsAny<PackageCredentials>()))
                                 .Returns(_mockDistributionClient.Object);
 
@@ -71,6 +68,9 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Constructor_WithInvalidSettings_ShouldThrowArgumentException()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var invalidSettings = new RmqConnectionSettings
         {
             Host = "",
@@ -84,7 +84,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         };
 
         Action act = () => new RabbitMqFeed(invalidSettings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         act.Should().Throw<ArgumentException>();
     }
@@ -92,8 +92,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Constructor_WithInPlayFlow_ShouldConfigureInPlayCredentials()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         _mockCustomersApiFactory.Verify(x => x.CreatePackageDistributionHttpClient(
             "https://api.example.com",
@@ -106,8 +109,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Constructor_WithPreMatchFlow_ShouldConfigurePreMatchCredentials()
     {
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.PreMatch, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
+        new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+            FlowType.PreMatch, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         _mockCustomersApiFactory.Verify(x => x.CreatePackageDistributionHttpClient(
             "https://api.example.com",
@@ -120,8 +126,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Constructor_WithInvalidFlowType_ShouldThrowArgumentException()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         Action act = () => new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            (FlowType)999, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            (FlowType)999, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         act.Should().Throw<ArgumentException>().WithMessage("*Not recognized flow type*");
     }
@@ -129,8 +138,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public async Task StartAsync_WithConnectAtStartFalse_ShouldSkipDistributionCheck()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(false, CancellationToken.None);
 
@@ -142,8 +154,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public async Task StartAsync_WithNoCustomersApiConfiguration_ShouldThrowArgumentException()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -156,8 +171,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.GetDistributionStatusAsync(It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new GetDistributionStatusResponse { IsDistributionOn = true });
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -170,7 +188,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Distribution is already on")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Distribution is already on")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -186,8 +204,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.StartDistributionAsync(It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new StartDistributionResponse());
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -200,7 +221,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Distribution is off. Attempting to start")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Distribution is off. Attempting to start")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -215,8 +236,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.StartDistributionAsync(It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new StartDistributionResponse());
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -234,8 +258,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.GetDistributionStatusAsync(It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new GetDistributionStatusResponse { IsDistributionOn = false });
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, cts.Token);
 
@@ -245,7 +272,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Distribution start operation was canceled")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Distribution start operation was canceled")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -260,8 +287,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.StartDistributionAsync(It.IsAny<CancellationToken>()))
                               .ThrowsAsync(new HttpRequestException("Network error"));
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -271,7 +301,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed StartDistribution")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed StartDistribution")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.AtLeast(1));
@@ -283,8 +313,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockDistributionClient.Setup(x => x.GetDistributionStatusAsync(It.IsAny<CancellationToken>()))
                               .ThrowsAsync(new HttpRequestException("API error"));
 
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
 
@@ -294,7 +327,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Got inappropriate GetDistributionEnabled response")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Got inappropriate GetDistributionEnabled response")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.AtLeast(1));
@@ -303,8 +336,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public async Task StopAsync_WithActiveConnection_ShouldCloseGracefully()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         await feed.StopAsync(CancellationToken.None);
 
@@ -312,7 +348,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("RabbitMQ connection closed")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("RabbitMQ connection closed")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -321,8 +357,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public async Task StopAsync_WithException_ShouldThrowRabbitMqFeedException()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         await feed.StopAsync(CancellationToken.None);
 
@@ -330,7 +369,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("RabbitMQ connection closed")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("RabbitMQ connection closed")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -339,8 +378,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Dispose_ShouldLogDisposalAndCleanupResources()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         feed.Dispose();
 
@@ -348,7 +390,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Disposing RabbitMQ resources")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Disposing RabbitMQ resources")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -357,7 +399,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("RabbitMQFeed disposed successfully")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("RabbitMQFeed disposed successfully")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -366,8 +408,11 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     [Fact]
     public void Dispose_WithException_ShouldThrowRabbitMqFeedException()
     {
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        
         var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
-            FlowType.InPlay, _mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
+            FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         feed.Dispose();
 

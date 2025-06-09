@@ -67,8 +67,6 @@ public class SnapshotInplayApiClientTests
         var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
         var requestDto = new GetFixturesRequestDto();
         var mappedRequest = new BaseStandardRequest();
-        var expectedResponse = new List<FixtureEvent>();
-
         _mockMapper.Setup(m => m.Map<BaseStandardRequest>(requestDto)).Returns(mappedRequest);
 
         try
@@ -77,6 +75,7 @@ public class SnapshotInplayApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -97,6 +96,7 @@ public class SnapshotInplayApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -117,6 +117,7 @@ public class SnapshotInplayApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
@@ -137,6 +138,7 @@ public class SnapshotInplayApiClientTests
         }
         catch
         {
+            // Devin: Expected exception in test - verifying method call behavior only
         }
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);

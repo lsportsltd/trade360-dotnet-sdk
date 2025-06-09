@@ -15,27 +15,25 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 public class RabbitMqFeedFactoryTests
 {
     private readonly Mock<IServiceProvider> _mockServiceProvider;
-    private readonly Mock<ILoggerFactory> _mockLoggerFactory;
-    private readonly Mock<ICustomersApiFactory> _mockCustomersApiFactory;
     private readonly IMessageProcessorContainer _mockInPlayContainer;
     private readonly IMessageProcessorContainer _mockPreMatchContainer;
 
     public RabbitMqFeedFactoryTests()
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
-        _mockCustomersApiFactory = new Mock<ICustomersApiFactory>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        var mockCustomersApiFactory = new Mock<ICustomersApiFactory>();
         var mockProcessors = new List<IMessageProcessor>();
         _mockInPlayContainer = new MessageProcessorContainer<InPlay>(mockProcessors);
         _mockPreMatchContainer = new MessageProcessorContainer<PreMatch>(mockProcessors);
 
         var mockLogger = new Mock<ILogger>();
-        _mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
 
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory)))
-                           .Returns(_mockLoggerFactory.Object);
+                           .Returns(mockLoggerFactory.Object);
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(ICustomersApiFactory)))
-                           .Returns(_mockCustomersApiFactory.Object);
+                           .Returns(mockCustomersApiFactory.Object);
     }
 
     [Fact]

@@ -12,18 +12,15 @@ namespace Trade360SDK.SnapshotApi.Tests;
 public class Trade360SettingsAdvancedBusinessLogicTests
 {
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<ILogger<BaseHttpClient>> _mockLogger;
     private readonly HttpClient _httpClient;
     private readonly Trade360Settings _settings;
 
     public Trade360SettingsAdvancedBusinessLogicTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockLogger = new Mock<ILogger<BaseHttpClient>>();
+        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
-        _httpClient = new HttpClient(_mockHttpMessageHandler.Object)
+        _httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
             BaseAddress = new Uri("https://api.example.com/")
         };

@@ -13,7 +13,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 public class MessageProcessorAdvancedBusinessLogicTests
 {
     private readonly Mock<IServiceProvider> _mockServiceProvider;
-    private readonly Mock<ILoggerFactory> _mockLoggerFactory;
+
     private readonly Mock<ILogger<MessageProcessor<MarketUpdate, InPlay>>> _mockLogger;
     private readonly Mock<IEntityHandler<MarketUpdate, InPlay>> _mockHandler;
     private readonly MessageProcessor<MarketUpdate, InPlay> _processor;
@@ -21,15 +21,15 @@ public class MessageProcessorAdvancedBusinessLogicTests
     public MessageProcessorAdvancedBusinessLogicTests()
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockLogger = new Mock<ILogger<MessageProcessor<MarketUpdate, InPlay>>>();
         _mockHandler = new Mock<IEntityHandler<MarketUpdate, InPlay>>();
 
-        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>()))
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>()))
             .Returns(_mockLogger.Object);
         _mockServiceProvider.Setup(x => x.GetService(typeof(IEntityHandler<MarketUpdate, InPlay>))).Returns(_mockHandler.Object);
 
-        _processor = new MessageProcessor<MarketUpdate, InPlay>(_mockServiceProvider.Object, _mockLoggerFactory.Object);
+        _processor = new MessageProcessor<MarketUpdate, InPlay>(_mockServiceProvider.Object, mockLoggerFactory.Object);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed to deserialize message body")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed to deserialize message body")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -237,7 +237,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed to deserialize message body")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed to deserialize message body")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);

@@ -111,7 +111,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", " ", "es" },
+            Languages = new[] { "en", " ", "es" },
             SportIds = new[] { 1 }
         };
 

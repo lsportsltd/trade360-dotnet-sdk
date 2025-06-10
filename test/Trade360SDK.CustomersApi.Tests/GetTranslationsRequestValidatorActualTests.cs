@@ -41,7 +41,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", null!, "es" },
+            Languages = new[] { "en", null!, "es" },
             SportIds = new[] { 1 }
         };
 
@@ -56,7 +56,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", " ", "es" },
+            Languages = new[] { "en", " ", "es" },
             SportIds = new[] { 1 }
         };
 

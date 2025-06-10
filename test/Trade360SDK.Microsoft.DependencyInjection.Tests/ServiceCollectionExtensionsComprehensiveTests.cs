@@ -13,10 +13,6 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Tests;
 
 public class ServiceCollectionExtensionsComprehensiveTests
 {
-    public ServiceCollectionExtensionsComprehensiveTests()
-    {
-    }
-
     [Fact]
     public void AddTrade360CustomerApiClient_WithValidConfiguration_ShouldRegisterServices()
     {

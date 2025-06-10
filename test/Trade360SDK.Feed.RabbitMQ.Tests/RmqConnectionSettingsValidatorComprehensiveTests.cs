@@ -168,6 +168,8 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
         RmqConnectionSettings? nullSettings = null;
 
         var act = () => RmqConnectionSettingsValidator.Validate(nullSettings!);
+        
+        act.Should().Throw<NullReferenceException>();
     }
 
     [Theory]

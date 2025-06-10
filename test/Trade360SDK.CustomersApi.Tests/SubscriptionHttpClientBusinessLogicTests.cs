@@ -25,7 +25,7 @@ public class SubscriptionHttpClientBusinessLogicTests
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        var mockLogger = new Mock<ILogger<SubscriptionHttpClient>>();
+
         _mockMapper = new Mock<IMapper>();
         
         var settings = new Trade360Settings
@@ -112,7 +112,7 @@ public class SubscriptionHttpClientBusinessLogicTests
             });
 
         _mockMapper.Setup(x => x.Map<GetSubscriptionRequest>(It.IsAny<GetSubscriptionRequestDto>()))
-            .Returns((GetSubscriptionRequestDto dto) => new GetSubscriptionRequest());
+            .Returns(new GetSubscriptionRequest());
 
         _mockMapper.Setup(x => x.Map<ChangeManualSuspensionRequest>(It.IsAny<ChangeManualSuspensionRequestDto>()))
             .Returns((ChangeManualSuspensionRequestDto dto) => new ChangeManualSuspensionRequest 
@@ -128,7 +128,7 @@ public class SubscriptionHttpClientBusinessLogicTests
             });
 
         _mockMapper.Setup(x => x.Map<GetFixtureScheduleRequest>(It.IsAny<GetFixtureScheduleRequestDto>()))
-            .Returns((GetFixtureScheduleRequestDto dto) => new GetFixtureScheduleRequest());
+            .Returns(new GetFixtureScheduleRequest());
     }
 
     [Fact]

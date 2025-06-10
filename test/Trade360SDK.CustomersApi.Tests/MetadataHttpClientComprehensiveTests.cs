@@ -42,16 +42,16 @@ public class MetadataHttpClientComprehensiveTests
             });
             
         _mockMapper.Setup(m => m.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns((GetLeaguesRequestDto dto) => new GetLeaguesRequest());
+            .Returns((GetLeaguesRequestDto _) => new GetLeaguesRequest());
             
         _mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns((GetMarketsRequestDto dto) => new GetMarketsRequest());
+            .Returns((GetMarketsRequestDto _) => new GetMarketsRequest());
             
         _mockMapper.Setup(m => m.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns((GetCompetitionsRequestDto dto) => new GetCompetitionsRequest());
+            .Returns((GetCompetitionsRequestDto _) => new GetCompetitionsRequest());
             
         _mockMapper.Setup(m => m.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns((GetIncidentsRequestDto dto) => new GetIncidentsRequest());
+            .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
         
         _settings = new Trade360Settings
         {

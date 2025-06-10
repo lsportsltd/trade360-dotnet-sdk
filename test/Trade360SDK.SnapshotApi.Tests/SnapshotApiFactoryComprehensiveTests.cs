@@ -13,17 +13,18 @@ namespace Trade360SDK.SnapshotApi.Tests;
 public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
 {
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
+
     private readonly Mock<IMapper> _mockMapper;
     private readonly SnapshotInplayApiClient _client;
 
     public SnapshotInplayApiClientComprehensiveBusinessLogicTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+
         _mockMapper = new Mock<IMapper>();
         
-        var httpClient = new HttpClient(_mockHttpMessageHandler.Object);
+        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        var httpClient = new HttpClient(mockHttpMessageHandler.Object);
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var settings = new Trade360Settings
@@ -43,26 +44,12 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
             }
         };
         
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
-        };
-        
         _client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
     }
 
     [Fact]
     public void CreateSnapshotInplayApiClient_WithValidParameters_ShouldReturnClient()
     {
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
-        };
-
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
@@ -91,13 +78,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
                 Password = "prematchpass"
             }
         };
-        
-        var credentials = new PackageCredentials
-        {
-            PackageId = 456,
-            Username = "prematchuser",
-            Password = "prematchpass"
-        };
 
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -111,13 +91,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
     [Fact]
     public void CreateSnapshotInplayApiClient_WithNullSettings_ShouldThrowNullReferenceException()
     {
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
-        };
-
         var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, null!, _mockMapper.Object);
 
         act.Should().Throw<NullReferenceException>();
@@ -126,13 +99,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
     [Fact]
     public void CreateSnapshotPrematchApiClient_WithNullSettings_ShouldThrowNullReferenceException()
     {
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
-        };
-
         var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, null!, _mockMapper.Object);
 
         act.Should().Throw<NullReferenceException>();
@@ -144,13 +110,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = ""
-        };
-        
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
         };
 
         var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
@@ -164,13 +123,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = ""
-        };
-        
-        var credentials = new PackageCredentials
-        {
-            PackageId = 123,
-            Username = "testuser",
-            Password = "testpass"
         };
 
         var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
@@ -255,9 +207,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
                 Password = "prematchpass"
             }
         };
-        
-        var credentials1 = new PackageCredentials { PackageId = 1, Username = "user1", Password = "pass1" };
-        var credentials2 = new PackageCredentials { PackageId = 2, Username = "user2", Password = "pass2" };
 
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -289,9 +238,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
                 Password = "prematchpass"
             }
         };
-        
-        var credentials1 = new PackageCredentials { PackageId = 1, Username = "user1", Password = "pass1" };
-        var credentials2 = new PackageCredentials { PackageId = 2, Username = "user2", Password = "pass2" };
 
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -348,13 +294,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
                 Password = "complexpass2"
             }
         };
-        
-        var credentials = new PackageCredentials
-        {
-            PackageId = 999,
-            Username = "complexuser",
-            Password = "complexpass"
-        };
 
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -383,13 +322,6 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
                 Username = "complexuser2",
                 Password = "complexpass2"
             }
-        };
-        
-        var credentials = new PackageCredentials
-        {
-            PackageId = 999,
-            Username = "complexuser",
-            Password = "complexpass"
         };
 
         var httpClient = new HttpClient();

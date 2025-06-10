@@ -102,7 +102,7 @@ public class BaseHttpClientTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));

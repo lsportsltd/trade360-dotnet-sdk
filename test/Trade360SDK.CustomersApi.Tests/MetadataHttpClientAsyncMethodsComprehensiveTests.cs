@@ -207,7 +207,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
@@ -281,15 +281,15 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
             });
 
         _mockMapper.Setup(x => x.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns((GetLeaguesRequestDto dto) => new GetLeaguesRequest());
+            .Returns((GetLeaguesRequestDto _) => new GetLeaguesRequest());
 
         _mockMapper.Setup(x => x.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns((GetMarketsRequestDto dto) => new GetMarketsRequest());
+            .Returns((GetMarketsRequestDto _) => new GetMarketsRequest());
 
         _mockMapper.Setup(x => x.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns((GetCompetitionsRequestDto dto) => new GetCompetitionsRequest());
+            .Returns((GetCompetitionsRequestDto _) => new GetCompetitionsRequest());
 
         _mockMapper.Setup(x => x.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns((GetIncidentsRequestDto dto) => new GetIncidentsRequest());
+            .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
     }
 }

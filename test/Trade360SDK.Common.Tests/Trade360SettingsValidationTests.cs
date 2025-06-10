@@ -78,17 +78,13 @@ public class Trade360SettingsValidationTests
     [Fact]
     public void Trade360Settings_WithSameCredentialsForDifferentServices_ShouldWork()
     {
-        var sharedCredentials = new PackageCredentials
+        var settings = new Trade360Settings
         {
-            Username = "shareduser",
-            Password = "sharedpass",
-            PackageId = 999
+            CustomersApiBaseUrl = "https://api.example.com/",
+            SnapshotApiBaseUrl = "https://snapshot.example.com/"
         };
 
-        var settings = new Trade360Settings();
-
-
-
+        settings.Should().NotBeNull();
     }
 
     [Fact]
@@ -113,7 +109,5 @@ public class Trade360SettingsValidationTests
         };
 
         settings.Should().NotBeNull();
-
-
     }
 }

@@ -249,7 +249,7 @@ public class MetadataHttpClientAsyncMethodsTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
@@ -328,15 +328,15 @@ public class MetadataHttpClientAsyncMethodsTests
             });
 
         mockMapper.Setup(x => x.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns((GetLeaguesRequestDto dto) => new GetLeaguesRequest());
+            .Returns(new GetLeaguesRequest());
 
         mockMapper.Setup(x => x.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns((GetMarketsRequestDto dto) => new GetMarketsRequest());
+            .Returns(new GetMarketsRequest());
 
         mockMapper.Setup(x => x.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns((GetCompetitionsRequestDto dto) => new GetCompetitionsRequest());
+            .Returns(new GetCompetitionsRequest());
 
         mockMapper.Setup(x => x.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns((GetIncidentsRequestDto dto) => new GetIncidentsRequest());
+            .Returns(new GetIncidentsRequest());
     }
 }

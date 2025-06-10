@@ -50,25 +50,25 @@ public class SubscriptionHttpClientAsyncMethodsTests
         var mockMapper = new Mock<AutoMapper.IMapper>();
         
         mockMapper.Setup(m => m.Map<GetFixtureScheduleRequest>(It.IsAny<GetFixtureScheduleRequestDto>()))
-            .Returns((GetFixtureScheduleRequestDto dto) => new GetFixtureScheduleRequest());
+            .Returns((GetFixtureScheduleRequestDto _) => new GetFixtureScheduleRequest());
             
         mockMapper.Setup(m => m.Map<FixtureSubscriptionRequest>(It.IsAny<FixtureSubscriptionRequestDto>()))
-            .Returns((FixtureSubscriptionRequestDto dto) => new FixtureSubscriptionRequest());
+            .Returns((FixtureSubscriptionRequestDto _) => new FixtureSubscriptionRequest());
             
         mockMapper.Setup(m => m.Map<LeagueSubscriptionRequest>(It.IsAny<LeagueSubscriptionRequestDto>()))
-            .Returns((LeagueSubscriptionRequestDto dto) => new LeagueSubscriptionRequest());
+            .Returns((LeagueSubscriptionRequestDto _) => new LeagueSubscriptionRequest());
             
         mockMapper.Setup(m => m.Map<GetSubscriptionRequest>(It.IsAny<GetSubscriptionRequestDto>()))
-            .Returns((GetSubscriptionRequestDto dto) => new GetSubscriptionRequest());
+            .Returns((GetSubscriptionRequestDto _) => new GetSubscriptionRequest());
             
         mockMapper.Setup(m => m.Map<CompetitionSubscriptionRequest>(It.IsAny<CompetitionSubscriptionRequestDto>()))
-            .Returns((CompetitionSubscriptionRequestDto dto) => new CompetitionSubscriptionRequest());
+            .Returns((CompetitionSubscriptionRequestDto _) => new CompetitionSubscriptionRequest());
             
         mockMapper.Setup(m => m.Map<ChangeManualSuspensionRequest>(It.IsAny<ChangeManualSuspensionRequestDto>()))
-            .Returns((ChangeManualSuspensionRequestDto dto) => new ChangeManualSuspensionRequest());
+            .Returns((ChangeManualSuspensionRequestDto _) => new ChangeManualSuspensionRequest());
             
         mockMapper.Setup(m => m.Map<GetFixtureMetadataRequest>(It.IsAny<GetFixtureMetadataRequestDto>()))
-            .Returns((GetFixtureMetadataRequestDto dto) => new GetFixtureMetadataRequest());
+            .Returns((GetFixtureMetadataRequestDto _) => new GetFixtureMetadataRequest());
         
         _client = new SubscriptionHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
     }
@@ -469,7 +469,7 @@ public class SubscriptionHttpClientAsyncMethodsTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));

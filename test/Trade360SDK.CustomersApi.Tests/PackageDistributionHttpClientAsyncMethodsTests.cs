@@ -15,30 +15,29 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class PackageDistributionHttpClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
     private readonly Trade360Settings _settings;
     private readonly PackageDistributionHttpClient _client;
 
     public PackageDistributionHttpClientAsyncMethodsTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockOptions = new Mock<IOptions<Trade360Settings>>();
+
         
         _settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://customers.example.com/"
         };
 
-        _mockOptions.Setup(x => x.Value).Returns(_settings);
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockOptions = new Mock<IOptions<Trade360Settings>>();
+        mockOptions.Setup(x => x.Value).Returns(_settings);
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
             BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
         var packageCredentials = new PackageCredentials
         {
@@ -47,7 +46,7 @@ public class PackageDistributionHttpClientAsyncMethodsTests
             Password = "testpass"
         };
         
-        _client = new PackageDistributionHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials);
+        _client = new PackageDistributionHttpClient(mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     [Fact]
@@ -136,7 +135,7 @@ public class PackageDistributionHttpClientAsyncMethodsTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
@@ -159,7 +158,7 @@ public class PackageDistributionHttpClientAsyncMethodsTests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .Returns((HttpRequestMessage request, CancellationToken token) =>
+            .Returns((HttpRequestMessage _, CancellationToken token) =>
             {
                 token.ThrowIfCancellationRequested();
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));

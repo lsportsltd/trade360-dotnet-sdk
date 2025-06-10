@@ -13,17 +13,18 @@ public class CustomersApiFactoryComprehensiveTests
 {
     private readonly Mock<IServiceProvider> _mockServiceProvider;
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<IMapper> _mockMapper;
+
     private readonly CustomersApiFactory _factory;
 
     public CustomersApiFactoryComprehensiveTests()
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockMapper = new Mock<IMapper>();
+
 
         _mockServiceProvider.Setup(x => x.GetService(typeof(IHttpClientFactory))).Returns(_mockHttpClientFactory.Object);
-        _mockServiceProvider.Setup(x => x.GetService(typeof(IMapper))).Returns(_mockMapper.Object);
+        var mockMapper = new Mock<IMapper>();
+        _mockServiceProvider.Setup(x => x.GetService(typeof(IMapper))).Returns(mockMapper.Object);
 
         _factory = new CustomersApiFactory(_mockServiceProvider.Object);
     }

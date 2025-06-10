@@ -34,6 +34,21 @@ public class BaseHttpClientQueryStringTests
     }
 
     [Fact]
+    public void BuildQueryString_WithJsonElementNullValue_ShouldSkipProperty()
+    {
+        var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
+        var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
+        var client = new TestHttpClient(mockFactory.Object, "https://api.test.com", credentials);
+
+        var request = new { SportId = 1, Name = (string)null! };
+        var result = client.TestBuildQueryString(request);
+
+        result.Should().Contain("SportId=1");
+        result.Should().NotContain("Name=");
+    }
+
+    [Fact]
     public void BuildQueryString_WithSimpleObject_ShouldCreateQueryString()
     {
         var mockFactory = new Mock<IHttpClientFactory>();

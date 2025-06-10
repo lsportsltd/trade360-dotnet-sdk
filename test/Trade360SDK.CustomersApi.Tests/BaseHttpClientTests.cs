@@ -259,7 +259,10 @@ public class TestableBaseHttpClient : BaseHttpClient
 
     public string TestBuildQueryString(Dictionary<string, object> parameters)
     {
-        if (parameters == null) return string.Empty;
+        if (parameters == null) 
+        {
+            return string.Empty;
+        }
         var queryParams = parameters.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value?.ToString() ?? "")}");
         return queryParams.Any() ? "?" + string.Join("&", queryParams) : string.Empty;
     }

@@ -22,7 +22,9 @@ public class TestHttpClientFactory : IHttpClientFactory
         _httpClient = httpClient;
     }
 
-    public HttpClient CreateClient(string name = "") => _httpClient;
+    public HttpClient CreateClient(string name) => _httpClient;
+    
+    public HttpClient CreateClient() => _httpClient;
 }
 
 public class MetadataHttpClientBusinessLogicTests

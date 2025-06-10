@@ -25,11 +25,17 @@ namespace Trade360SDK.CustomersApi.Http
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? settings)
         {
             if (httpClientFactory == null)
+            {
                 throw new ArgumentNullException(nameof(httpClientFactory));
+            }
             if (string.IsNullOrWhiteSpace(baseUrl))
+            {
                 throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
+            }
             if (settings == null)
+            {
                 throw new ArgumentNullException(nameof(settings));
+            }
 
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri(baseUrl);
@@ -142,7 +148,9 @@ namespace Trade360SDK.CustomersApi.Http
         private string BuildQueryString(object request)
         {
             if (request == null)
+            {
                 return string.Empty;
+            }
 
             var json = JsonSerializer.Serialize(request, request.GetType());
             var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
@@ -153,7 +161,9 @@ namespace Trade360SDK.CustomersApi.Http
                 foreach (var kvp in dictionary)
                 {
                     if (kvp.Value == null)
+                    {
                         continue;
+                    }
 
                     if (kvp.Value is JsonElement jsonElement)
                     {

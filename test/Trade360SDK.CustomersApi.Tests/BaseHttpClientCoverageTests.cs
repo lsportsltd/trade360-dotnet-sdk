@@ -8,7 +8,7 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class BaseHttpClientCoverageTests
 {
     [Fact]
-    public void Constructor_WithNullHttpClientFactory_ShouldExecuteValidation()
+    public void Constructor_WithNullHttpClientFactory_ShouldThrowArgumentNullException()
     {
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
         var mockMapper = new Mock<AutoMapper.IMapper>();
@@ -20,7 +20,7 @@ public class BaseHttpClientCoverageTests
     }
 
     [Fact]
-    public void Constructor_WithNullBaseUrl_ShouldExecuteValidation()
+    public void Constructor_WithNullBaseUrl_ShouldThrowArgumentException()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
@@ -34,20 +34,7 @@ public class BaseHttpClientCoverageTests
     }
 
     [Fact]
-    public void Constructor_WithNullCredentials_ShouldExecuteValidation()
-    {
-        var mockFactory = new Mock<IHttpClientFactory>();
-        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
-        var mockMapper = new Mock<AutoMapper.IMapper>();
-
-        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", null!, mockMapper.Object);
-
-        act.Should().Throw<ArgumentNullException>()
-           .WithParameterName("settings");
-    }
-
-    [Fact]
-    public void Constructor_WithEmptyBaseUrl_ShouldExecuteValidation()
+    public void Constructor_WithEmptyBaseUrl_ShouldThrowArgumentException()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
@@ -61,7 +48,34 @@ public class BaseHttpClientCoverageTests
     }
 
     [Fact]
-    public void Constructor_WithNullMapper_ShouldExecuteValidation()
+    public void Constructor_WithWhitespaceBaseUrl_ShouldThrowArgumentException()
+    {
+        var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
+        var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
+        var mockMapper = new Mock<AutoMapper.IMapper>();
+
+        var act = () => new MetadataHttpClient(mockFactory.Object, "   ", credentials, mockMapper.Object);
+
+        act.Should().Throw<ArgumentException>()
+           .WithParameterName("baseUrl");
+    }
+
+    [Fact]
+    public void Constructor_WithNullCredentials_ShouldThrowArgumentNullException()
+    {
+        var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
+        var mockMapper = new Mock<AutoMapper.IMapper>();
+
+        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", null!, mockMapper.Object);
+
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("settings");
+    }
+
+    [Fact]
+    public void Constructor_WithNullMapper_ShouldThrowArgumentNullException()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());

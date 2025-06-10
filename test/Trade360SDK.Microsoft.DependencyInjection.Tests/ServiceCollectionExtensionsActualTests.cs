@@ -19,16 +19,29 @@ public class ServiceCollectionExtensionsActualTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_WithValidConfiguration_ShouldRegisterServices()
+    public void AddTrade360CustomerApiClient_WithValidConfiguration_ShouldRegisterHttpClients()
     {
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
 
-        var act = () => services.AddTrade360CustomerApiClient(configuration);
+        var result = services.AddTrade360CustomerApiClient(configuration);
 
-        act.Should().NotThrow();
+        result.Should().NotBeNull();
         services.Should().NotBeEmpty();
     }
+
+    [Fact]
+    public void AddTrade360CustomerApiClient_WithNullConfiguration_ShouldExecuteActualValidationPath()
+    {
+        var services = new ServiceCollection();
+
+        var act = () => services.AddTrade360CustomerApiClient(null!);
+
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("configuration");
+    }
+
+
 
 
 }

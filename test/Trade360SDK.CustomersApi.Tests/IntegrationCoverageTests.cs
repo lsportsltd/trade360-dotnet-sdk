@@ -96,7 +96,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", null!, "es" },
+            Languages = new[] { "en", null!, "es" },
             SportIds = new[] { 1 }
         };
 
@@ -107,11 +107,40 @@ public class IntegrationCoverageTests
     }
 
     [Fact]
+    public void GetTranslationsRequestValidator_WithValidLanguages_ShouldNotThrow()
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new[] { "en", "es", "fr" },
+            SportIds = new[] { 1, 2 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
     public void GetTranslationsRequestValidator_WithWhitespaceLanguageValue_ShouldExecuteActualValidation()
     {
         var request = new GetTranslationsRequest
         {
             Languages = new[] { "en", " ", "es" },
+            SportIds = new[] { 1 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().Throw<ArgumentException>()
+           .WithMessage("*Languages cannot contain null, empty, or whitespace values*");
+    }
+
+    [Fact]
+    public void GetTranslationsRequestValidator_WithEmptyStringLanguageValue_ShouldExecuteActualValidation()
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new[] { "en", "", "es" },
             SportIds = new[] { 1 }
         };
 
@@ -172,6 +201,63 @@ public class IntegrationCoverageTests
         };
 
         headerResponse.RequestId.Should().BeNull();
+    }
+
+    [Fact]
+    public void GetTranslationsRequestValidator_WithValidRequest_ShouldNotThrow()
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new[] { "en", "es", "fr" },
+            SportIds = new[] { 1, 2, 3 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void GetTranslationsRequestValidator_WithMultipleValidFields_ShouldNotThrow()
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new[] { "en" },
+            SportIds = new[] { 1 },
+            LocationIds = new[] { 100 },
+            LeagueIds = new[] { 200 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void HeaderResponse_HttpStatusCode_Property_ShouldExecuteActualPropertyAccess()
+    {
+        var headerResponse = new Trade360SDK.CustomersApi.Entities.Base.HeaderResponse();
+        var statusCode = System.Net.HttpStatusCode.OK;
+
+        headerResponse.HttpStatusCode = statusCode;
+        var retrievedStatusCode = headerResponse.HttpStatusCode;
+
+        retrievedStatusCode.Should().Be(statusCode);
+    }
+
+    [Fact]
+    public void HeaderResponse_Errors_Property_ShouldExecuteActualPropertyAccess()
+    {
+        var headerResponse = new Trade360SDK.CustomersApi.Entities.Base.HeaderResponse();
+        var errors = new List<Trade360SDK.CustomersApi.Entities.Base.Error>
+        {
+            new Trade360SDK.CustomersApi.Entities.Base.Error { Message = "Test error" }
+        };
+
+        headerResponse.Errors = errors;
+        var retrievedErrors = headerResponse.Errors;
+
+        retrievedErrors.Should().BeEquivalentTo(errors);
     }
 
 

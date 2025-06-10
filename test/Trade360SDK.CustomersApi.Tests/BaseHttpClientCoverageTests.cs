@@ -23,6 +23,7 @@ public class BaseHttpClientCoverageTests
     public void Constructor_WithNullBaseUrl_ShouldExecuteValidation()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
         var mockMapper = new Mock<AutoMapper.IMapper>();
 
@@ -36,6 +37,7 @@ public class BaseHttpClientCoverageTests
     public void Constructor_WithNullCredentials_ShouldExecuteValidation()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var mockMapper = new Mock<AutoMapper.IMapper>();
 
         var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", null!, mockMapper.Object);
@@ -48,6 +50,7 @@ public class BaseHttpClientCoverageTests
     public void Constructor_WithEmptyBaseUrl_ShouldExecuteValidation()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
         var mockMapper = new Mock<AutoMapper.IMapper>();
 
@@ -61,6 +64,7 @@ public class BaseHttpClientCoverageTests
     public void Constructor_WithNullMapper_ShouldExecuteValidation()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
+        mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
 
         var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", credentials, null!);

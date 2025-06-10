@@ -17,7 +17,6 @@ public class SnapshotInplayApiClientTests
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
     private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Trade360Settings _settings;
 
     public SnapshotInplayApiClientTests()
     {
@@ -25,7 +24,7 @@ public class SnapshotInplayApiClientTests
         _mockOptions = new Mock<IOptions<Trade360Settings>>();
         _mockMapper = new Mock<IMapper>();
 
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = "https://api.test.com",
             InplayPackageCredentials = new PackageCredentials
@@ -36,7 +35,7 @@ public class SnapshotInplayApiClientTests
             }
         };
 
-        _mockOptions.Setup(o => o.Value).Returns(_settings);
+        _mockOptions.Setup(o => o.Value).Returns(settings);
 
         var mockHttpClient = new Mock<HttpClient>();
         _mockHttpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(mockHttpClient.Object);
@@ -54,9 +53,20 @@ public class SnapshotInplayApiClientTests
     [Fact]
     public void Constructor_WithNullSnapshotApiBaseUrl_ShouldThrowInvalidOperationException()
     {
-        _settings.SnapshotApiBaseUrl = null;
+        var settings = new Trade360Settings
+        {
+            SnapshotApiBaseUrl = null,
+            InplayPackageCredentials = new PackageCredentials
+            {
+                PackageId = 1,
+                Username = "user",
+                Password = "pass"
+            }
+        };
+        var mockOptions = new Mock<IOptions<Trade360Settings>>();
+        mockOptions.Setup(o => o.Value).Returns(settings);
 
-        Action act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        Action act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, mockOptions.Object, _mockMapper.Object);
 
         act.Should().Throw<InvalidOperationException>();
     }

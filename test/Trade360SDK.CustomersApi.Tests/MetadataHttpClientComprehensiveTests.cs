@@ -20,7 +20,6 @@ public class MetadataHttpClientComprehensiveTests
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
     private readonly Mock<ILogger<MetadataHttpClient>> _mockLogger;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Trade360Settings _settings;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientComprehensiveTests()
@@ -53,14 +52,14 @@ public class MetadataHttpClientComprehensiveTests
         _mockMapper.Setup(m => m.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
             .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com/"
         };
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -74,7 +73,7 @@ public class MetadataHttpClientComprehensiveTests
 
         SetupDefaultHttpResponse();
         
-        _client = new MetadataHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
+        _client = new MetadataHttpClient(_mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
     }
 
     private void SetupDefaultHttpResponse()

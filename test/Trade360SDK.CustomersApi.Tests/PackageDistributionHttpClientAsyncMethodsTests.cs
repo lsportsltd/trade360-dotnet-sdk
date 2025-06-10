@@ -15,26 +15,24 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class PackageDistributionHttpClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Trade360Settings _settings;
     private readonly PackageDistributionHttpClient _client;
 
     public PackageDistributionHttpClientAsyncMethodsTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
-        
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://customers.example.com/"
         };
 
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
-        mockOptions.Setup(x => x.Value).Returns(_settings);
+        mockOptions.Setup(x => x.Value).Returns(settings);
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
         mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
@@ -46,7 +44,7 @@ public class PackageDistributionHttpClientAsyncMethodsTests
             Password = "testpass"
         };
         
-        _client = new PackageDistributionHttpClient(mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials);
+        _client = new PackageDistributionHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     [Fact]

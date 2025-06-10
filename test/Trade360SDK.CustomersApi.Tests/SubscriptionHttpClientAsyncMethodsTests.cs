@@ -19,26 +19,24 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class SubscriptionHttpClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Trade360Settings _settings;
     private readonly SubscriptionHttpClient _client;
 
     public SubscriptionHttpClientAsyncMethodsTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com/"
         };
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var packageCredentials = new PackageCredentials
         {
@@ -70,7 +68,7 @@ public class SubscriptionHttpClientAsyncMethodsTests
         mockMapper.Setup(m => m.Map<GetFixtureMetadataRequest>(It.IsAny<GetFixtureMetadataRequestDto>()))
             .Returns((GetFixtureMetadataRequestDto _) => new GetFixtureMetadataRequest());
         
-        _client = new SubscriptionHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
+        _client = new SubscriptionHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
     }
 
     [Fact]

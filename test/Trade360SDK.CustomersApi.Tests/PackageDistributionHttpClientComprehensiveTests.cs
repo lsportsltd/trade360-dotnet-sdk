@@ -15,27 +15,24 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class PackageDistributionHttpClientComprehensiveTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-
-    private readonly Trade360Settings _settings;
     private readonly PackageDistributionHttpClient _client;
 
     public PackageDistributionHttpClientComprehensiveTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com/"
         };
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var packageCredentials = new PackageCredentials
         {
@@ -46,7 +43,7 @@ public class PackageDistributionHttpClientComprehensiveTests
 
         SetupDefaultHttpResponse();
         
-        _client = new PackageDistributionHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials);
+        _client = new PackageDistributionHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     private void SetupDefaultHttpResponse()

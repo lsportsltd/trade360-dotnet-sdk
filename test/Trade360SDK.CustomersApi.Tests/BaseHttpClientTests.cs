@@ -14,7 +14,6 @@ public class BaseHttpClientTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Trade360Settings _settings;
     private readonly PackageCredentials _packageCredentials;
     private readonly TestableBaseHttpClient _client;
 
@@ -23,7 +22,7 @@ public class BaseHttpClientTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com/"
         };
@@ -37,26 +36,26 @@ public class BaseHttpClientTests
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        _client = new TestableBaseHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, _packageCredentials);
+        _client = new TestableBaseHttpClient(_mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, _packageCredentials);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_ShouldInitializeCorrectly()
     {
         _client.Should().NotBeNull();
-        _client.BaseUrl.Should().Be(_settings.CustomersApiBaseUrl);
+        _client.BaseUrl.Should().Be("https://api.example.com/");
         _client.PackageCredentials.Should().Be(_packageCredentials);
     }
 
     [Fact]
     public void Constructor_WithNullHttpClientFactory_ShouldThrowArgumentNullException()
     {
-        var act = () => new TestableBaseHttpClient(null, _settings.CustomersApiBaseUrl, _packageCredentials);
+        var act = () => new TestableBaseHttpClient(null, "https://api.example.com/", _packageCredentials);
 
         act.Should().Throw<ArgumentNullException>();
     }
@@ -72,7 +71,7 @@ public class BaseHttpClientTests
     [Fact]
     public void Constructor_WithNullPackageCredentials_ShouldThrowArgumentNullException()
     {
-        var act = () => new TestableBaseHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, null!);
+        var act = () => new TestableBaseHttpClient(_mockHttpClientFactory.Object, "https://api.example.com/", null!);
 
         act.Should().Throw<ArgumentNullException>();
     }

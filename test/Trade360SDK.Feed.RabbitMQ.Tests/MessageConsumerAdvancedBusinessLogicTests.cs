@@ -13,7 +13,6 @@ public class MessageConsumerAdvancedBusinessLogicTests
 {
     private readonly Mock<IMessageProcessorContainer> _mockProcessorContainer;
     private readonly Mock<IMessageProcessor> _mockProcessor;
-    private readonly RmqConnectionSettings _settings;
 
     public MessageConsumerAdvancedBusinessLogicTests()
     {
@@ -21,7 +20,7 @@ public class MessageConsumerAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockProcessor = new Mock<IMessageProcessor>();
 
-        _settings = new RmqConnectionSettings
+        var settings = new RmqConnectionSettings
         {
             Host = "localhost",
             Port = 5672,
@@ -52,11 +51,24 @@ public class MessageConsumerAdvancedBusinessLogicTests
     [Fact]
     public void MessageConsumer_BusinessLogic_ShouldValidateSettings()
     {
-        _settings.Should().NotBeNull();
-        _settings.Host.Should().Be("localhost");
-        _settings.Port.Should().Be(5672);
-        _settings.PackageId.Should().Be(123);
-        _settings.AutoAck.Should().BeFalse();
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            AutoAck = false,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20
+        };
+        
+        settings.Should().NotBeNull();
+        settings.Host.Should().Be("localhost");
+        settings.Port.Should().Be(5672);
+        settings.PackageId.Should().Be(123);
+        settings.AutoAck.Should().BeFalse();
     }
 
     [Fact]

@@ -19,20 +19,17 @@ namespace Trade360SDK.SnapshotApi.Tests;
 public class SnapshotPrematchApiClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Trade360Settings _settings;
     private readonly SnapshotPrematchApiClient _client;
 
     public SnapshotPrematchApiClientAsyncMethodsTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockOptions = new Mock<IOptions<Trade360Settings>>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockOptions = new Mock<IOptions<Trade360Settings>>();
         _mockMapper = new Mock<IMapper>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = "https://snapshot.example.com/",
             PrematchPackageCredentials = new PackageCredentials
@@ -43,16 +40,16 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
             }
         };
 
-        _mockOptions.Setup(x => x.Value).Returns(_settings);
+        mockOptions.Setup(x => x.Value).Returns(settings);
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.SnapshotApiBaseUrl)
+            BaseAddress = new Uri(settings.SnapshotApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        _client = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        _client = new SnapshotPrematchApiClient(mockHttpClientFactory.Object, mockOptions.Object, _mockMapper.Object);
     }
 
     [Fact]

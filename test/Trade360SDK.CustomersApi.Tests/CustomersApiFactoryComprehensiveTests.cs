@@ -11,22 +11,19 @@ namespace Trade360SDK.CustomersApi.Tests;
 
 public class CustomersApiFactoryComprehensiveTests
 {
-    private readonly Mock<IServiceProvider> _mockServiceProvider;
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-
     private readonly CustomersApiFactory _factory;
 
     public CustomersApiFactoryComprehensiveTests()
     {
-        _mockServiceProvider = new Mock<IServiceProvider>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
 
-
-        _mockServiceProvider.Setup(x => x.GetService(typeof(IHttpClientFactory))).Returns(_mockHttpClientFactory.Object);
+        mockServiceProvider.Setup(x => x.GetService(typeof(IHttpClientFactory))).Returns(_mockHttpClientFactory.Object);
         var mockMapper = new Mock<IMapper>();
-        _mockServiceProvider.Setup(x => x.GetService(typeof(IMapper))).Returns(mockMapper.Object);
+        mockServiceProvider.Setup(x => x.GetService(typeof(IMapper))).Returns(mockMapper.Object);
 
-        _factory = new CustomersApiFactory(_mockServiceProvider.Object);
+        _factory = new CustomersApiFactory(mockServiceProvider.Object);
     }
 
     [Fact]

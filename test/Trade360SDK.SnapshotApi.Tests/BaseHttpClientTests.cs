@@ -15,17 +15,15 @@ namespace Trade360SDK.SnapshotApi.Tests;
 public class BaseHttpClientTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Trade360Settings _settings;
     private readonly PackageCredentials _packageCredentials;
     private readonly TestableSnapshotBaseHttpClient _client;
 
     public BaseHttpClientTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = "https://snapshot.example.com/"
         };
@@ -39,26 +37,28 @@ public class BaseHttpClientTests
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.SnapshotApiBaseUrl)
+            BaseAddress = new Uri(settings.SnapshotApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        _client = new TestableSnapshotBaseHttpClient(_mockHttpClientFactory.Object, _settings, _packageCredentials);
+        _client = new TestableSnapshotBaseHttpClient(mockHttpClientFactory.Object, settings, _packageCredentials);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_ShouldInitializeCorrectly()
     {
+        var settings = new Trade360Settings { SnapshotApiBaseUrl = "https://snapshot.example.com/" };
         _client.Should().NotBeNull();
-        _client.BaseUrl.Should().Be(_settings.SnapshotApiBaseUrl);
+        _client.BaseUrl.Should().Be(settings.SnapshotApiBaseUrl);
         _client.PackageCredentials.Should().Be(_packageCredentials);
     }
 
     [Fact]
     public void Constructor_WithNullHttpClientFactory_ShouldThrowArgumentNullException()
     {
-        var act = () => new TestableSnapshotBaseHttpClient(null!, _settings, _packageCredentials);
+        var settings = new Trade360Settings { SnapshotApiBaseUrl = "https://snapshot.example.com/" };
+        var act = () => new TestableSnapshotBaseHttpClient(null!, settings, _packageCredentials);
 
         act.Should().Throw<ArgumentNullException>();
     }
@@ -66,7 +66,8 @@ public class BaseHttpClientTests
     [Fact]
     public void Constructor_WithNullBaseUrl_ShouldThrowInvalidOperationException()
     {
-        var act = () => new TestableSnapshotBaseHttpClient(_mockHttpClientFactory.Object, new Trade360Settings { SnapshotApiBaseUrl = null }, _packageCredentials);
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var act = () => new TestableSnapshotBaseHttpClient(mockHttpClientFactory.Object, new Trade360Settings { SnapshotApiBaseUrl = null }, _packageCredentials);
 
         act.Should().Throw<InvalidOperationException>();
     }
@@ -74,7 +75,9 @@ public class BaseHttpClientTests
     [Fact]
     public void Constructor_WithNullPackageCredentials_ShouldThrowNullReferenceException()
     {
-        var act = () => new TestableSnapshotBaseHttpClient(_mockHttpClientFactory.Object, _settings, null!);
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var settings = new Trade360Settings { SnapshotApiBaseUrl = "https://snapshot.example.com/" };
+        var act = () => new TestableSnapshotBaseHttpClient(mockHttpClientFactory.Object, settings, null!);
 
         act.Should().Throw<NullReferenceException>();
     }
@@ -139,7 +142,7 @@ public class BaseHttpClientTests
     [Fact]
     public void BaseUrl_ShouldReturnCorrectValue()
     {
-        _client.BaseUrl.Should().Be(_settings.SnapshotApiBaseUrl);
+        _client.BaseUrl.Should().Be("https://snapshot.example.com/");
     }
 
     [Fact]

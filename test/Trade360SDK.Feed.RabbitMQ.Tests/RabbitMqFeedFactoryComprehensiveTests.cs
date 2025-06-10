@@ -12,20 +12,18 @@ namespace Trade360SDK.Feed.RabbitMQ.Tests;
 
 public class RabbitMqFeedFactoryComprehensiveTests
 {
-    private readonly Mock<IServiceProvider> _mockServiceProvider;
     private readonly Mock<ILoggerFactory> _mockLoggerFactory;
-    private readonly Mock<ILogger> _mockLogger;
     private readonly Mock<IMessageProcessorContainer> _mockProcessorContainer;
     private readonly RabbitMqFeedFactory _factory;
 
     public RabbitMqFeedFactoryComprehensiveTests()
     {
-        _mockServiceProvider = new Mock<IServiceProvider>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
         _mockLoggerFactory = new Mock<ILoggerFactory>();
-        _mockLogger = new Mock<ILogger>();
+        var mockLogger = new Mock<ILogger>();
         _mockProcessorContainer = new Mock<IMessageProcessorContainer>();
 
-        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+        _mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
         var inplayContainer = new MessageProcessorContainer<Trade360SDK.Feed.FeedType.InPlay>(new List<IMessageProcessor>());
         var prematchContainer = new MessageProcessorContainer<Trade360SDK.Feed.FeedType.PreMatch>(new List<IMessageProcessor>());
         var mockCustomersApiFactory = new Mock<Trade360SDK.CustomersApi.Interfaces.ICustomersApiFactory>();
@@ -34,12 +32,12 @@ public class RabbitMqFeedFactoryComprehensiveTests
         mockCustomersApiFactory.Setup(x => x.CreatePackageDistributionHttpClient(It.IsAny<string>(), It.IsAny<Trade360SDK.Common.Configuration.PackageCredentials>()))
             .Returns(mockPackageDistributionClient.Object);
 
-        _mockServiceProvider.Setup(x => x.GetService(typeof(ILoggerFactory))).Returns(_mockLoggerFactory.Object);
-        _mockServiceProvider.Setup(x => x.GetService(typeof(MessageProcessorContainer<Trade360SDK.Feed.FeedType.InPlay>))).Returns(inplayContainer);
-        _mockServiceProvider.Setup(x => x.GetService(typeof(MessageProcessorContainer<Trade360SDK.Feed.FeedType.PreMatch>))).Returns(prematchContainer);
-        _mockServiceProvider.Setup(x => x.GetService(typeof(Trade360SDK.CustomersApi.Interfaces.ICustomersApiFactory))).Returns(mockCustomersApiFactory.Object);
+        mockServiceProvider.Setup(x => x.GetService(typeof(ILoggerFactory))).Returns(_mockLoggerFactory.Object);
+        mockServiceProvider.Setup(x => x.GetService(typeof(MessageProcessorContainer<Trade360SDK.Feed.FeedType.InPlay>))).Returns(inplayContainer);
+        mockServiceProvider.Setup(x => x.GetService(typeof(MessageProcessorContainer<Trade360SDK.Feed.FeedType.PreMatch>))).Returns(prematchContainer);
+        mockServiceProvider.Setup(x => x.GetService(typeof(Trade360SDK.CustomersApi.Interfaces.ICustomersApiFactory))).Returns(mockCustomersApiFactory.Object);
 
-        _factory = new RabbitMqFeedFactory(_mockServiceProvider.Object);
+        _factory = new RabbitMqFeedFactory(mockServiceProvider.Object);
     }
 
     [Fact]

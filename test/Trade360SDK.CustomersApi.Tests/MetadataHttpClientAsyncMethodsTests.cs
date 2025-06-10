@@ -18,26 +18,24 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class MetadataHttpClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Trade360Settings _settings;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientAsyncMethodsTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com/"
         };
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var packageCredentials = new PackageCredentials
         {
@@ -48,7 +46,7 @@ public class MetadataHttpClientAsyncMethodsTests
 
         var mockMapper = new Mock<IMapper>();
         SetupAutoMapperDefaults(mockMapper);
-        _client = new MetadataHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
     }
 
     [Fact]
@@ -130,7 +128,12 @@ public class MetadataHttpClientAsyncMethodsTests
         var request = new GetMarketsRequest();
         mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>())).Returns(request);
 
-        var client = new MetadataHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, 
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var settings = new Trade360Settings { CustomersApiBaseUrl = "https://api.example.com/" };
+        var httpClient = new HttpClient(_mockHttpMessageHandler.Object) { BaseAddress = new Uri(settings.CustomersApiBaseUrl) };
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        
+        var client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, 
             new PackageCredentials { Username = "test", Password = "test", PackageId = 123 }, mockMapper.Object);
 
         SetupHttpResponse(expectedResponse);

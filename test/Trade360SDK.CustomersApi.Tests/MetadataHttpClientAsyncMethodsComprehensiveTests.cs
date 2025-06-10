@@ -19,32 +19,29 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class MetadataHttpClientAsyncMethodsComprehensiveTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-    private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Trade360Settings _settings;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientAsyncMethodsComprehensiveTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-        _mockOptions = new Mock<IOptions<Trade360Settings>>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockOptions = new Mock<IOptions<Trade360Settings>>();
         _mockMapper = new Mock<IMapper>();
         
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://customers.example.com/"
         };
 
-        _mockOptions.Setup(x => x.Value).Returns(_settings);
+        mockOptions.Setup(x => x.Value).Returns(settings);
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri(_settings.CustomersApiBaseUrl)
+            BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
         var packageCredentials = new PackageCredentials
         {
@@ -54,7 +51,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
         };
 
         SetupAutoMapperDefaults();
-        _client = new MetadataHttpClient(_mockHttpClientFactory.Object, _settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
     }
 
     [Fact]

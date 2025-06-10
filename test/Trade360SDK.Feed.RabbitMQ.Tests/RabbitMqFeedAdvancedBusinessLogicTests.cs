@@ -18,7 +18,6 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
     private readonly Mock<IMessageProcessorContainer> _mockProcessorContainer;
     private readonly Mock<ICustomersApiFactory> _mockCustomersApiFactory;
     private readonly Mock<IPackageDistributionHttpClient> _mockDistributionClient;
-    private readonly RmqConnectionSettings _settings;
     private readonly Trade360Settings _trade360Settings;
 
     public RabbitMqFeedAdvancedBusinessLogicTests()
@@ -29,7 +28,7 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockCustomersApiFactory.Setup(x => x.CreatePackageDistributionHttpClient(It.IsAny<string>(), It.IsAny<PackageCredentials>()))
                                 .Returns(_mockDistributionClient.Object);
 
-        _settings = new RmqConnectionSettings
+        var settings = new RmqConnectionSettings
         {
             Host = "localhost",
             Port = 5672,
@@ -92,7 +91,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         _mockCustomersApiFactory.Verify(x => x.CreatePackageDistributionHttpClient(
@@ -109,7 +123,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.PreMatch, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         _mockCustomersApiFactory.Verify(x => x.CreatePackageDistributionHttpClient(
@@ -126,7 +155,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        Action act = () => new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        Action act = () => new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             (FlowType)999, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         act.Should().Throw<ArgumentException>().WithMessage("*Not recognized flow type*");
@@ -138,7 +182,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(false, CancellationToken.None);
@@ -154,7 +213,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -171,7 +245,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -197,7 +286,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -222,7 +326,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -244,7 +363,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, cts.Token);
@@ -266,7 +400,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -283,7 +432,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, _trade360Settings, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, _trade360Settings, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         var act = async () => await feed.StartAsync(true, CancellationToken.None);
@@ -297,7 +461,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         await feed.StopAsync(CancellationToken.None);
@@ -309,7 +488,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         await feed.StopAsync(CancellationToken.None);
@@ -321,7 +515,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         feed.Dispose();
@@ -333,7 +542,22 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
-        var feed = new RabbitMqFeed(_settings, null, _mockProcessorContainer.Object, 
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            UserName = "user",
+            Password = "password",
+            PackageId = 123,
+            RequestedHeartbeatSeconds = 30,
+            NetworkRecoveryInterval = 20,
+            AutoAck = false,
+            DispatchConsumersAsync = true,
+            PrefetchCount = 100
+        };
+        
+        var feed = new RabbitMqFeed(settings, null, _mockProcessorContainer.Object, 
             FlowType.InPlay, mockLoggerFactory.Object, _mockCustomersApiFactory.Object);
 
         feed.Dispose();

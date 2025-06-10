@@ -18,7 +18,6 @@ public class SnapshotPrematchApiClientTests
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
     private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Trade360Settings _settings;
 
     public SnapshotPrematchApiClientTests()
     {
@@ -26,7 +25,7 @@ public class SnapshotPrematchApiClientTests
         _mockOptions = new Mock<IOptions<Trade360Settings>>();
         _mockMapper = new Mock<IMapper>();
 
-        _settings = new Trade360Settings
+        var settings = new Trade360Settings
         {
             SnapshotApiBaseUrl = "https://api.test.com",
             PrematchPackageCredentials = new PackageCredentials
@@ -37,7 +36,7 @@ public class SnapshotPrematchApiClientTests
             }
         };
 
-        _mockOptions.Setup(o => o.Value).Returns(_settings);
+        _mockOptions.Setup(o => o.Value).Returns(settings);
 
         var mockHttpClient = new Mock<HttpClient>();
         _mockHttpClientFactory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(mockHttpClient.Object);
@@ -55,7 +54,17 @@ public class SnapshotPrematchApiClientTests
     [Fact]
     public void Constructor_WithNullSnapshotApiBaseUrl_ShouldThrowInvalidOperationException()
     {
-        _settings.SnapshotApiBaseUrl = null;
+        var settings = new Trade360Settings
+        {
+            SnapshotApiBaseUrl = null,
+            PrematchPackageCredentials = new PackageCredentials
+            {
+                PackageId = 2,
+                Username = "user",
+                Password = "pass"
+            }
+        };
+        _mockOptions.Setup(o => o.Value).Returns(settings);
 
         Action act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
 

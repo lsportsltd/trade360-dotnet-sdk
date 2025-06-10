@@ -14,11 +14,6 @@ namespace Trade360SDK.CustomersApi.Validators
                 throw new ArgumentException("Languages must be filled.");
             }
 
-            if (request.Languages.Any(lang => string.IsNullOrWhiteSpace(lang)))
-            {
-                throw new ArgumentException("Languages cannot contain null, empty, or whitespace values.");
-            }
-
             // Ensure at least one of the other fields is filled
             if ((request.SportIds == null || !request.SportIds.Any()) &&
                 (request.LocationIds == null || !request.LocationIds.Any()) &&

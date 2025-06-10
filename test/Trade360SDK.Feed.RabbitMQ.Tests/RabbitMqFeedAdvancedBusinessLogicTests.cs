@@ -28,21 +28,6 @@ public class RabbitMqFeedAdvancedBusinessLogicTests
         _mockCustomersApiFactory.Setup(x => x.CreatePackageDistributionHttpClient(It.IsAny<string>(), It.IsAny<PackageCredentials>()))
                                 .Returns(_mockDistributionClient.Object);
 
-        var settings = new RmqConnectionSettings
-        {
-            Host = "localhost",
-            Port = 5672,
-            VirtualHost = "/",
-            UserName = "user",
-            Password = "password",
-            PackageId = 123,
-            RequestedHeartbeatSeconds = 30,
-            NetworkRecoveryInterval = 20,
-            AutoAck = false,
-            DispatchConsumersAsync = true,
-            PrefetchCount = 100
-        };
-
         _trade360Settings = new Trade360Settings
         {
             CustomersApiBaseUrl = "https://api.example.com",

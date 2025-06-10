@@ -17,19 +17,17 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class MetadataHttpClientComprehensiveTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
     private readonly Mock<ILogger<MetadataHttpClient>> _mockLogger;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientComprehensiveTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClientFactory = new Mock<IHttpClientFactory>();
+        var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         _mockLogger = new Mock<ILogger<MetadataHttpClient>>();
-        _mockMapper = new Mock<IMapper>();
+        var mockMapper = new Mock<IMapper>();
         
-        _mockMapper.Setup(m => m.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
+        mockMapper.Setup(m => m.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
             .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest
             {
                 Languages = dto.Languages ?? new List<string>(),
@@ -40,16 +38,16 @@ public class MetadataHttpClientComprehensiveTests
                 ParticipantIds = dto.ParticipantIds ?? new List<int>()
             });
             
-        _mockMapper.Setup(m => m.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
+        mockMapper.Setup(m => m.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
             .Returns((GetLeaguesRequestDto _) => new GetLeaguesRequest());
             
-        _mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
+        mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
             .Returns((GetMarketsRequestDto _) => new GetMarketsRequest());
             
-        _mockMapper.Setup(m => m.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
+        mockMapper.Setup(m => m.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
             .Returns((GetCompetitionsRequestDto _) => new GetCompetitionsRequest());
             
-        _mockMapper.Setup(m => m.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
+        mockMapper.Setup(m => m.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
             .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
         
         var settings = new Trade360Settings
@@ -62,7 +60,7 @@ public class MetadataHttpClientComprehensiveTests
             BaseAddress = new Uri(settings.CustomersApiBaseUrl)
         };
 
-        _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var packageCredentials = new PackageCredentials
         {
@@ -73,7 +71,7 @@ public class MetadataHttpClientComprehensiveTests
 
         SetupDefaultHttpResponse();
         
-        _client = new MetadataHttpClient(_mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
     }
 
     private void SetupDefaultHttpResponse()

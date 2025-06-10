@@ -20,19 +20,6 @@ public class MessageConsumerAdvancedBusinessLogicTests
         var mockLoggerFactory = new Mock<ILoggerFactory>();
         _mockProcessor = new Mock<IMessageProcessor>();
 
-        var settings = new RmqConnectionSettings
-        {
-            Host = "localhost",
-            Port = 5672,
-            VirtualHost = "/",
-            UserName = "user",
-            Password = "password",
-            PackageId = 123,
-            AutoAck = false,
-            RequestedHeartbeatSeconds = 30,
-            NetworkRecoveryInterval = 20
-        };
-
         mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         _mockProcessorContainer.Setup(x => x.GetMessageProcessor(It.IsAny<int>())).Returns(_mockProcessor.Object);
     }

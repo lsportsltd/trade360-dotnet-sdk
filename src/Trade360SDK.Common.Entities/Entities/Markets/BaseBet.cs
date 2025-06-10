@@ -42,7 +42,5 @@ namespace Trade360SDK.Common.Entities.Markets
         public int? ParticipantId { get; set; }
 
         public string? PlayerName { get; set; }
-        
-        public int? IsChanged { get; set; } = -1;
     }
 }

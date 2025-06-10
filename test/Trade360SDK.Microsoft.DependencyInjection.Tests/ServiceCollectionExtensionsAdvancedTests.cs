@@ -12,19 +12,18 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Tests;
 
 public class ServiceCollectionExtensionsAdvancedTests
 {
-    private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly IServiceCollection _services;
 
     public ServiceCollectionExtensionsAdvancedTests()
     {
-        _mockConfiguration = new Mock<IConfiguration>();
         _services = new ServiceCollection();
     }
 
     [Fact]
     public void AddTrade360CustomerApiClient_WithValidConfiguration_ShouldRegisterServices()
     {
-        var result = _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        var result = _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         result.Should().BeSameAs(_services);
         
@@ -35,7 +34,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterHttpClients()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var serviceDescriptors = _services.Where(s => s.ServiceType.Name.Contains("HttpClient")).ToList();
         serviceDescriptors.Should().NotBeEmpty();
@@ -44,7 +44,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterAutoMapper()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var serviceProvider = _services.BuildServiceProvider();
         serviceProvider.GetService<AutoMapper.IMapper>().Should().NotBeNull();
@@ -229,7 +230,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterRetryPolicy()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var serviceProvider = _services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
@@ -279,7 +281,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterMultipleHttpClients()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var httpClientDescriptors = _services.Where(s => 
             s.ServiceType == typeof(IMetadataHttpClient) ||
@@ -324,7 +327,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterTransientServices()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var factoryDescriptor = _services.FirstOrDefault(s => s.ServiceType == typeof(ICustomersApiFactory));
         factoryDescriptor.Should().NotBeNull();
@@ -364,8 +368,9 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360CustomerApiClient_WithMultipleCalls_ShouldNotDuplicateServices()
     {
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
-        _services.AddTrade360CustomerApiClient(_mockConfiguration.Object);
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         var factoryDescriptors = _services.Where(s => s.ServiceType == typeof(ICustomersApiFactory)).ToList();
         factoryDescriptors.Should().HaveCount(2);
@@ -410,7 +415,7 @@ public class ServiceCollectionExtensionsAdvancedTests
         });
 
         var result = _services
-            .AddTrade360CustomerApiClient(_mockConfiguration.Object)
+            .AddTrade360CustomerApiClient(new Mock<IConfiguration>().Object)
             .AddTrade360PrematchSnapshotClient()
             .AddTrade360InplaySnapshotClient();
 
@@ -439,7 +444,7 @@ public class ServiceCollectionExtensionsAdvancedTests
         });
 
         _services
-            .AddTrade360CustomerApiClient(_mockConfiguration.Object)
+            .AddTrade360CustomerApiClient(new Mock<IConfiguration>().Object)
             .AddTrade360PrematchSnapshotClient()
             .AddTrade360InplaySnapshotClient();
 

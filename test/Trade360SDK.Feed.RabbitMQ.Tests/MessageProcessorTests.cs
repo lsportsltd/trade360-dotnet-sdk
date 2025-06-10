@@ -18,11 +18,10 @@ public class MessageProcessorTests
     {
         _mockServiceProvider = new Mock<IServiceProvider>();
         var mockLoggerFactory = new Mock<ILoggerFactory>();
-        var mockLogger = new Mock<ILogger>();
         _mockEntityHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
 
         mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>()))
-                         .Returns(mockLogger.Object);
+                         .Returns(new Mock<ILogger>().Object);
 
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory)))
                            .Returns(mockLoggerFactory.Object);
@@ -89,8 +88,7 @@ public class MessageProcessorTests
     public async Task ProcessAsync_WithInvalidJson_ShouldCallHandlerWithNull()
     {
         var mockLoggerFactory = new Mock<ILoggerFactory>();
-        var mockLogger = new Mock<ILogger>();
-        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         
         var mockServiceProvider = new Mock<IServiceProvider>();
         mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory))).Returns(mockLoggerFactory.Object);

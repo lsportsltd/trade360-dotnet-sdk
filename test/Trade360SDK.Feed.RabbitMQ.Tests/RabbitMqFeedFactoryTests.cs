@@ -27,8 +27,7 @@ public class RabbitMqFeedFactoryTests
         _mockInPlayContainer = new MessageProcessorContainer<InPlay>(mockProcessors);
         _mockPreMatchContainer = new MessageProcessorContainer<PreMatch>(mockProcessors);
 
-        var mockLogger = new Mock<ILogger>();
-        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
 
         _mockServiceProvider.Setup(sp => sp.GetService(typeof(ILoggerFactory)))
                            .Returns(mockLoggerFactory.Object);

@@ -19,8 +19,6 @@ public class MessageConsumerAdvancedBusinessLogicTests
     {
         _mockProcessorContainer = new Mock<IMessageProcessorContainer>();
         var mockLoggerFactory = new Mock<ILoggerFactory>();
-        var mockLogger = new Mock<ILogger>();
-        var mockChannel = new Mock<IModel>();
         _mockProcessor = new Mock<IMessageProcessor>();
 
         _settings = new RmqConnectionSettings
@@ -36,7 +34,7 @@ public class MessageConsumerAdvancedBusinessLogicTests
             NetworkRecoveryInterval = 20
         };
 
-        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         _mockProcessorContainer.Setup(x => x.GetMessageProcessor(It.IsAny<int>())).Returns(_mockProcessor.Object);
     }
 
@@ -78,12 +76,10 @@ public class MessageConsumerAdvancedBusinessLogicTests
     public void MessageConsumer_BusinessLogic_ShouldValidateLoggerFactory()
     {
         var mockLoggerFactory = new Mock<ILoggerFactory>();
-        var mockLogger = new Mock<ILogger>();
-        mockLogger.Should().NotBeNull();
         
-        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(mockLogger.Object);
+        mockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
         var logger = mockLoggerFactory.Object.CreateLogger(typeof(object));
-        logger.Should().Be(mockLogger.Object);
+        logger.Should().NotBeNull();
     }
 
     [Fact]

@@ -53,13 +53,13 @@ public class CustomersApiAdvancedBusinessLogicTests
         _settings.InplayPackageCredentials.Should().NotBeNull();
         _settings.PrematchPackageCredentials.Should().NotBeNull();
         
-        _settings.InplayPackageCredentials.PackageId.Should().Be(123);
-        _settings.InplayPackageCredentials.Username.Should().Be("inplay_user");
-        _settings.InplayPackageCredentials.Password.Should().Be("inplay_pass");
+        _settings.InplayPackageCredentials!.PackageId.Should().Be(123);
+        _settings.InplayPackageCredentials!.Username.Should().Be("inplay_user");
+        _settings.InplayPackageCredentials!.Password.Should().Be("inplay_pass");
         
-        _settings.PrematchPackageCredentials.PackageId.Should().Be(456);
-        _settings.PrematchPackageCredentials.Username.Should().Be("prematch_user");
-        _settings.PrematchPackageCredentials.Password.Should().Be("prematch_pass");
+        _settings.PrematchPackageCredentials!.PackageId.Should().Be(456);
+        _settings.PrematchPackageCredentials!.Username.Should().Be("prematch_user");
+        _settings.PrematchPackageCredentials!.Password.Should().Be("prematch_pass");
     }
 
     [Fact]
@@ -270,7 +270,7 @@ public class CustomersApiAdvancedBusinessLogicTests
     public void HttpClient_BusinessLogic_ShouldConfigureBaseAddress()
     {
         _httpClient.BaseAddress.Should().NotBeNull();
-        _httpClient.BaseAddress.ToString().Should().Be("https://api.example.com/");
+        _httpClient.BaseAddress!.ToString().Should().Be("https://api.example.com/");
         _httpClient.BaseAddress.Scheme.Should().Be("https");
         _httpClient.BaseAddress.Host.Should().Be("api.example.com");
     }

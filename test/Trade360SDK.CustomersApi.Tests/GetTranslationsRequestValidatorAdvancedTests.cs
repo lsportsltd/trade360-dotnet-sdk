@@ -23,7 +23,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     [Fact]
     public void Validate_WithNullRequest_ShouldThrowNullReferenceException()
     {
-        var act = () => GetTranslationsRequestValidator.Validate(null);
+        var act = () => GetTranslationsRequestValidator.Validate(null!);
 
         act.Should().Throw<NullReferenceException>();
     }
@@ -61,7 +61,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     [InlineData(" ")]
     [InlineData("\t")]
     [InlineData("\n")]
-    public void Validate_WithInvalidLanguageCode_ShouldNotThrow(string invalidLanguage)
+    public void Validate_WithInvalidLanguageCode_ShouldThrowArgumentException(string invalidLanguage)
     {
         var request = new GetTranslationsRequest
         {
@@ -71,7 +71,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
 
-        act.Should().NotThrow();
+        act.Should().Throw<ArgumentException>().WithMessage("Languages cannot contain null, empty, or whitespace values.");
     }
 
     [Fact]

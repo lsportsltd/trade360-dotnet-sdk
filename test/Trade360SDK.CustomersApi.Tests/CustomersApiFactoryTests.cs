@@ -66,14 +66,14 @@ public class CustomersApiFactoryTests
     }
 
     [Fact]
-    public void CreateMetadataHttpClient_WithNullCredentials_ShouldThrowNullReferenceException()
+    public void CreateMetadataHttpClient_WithNullCredentials_ShouldThrowArgumentNullException()
     {
         var factory = new CustomersApiFactory(_mockServiceProvider.Object);
         var baseUrl = "https://api.test.com";
 
         Action act = () => factory.CreateMetadataHttpClient(baseUrl, null);
 
-        act.Should().Throw<NullReferenceException>();
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]

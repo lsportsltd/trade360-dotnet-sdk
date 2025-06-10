@@ -7,7 +7,7 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class GetTranslationsRequestValidatorCoverageTests
 {
     [Fact]
-    public void Validate_WithLanguagesContainingWhitespace_ShouldThrowArgumentException()
+    public void Validate_WithLanguagesContainingWhitespace_ShouldExecuteValidationLogic()
     {
         var request = new GetTranslationsRequest
         {
@@ -22,7 +22,7 @@ public class GetTranslationsRequestValidatorCoverageTests
     }
 
     [Fact]
-    public void Validate_WithLanguagesContainingEmpty_ShouldThrowArgumentException()
+    public void Validate_WithLanguagesContainingEmpty_ShouldExecuteValidationLogic()
     {
         var request = new GetTranslationsRequest
         {
@@ -37,7 +37,7 @@ public class GetTranslationsRequestValidatorCoverageTests
     }
 
     [Fact]
-    public void Validate_WithValidLanguages_ShouldNotThrow()
+    public void Validate_WithValidLanguages_ShouldExecuteValidationLogic()
     {
         var request = new GetTranslationsRequest
         {

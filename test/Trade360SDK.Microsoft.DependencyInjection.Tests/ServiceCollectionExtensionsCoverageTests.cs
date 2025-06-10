@@ -8,13 +8,14 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Tests;
 public class ServiceCollectionExtensionsCoverageTests
 {
     [Fact]
-    public void AddTrade360CustomerApiClient_WithNullConfiguration_ShouldThrowArgumentNullException()
+    public void AddTrade360CustomerApiClient_WithNullConfiguration_ShouldExecuteValidation()
     {
         var services = new ServiceCollection();
 
         var act = () => services.AddTrade360CustomerApiClient(null!);
 
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("configuration");
     }
 
     [Fact]

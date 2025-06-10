@@ -55,25 +55,36 @@ public class BaseHttpClientTests
     [Fact]
     public void Constructor_WithNullHttpClientFactory_ShouldThrowArgumentNullException()
     {
-        var act = () => new TestableBaseHttpClient(null, "https://api.example.com/", _packageCredentials);
+        var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
+        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        act.Should().Throw<ArgumentNullException>();
+        var act = () => new MetadataHttpClient(null!, "https://api.example.com/", credentials, mockMapper.Object);
+
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("httpClientFactory");
     }
 
     [Fact]
     public void Constructor_WithNullBaseUrl_ShouldThrowArgumentException()
     {
-        var act = () => new TestableBaseHttpClient(_mockHttpClientFactory.Object, null!, _packageCredentials);
+        var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
+        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        act.Should().Throw<ArgumentException>();
+        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, null!, credentials, mockMapper.Object);
+
+        act.Should().Throw<ArgumentException>()
+           .WithParameterName("baseUrl");
     }
 
     [Fact]
     public void Constructor_WithNullPackageCredentials_ShouldThrowArgumentNullException()
     {
-        var act = () => new TestableBaseHttpClient(_mockHttpClientFactory.Object, "https://api.example.com/", null!);
+        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        act.Should().Throw<ArgumentNullException>();
+        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, "https://api.example.com/", null!, mockMapper.Object);
+
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("settings");
     }
 
     [Fact]
@@ -258,18 +269,35 @@ public class TestableBaseHttpClient : BaseHttpClient
 
     public string TestBuildQueryString(Dictionary<string, object> parameters)
     {
-        if (parameters == null) 
+        if (parameters == null || parameters.Count == 0)
         {
             return string.Empty;
         }
-        var queryParams = parameters.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value?.ToString() ?? "")}");
-        return queryParams.Any() ? "?" + string.Join("&", queryParams) : string.Empty;
+
+        var queryParams = new List<string>();
+        foreach (var kvp in parameters)
+        {
+            var encodedKey = Uri.EscapeDataString(kvp.Key);
+            var encodedValue = Uri.EscapeDataString(kvp.Value?.ToString() ?? string.Empty);
+            queryParams.Add($"{encodedKey}={encodedValue}");
+        }
+
+        return "?" + string.Join("&", queryParams);
     }
 }
 
 public class TestRequest
 {
     public string Data { get; set; } = string.Empty;
+}
+
+public class TestRequestWithProperties
+{
+    public string param1 { get; set; } = string.Empty;
+    public int param2 { get; set; }
+    public bool param3 { get; set; }
+    public int[] SportIds { get; set; } = Array.Empty<int>();
+    public string[] Languages { get; set; } = Array.Empty<string>();
 }
 
 public class TestResponse

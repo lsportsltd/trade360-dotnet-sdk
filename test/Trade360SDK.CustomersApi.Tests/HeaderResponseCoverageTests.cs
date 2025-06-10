@@ -6,14 +6,15 @@ namespace Trade360SDK.CustomersApi.Tests;
 public class HeaderResponseCoverageTests
 {
     [Fact]
-    public void RequestId_Property_ShouldGetAndSetCorrectly()
+    public void RequestId_Property_ShouldExecutePropertyAccess()
     {
         var headerResponse = new HeaderResponse();
         var requestId = "test-request-123";
 
         headerResponse.RequestId = requestId;
+        var retrievedId = headerResponse.RequestId;
 
-        headerResponse.RequestId.Should().Be(requestId);
+        retrievedId.Should().Be(requestId);
     }
 
     [Fact]

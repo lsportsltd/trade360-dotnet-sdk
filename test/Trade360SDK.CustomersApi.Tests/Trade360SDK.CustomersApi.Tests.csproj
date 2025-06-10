@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Trade360SDK.CustomersApi/Trade360SDK.CustomersApi.csproj" />
+    <ProjectReference Include="../../src/Trade360SDK.Microsoft.DependencyInjection/Trade360SDK.Microsoft.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>

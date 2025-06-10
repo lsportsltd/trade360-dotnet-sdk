@@ -13,23 +13,19 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Tests;
 
 public class ServiceCollectionExtensionsComprehensiveTests
 {
-    private readonly IServiceCollection _services;
-    private readonly IConfiguration _configuration;
-    private readonly Mock<IConfiguration> _mockConfiguration;
-
     public ServiceCollectionExtensionsComprehensiveTests()
     {
-        _services = new ServiceCollection();
-        _mockConfiguration = new Mock<IConfiguration>();
-        _configuration = _mockConfiguration.Object;
     }
 
     [Fact]
     public void AddTrade360CustomerApiClient_WithValidConfiguration_ShouldRegisterServices()
     {
-        _services.AddTrade360CustomerApiClient(_configuration);
+        var services = new ServiceCollection();
+        var mockConfiguration = new Mock<IConfiguration>();
+        var configuration = mockConfiguration.Object;
+        services.AddTrade360CustomerApiClient(configuration);
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
         var customersApiFactory = serviceProvider.GetService<ICustomersApiFactory>();
 
@@ -40,7 +36,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360CustomerApiClient_WithNullConfiguration_ShouldThrowArgumentNullException()
     {
-        var act = () => _services.AddTrade360CustomerApiClient(null);
+        var services = new ServiceCollection();
+        var act = () => services.AddTrade360CustomerApiClient(null);
 
         act.Should().Throw<ArgumentNullException>();
     }
@@ -48,7 +45,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterServices()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.PrematchPackageCredentials = new PackageCredentials
@@ -59,18 +57,18 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360PrematchSnapshotClient();
+        services.AddTrade360PrematchSnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
-        var snapshotClient = serviceProvider.GetService<ISnapshotPrematchApiClient>();
+        var serviceProvider = services.BuildServiceProvider();
 
-        snapshotClient.Should().NotBeNull();
+        serviceProvider.GetService<ISnapshotPrematchApiClient>().Should().NotBeNull();
     }
 
     [Fact]
     public void AddTrade360InplaySnapshotClient_ShouldRegisterServices()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.InplayPackageCredentials = new PackageCredentials
@@ -81,20 +79,22 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360InplaySnapshotClient();
+        services.AddTrade360InplaySnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
-        var snapshotClient = serviceProvider.GetService<ISnapshotInplayApiClient>();
+        var serviceProvider = services.BuildServiceProvider();
 
-        snapshotClient.Should().NotBeNull();
+        serviceProvider.GetService<ISnapshotInplayApiClient>().Should().NotBeNull();
     }
 
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterHttpClientsWithPolicies()
     {
-        _services.AddTrade360CustomerApiClient(_configuration);
+        var services = new ServiceCollection();
+        var mockConfiguration = new Mock<IConfiguration>();
+        var configuration = mockConfiguration.Object;
+        services.AddTrade360CustomerApiClient(configuration);
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
 
         httpClientFactory.Should().NotBeNull();
@@ -103,9 +103,12 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterAutoMapper()
     {
-        _services.AddTrade360CustomerApiClient(_configuration);
+        var services = new ServiceCollection();
+        var mockConfiguration = new Mock<IConfiguration>();
+        var configuration = mockConfiguration.Object;
+        services.AddTrade360CustomerApiClient(configuration);
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
 
         mapper.Should().NotBeNull();
@@ -114,7 +117,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_WithNullSnapshotApiBaseUrl_ShouldThrowInvalidOperationException()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = null;
             options.PrematchPackageCredentials = new PackageCredentials
@@ -127,9 +131,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
 
         var act = () =>
         {
-            _services.AddTrade360PrematchSnapshotClient();
-            var serviceProvider = _services.BuildServiceProvider();
-            var snapshotClient = serviceProvider.GetService<ISnapshotPrematchApiClient>();
+            services.AddTrade360PrematchSnapshotClient();
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.GetService<ISnapshotPrematchApiClient>();
         };
 
         act.Should().Throw<InvalidOperationException>();
@@ -138,7 +142,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360InplaySnapshotClient_WithNullSnapshotApiBaseUrl_ShouldThrowInvalidOperationException()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = null;
             options.InplayPackageCredentials = new PackageCredentials
@@ -151,9 +156,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
 
         var act = () =>
         {
-            _services.AddTrade360InplaySnapshotClient();
-            var serviceProvider = _services.BuildServiceProvider();
-            var snapshotClient = serviceProvider.GetService<ISnapshotInplayApiClient>();
+            services.AddTrade360InplaySnapshotClient();
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.GetService<ISnapshotInplayApiClient>();
         };
 
         act.Should().Throw<InvalidOperationException>();
@@ -162,7 +167,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterAutoMapper()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.PrematchPackageCredentials = new PackageCredentials
@@ -173,9 +179,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360PrematchSnapshotClient();
+        services.AddTrade360PrematchSnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
 
         mapper.Should().NotBeNull();
@@ -184,7 +190,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360InplaySnapshotClient_ShouldRegisterAutoMapper()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.InplayPackageCredentials = new PackageCredentials
@@ -195,9 +202,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360InplaySnapshotClient();
+        services.AddTrade360InplaySnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
 
         mapper.Should().NotBeNull();
@@ -206,9 +213,12 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterMultipleHttpClients()
     {
-        _services.AddTrade360CustomerApiClient(_configuration);
+        var services = new ServiceCollection();
+        var mockConfiguration = new Mock<IConfiguration>();
+        var configuration = mockConfiguration.Object;
+        services.AddTrade360CustomerApiClient(configuration);
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
 
         httpClientFactory.Should().NotBeNull();
@@ -225,7 +235,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_WithValidSettings_ShouldConfigureHttpClient()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.PrematchPackageCredentials = new PackageCredentials
@@ -236,18 +247,18 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360PrematchSnapshotClient();
+        services.AddTrade360PrematchSnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
-        var snapshotClient = serviceProvider.GetService<ISnapshotPrematchApiClient>();
+        var serviceProvider = services.BuildServiceProvider();
 
-        snapshotClient.Should().NotBeNull();
+        serviceProvider.GetService<ISnapshotPrematchApiClient>().Should().NotBeNull();
     }
 
     [Fact]
     public void AddTrade360InplaySnapshotClient_WithValidSettings_ShouldConfigureHttpClient()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.InplayPackageCredentials = new PackageCredentials
@@ -258,20 +269,22 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360InplaySnapshotClient();
+        services.AddTrade360InplaySnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
-        var snapshotClient = serviceProvider.GetService<ISnapshotInplayApiClient>();
+        var serviceProvider = services.BuildServiceProvider();
 
-        snapshotClient.Should().NotBeNull();
+        serviceProvider.GetService<ISnapshotInplayApiClient>().Should().NotBeNull();
     }
 
     [Fact]
     public void AddTrade360CustomerApiClient_ShouldRegisterTransientServices()
     {
-        _services.AddTrade360CustomerApiClient(_configuration);
+        var services = new ServiceCollection();
+        var mockConfiguration = new Mock<IConfiguration>();
+        var configuration = mockConfiguration.Object;
+        services.AddTrade360CustomerApiClient(configuration);
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         
         var factory1 = serviceProvider.GetService<ICustomersApiFactory>();
         var factory2 = serviceProvider.GetService<ICustomersApiFactory>();
@@ -284,7 +297,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterTransientServices()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.PrematchPackageCredentials = new PackageCredentials
@@ -295,9 +309,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360PrematchSnapshotClient();
+        services.AddTrade360PrematchSnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         
         var client1 = serviceProvider.GetService<ISnapshotPrematchApiClient>();
         var client2 = serviceProvider.GetService<ISnapshotPrematchApiClient>();
@@ -310,7 +324,8 @@ public class ServiceCollectionExtensionsComprehensiveTests
     [Fact]
     public void AddTrade360InplaySnapshotClient_ShouldRegisterTransientServices()
     {
-        _services.Configure<Trade360Settings>(options =>
+        var services = new ServiceCollection();
+        services.Configure<Trade360Settings>(options =>
         {
             options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
             options.InplayPackageCredentials = new PackageCredentials
@@ -321,9 +336,9 @@ public class ServiceCollectionExtensionsComprehensiveTests
             };
         });
 
-        _services.AddTrade360InplaySnapshotClient();
+        services.AddTrade360InplaySnapshotClient();
 
-        var serviceProvider = _services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
         
         var client1 = serviceProvider.GetService<ISnapshotInplayApiClient>();
         var client2 = serviceProvider.GetService<ISnapshotInplayApiClient>();

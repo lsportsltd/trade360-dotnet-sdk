@@ -21,9 +21,7 @@ namespace Trade360SDK.CustomersApi
         public MetadataHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
-            var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(baseUrl ?? throw new ArgumentNullException(nameof(baseUrl)));
-            _mapper = mapper;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<IEnumerable<Sport>> GetSportsAsync(CancellationToken cancellationToken)

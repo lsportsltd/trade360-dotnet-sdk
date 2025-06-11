@@ -50,8 +50,6 @@ public class GetTranslationsRequestValidatorComprehensiveTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(2)]
     public void Validate_WithInvalidLanguageValues_ShouldThrowArgumentException(int invalidLanguage)
     {
         var request = new GetTranslationsRequest
@@ -63,6 +61,27 @@ public class GetTranslationsRequestValidatorComprehensiveTests
         var act = () => GetTranslationsRequestValidator.Validate(request);
 
         act.Should().Throw<ArgumentException>();
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    public void Validate_WithValidLanguageValues_ShouldNotThrow(int validLanguage)
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new List<int> { 1, validLanguage },
+            SportIds = new List<int> { 1 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().NotThrow();
     }
 
     [Fact]
@@ -211,7 +230,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     }
 
     [Fact]
-    public void Validate_WithZeroEntityIds_ShouldNotThrow()
+    public void Validate_WithZeroEntityIds_ShouldThrowArgumentException()
     {
         var request = new GetTranslationsRequest
         {
@@ -221,7 +240,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
 
-        act.Should().NotThrow();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]

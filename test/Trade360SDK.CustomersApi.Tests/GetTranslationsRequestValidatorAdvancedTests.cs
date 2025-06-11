@@ -58,13 +58,6 @@ public class GetTranslationsRequestValidatorAdvancedTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(5)]
-    [InlineData(6)]
-    [InlineData(7)]
     public void Validate_WithInvalidLanguageCode_ShouldThrowArgumentException(int invalidLanguage)
     {
         var request = new GetTranslationsRequest
@@ -76,6 +69,27 @@ public class GetTranslationsRequestValidatorAdvancedTests
         var act = () => GetTranslationsRequestValidator.Validate(request);
 
         act.Should().Throw<ArgumentException>().WithMessage("Languages cannot contain null, empty, or whitespace values.");
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    public void Validate_WithValidLanguageCodes_ShouldNotThrow(int language)
+    {
+        var request = new GetTranslationsRequest
+        {
+            Languages = new List<int> { language },
+            SportIds = new List<int> { 1 }
+        };
+
+        var act = () => GetTranslationsRequestValidator.Validate(request);
+
+        act.Should().NotThrow();
     }
 
     [Fact]
@@ -136,27 +150,6 @@ public class GetTranslationsRequestValidatorAdvancedTests
         act.Should().NotThrow();
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(5)]
-    [InlineData(6)]
-    [InlineData(7)]
-    public void Validate_WithValidLanguageCodes_ShouldNotThrow(int language)
-    {
-        var request = new GetTranslationsRequest
-        {
-            Languages = new List<int> { language },
-            SportIds = new List<int> { 1 }
-        };
-
-        var act = () => GetTranslationsRequestValidator.Validate(request);
-
-        act.Should().NotThrow();
-    }
-
     [Fact]
     public void Validate_WithEmptyCollections_ShouldThrowArgumentException()
     {
@@ -190,7 +183,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     }
 
     [Fact]
-    public void Validate_WithZeroIds_ShouldNotThrow()
+    public void Validate_WithZeroIds_ShouldThrowArgumentException()
     {
         var request = new GetTranslationsRequest
         {
@@ -200,7 +193,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
 
-        act.Should().NotThrow();
+        act.Should().Throw<ArgumentException>().WithMessage("Languages cannot contain null, empty, or whitespace values.");
     }
 
     [Fact]

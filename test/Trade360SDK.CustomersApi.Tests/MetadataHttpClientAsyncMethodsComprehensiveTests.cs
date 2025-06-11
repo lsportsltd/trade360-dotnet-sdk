@@ -137,7 +137,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
 
         var result = await _client.GetTranslationsAsync(new GetTranslationsRequestDto 
         { 
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { 1 }
         }, CancellationToken.None);
 
@@ -251,7 +251,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
         var json = JsonSerializer.Serialize(baseResponse);
         var httpResponse = new HttpResponseMessage(statusCode)
         {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
+            Content = new StringContent(json, Encoding.UTF8)
         };
         httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
@@ -269,7 +269,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
         _mockMapper.Setup(x => x.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
             .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest 
             { 
-                Languages = dto?.Languages ?? new List<string> { "en" },
+                Languages = dto?.Languages ?? new List<int> { 1 },
                 SportIds = dto?.SportIds ?? new List<int> { 1 },
                 LocationIds = dto?.LocationIds,
                 LeagueIds = dto?.LeagueIds,

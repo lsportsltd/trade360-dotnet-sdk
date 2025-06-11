@@ -234,7 +234,7 @@ public class BaseHttpClientTests
         var json = JsonSerializer.Serialize(baseResponse);
         var httpResponse = new HttpResponseMessage(statusCode)
         {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
+            Content = new StringContent(json, Encoding.UTF8)
         };
         httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 

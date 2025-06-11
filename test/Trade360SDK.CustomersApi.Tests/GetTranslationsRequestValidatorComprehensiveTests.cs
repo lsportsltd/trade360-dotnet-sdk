@@ -11,7 +11,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "es" },
+            Languages = new List<int> { 1, 2 },
             SportIds = new List<int> { 1, 2 }
         };
 
@@ -39,7 +39,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string>(),
+            Languages = new List<int>(),
             SportIds = new List<int> { 1 }
         };
 
@@ -49,14 +49,14 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData(null)]
-    public void Validate_WithInvalidLanguageValues_ShouldThrowArgumentException(string invalidLanguage)
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Validate_WithInvalidLanguageValues_ShouldThrowArgumentException(int invalidLanguage)
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", invalidLanguage },
+            Languages = new List<int> { 1, invalidLanguage },
             SportIds = new List<int> { 1 }
         };
 
@@ -70,12 +70,8 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
-            SportIds = new List<int> { 1 },
-            LocationIds = new List<int> { 1 },
-            LeagueIds = new List<int> { 1 },
-            MarketIds = new List<int> { 1 },
-            ParticipantIds = new List<int> { 1 }
+            Languages = new List<int> { 1 },
+            SportIds = new List<int> { -1, -2, -3 }
         };
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
@@ -88,7 +84,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" }
+            Languages = new List<int> { 1 }
         };
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
@@ -101,7 +97,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             SportIds = new List<int>(),
             LocationIds = new List<int>(),
             LeagueIds = new List<int>(),
@@ -119,7 +115,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             LocationIds = new List<int> { 1, 2, 3 }
         };
 
@@ -133,7 +129,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             LeagueIds = new List<int> { 1, 2, 3 }
         };
 
@@ -147,7 +143,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             MarketIds = new List<int> { 1, 2, 3 }
         };
 
@@ -161,7 +157,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             ParticipantIds = new List<int> { 1, 2, 3 }
         };
 
@@ -175,7 +171,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "es", "fr", "de", "it" },
+            Languages = new List<int> { 1, 2, 3, 4, 5 },
             SportIds = new List<int> { 1 }
         };
 
@@ -189,7 +185,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             SportIds = Enumerable.Range(1, 100).ToList(),
             LocationIds = Enumerable.Range(1, 50).ToList(),
             LeagueIds = Enumerable.Range(1, 200).ToList()
@@ -205,7 +201,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             SportIds = new List<int> { -1, -2, -3 }
         };
 
@@ -219,7 +215,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 0 },
             SportIds = new List<int> { 0 }
         };
 
@@ -233,7 +229,7 @@ public class GetTranslationsRequestValidatorComprehensiveTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "", "es" },
+            Languages = new List<int> { 1, 0, 2 },
             SportIds = new List<int> { 1 }
         };
 

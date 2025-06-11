@@ -11,7 +11,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "es" },
+            Languages = new List<int> { 1, 2 },
             SportIds = new List<int> { 1, 2 }
         };
 
@@ -47,7 +47,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string>(),
+            Languages = new List<int>(),
             SportIds = new List<int> { 1 }
         };
 
@@ -57,15 +57,19 @@ public class GetTranslationsRequestValidatorAdvancedTests
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\t")]
-    [InlineData("\n")]
-    public void Validate_WithInvalidLanguageCode_ShouldThrowArgumentException(string invalidLanguage)
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    public void Validate_WithInvalidLanguageCode_ShouldThrowArgumentException(int invalidLanguage)
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { invalidLanguage },
+            Languages = new List<int> { invalidLanguage },
             SportIds = new List<int> { 1 }
         };
 
@@ -79,7 +83,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "es", "fr" }
+            Languages = new List<int> { 1, 2, 3 }
         };
 
         var act = () => GetTranslationsRequestValidator.Validate(request);
@@ -105,7 +109,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "es" },
+            Languages = new List<int> { 1, 2 },
             SportIds = new List<int> { 1, 2 },
             LocationIds = new List<int> { 10, 20 },
             LeagueIds = new List<int> { 100, 200 },
@@ -123,7 +127,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en", "en", "es" },
+            Languages = new List<int> { 1, 1, 2 },
             SportIds = new List<int> { 1 }
         };
 
@@ -133,18 +137,18 @@ public class GetTranslationsRequestValidatorAdvancedTests
     }
 
     [Theory]
-    [InlineData("en")]
-    [InlineData("EN")]
-    [InlineData("es")]
-    [InlineData("fr")]
-    [InlineData("de")]
-    [InlineData("zh")]
-    [InlineData("ja")]
-    public void Validate_WithValidLanguageCodes_ShouldNotThrow(string language)
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    public void Validate_WithValidLanguageCodes_ShouldNotThrow(int language)
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { language },
+            Languages = new List<int> { language },
             SportIds = new List<int> { 1 }
         };
 
@@ -158,7 +162,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string>(),
+            Languages = new List<int>(),
             SportIds = new List<int>(),
             LocationIds = new List<int>(),
             LeagueIds = new List<int>(),
@@ -176,7 +180,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 1 },
             SportIds = new List<int> { -1, -2 }
         };
 
@@ -190,7 +194,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { 0 },
             SportIds = new List<int> { 0 }
         };
 
@@ -204,7 +208,7 @@ public class GetTranslationsRequestValidatorAdvancedTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new List<string> { "en" },
+            Languages = new List<int> { int.MaxValue },
             SportIds = new List<int> { int.MaxValue }
         };
 

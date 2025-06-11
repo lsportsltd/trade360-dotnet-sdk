@@ -26,7 +26,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = Array.Empty<string>(),
+            Languages = Array.Empty<int>(),
             SportIds = new[] { 1 }
         };
 
@@ -41,7 +41,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", null!, "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -56,7 +56,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", " ", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -71,7 +71,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = null,
             LocationIds = null,
             LeagueIds = null,
@@ -90,7 +90,7 @@ public class GetTranslationsRequestValidatorActualTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es" },
+            Languages = new[] { 1, 2 },
             SportIds = new[] { 1, 2 }
         };
 

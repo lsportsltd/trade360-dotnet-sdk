@@ -81,7 +81,7 @@ public class ActualImplementationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = Array.Empty<string>(),
+            Languages = Array.Empty<int>(),
             SportIds = new[] { 1 }
         };
 
@@ -96,7 +96,7 @@ public class ActualImplementationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", null!, "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -111,7 +111,7 @@ public class ActualImplementationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = null,
             LocationIds = null,
             LeagueIds = null,
@@ -130,7 +130,7 @@ public class ActualImplementationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = Array.Empty<int>(),
             LocationIds = Array.Empty<int>(),
             LeagueIds = Array.Empty<int>(),

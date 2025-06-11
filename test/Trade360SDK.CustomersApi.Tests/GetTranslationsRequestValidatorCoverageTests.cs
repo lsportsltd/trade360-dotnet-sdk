@@ -11,7 +11,7 @@ public class GetTranslationsRequestValidatorCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", " ", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -26,7 +26,7 @@ public class GetTranslationsRequestValidatorCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -41,7 +41,7 @@ public class GetTranslationsRequestValidatorCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es", "fr" },
+            Languages = new[] { 1, 2, 3 },
             SportIds = new[] { 1 }
         };
 

@@ -1,4 +1,3 @@
-using System;
 using Trade360SDK.Common.Models;
 using Xunit;
 

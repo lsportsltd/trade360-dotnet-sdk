@@ -11,7 +11,7 @@ public class GetTranslationsRequestValidatorValidationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new string[] { "en", null!, "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -26,7 +26,7 @@ public class GetTranslationsRequestValidatorValidationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", " ", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -41,7 +41,7 @@ public class GetTranslationsRequestValidatorValidationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -56,7 +56,7 @@ public class GetTranslationsRequestValidatorValidationTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = null,
             LocationIds = null,
             LeagueIds = null,

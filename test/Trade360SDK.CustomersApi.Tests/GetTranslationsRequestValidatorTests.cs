@@ -11,7 +11,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es", "fr" },
+            Languages = new[] { 1, 2, 3 },
             SportIds = new[] { 1 }
         };
 
@@ -39,7 +39,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = Array.Empty<string>(),
+            Languages = Array.Empty<int>(),
             SportIds = new[] { 1 }
         };
 
@@ -54,7 +54,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { 1 }
         };
 
@@ -68,7 +68,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es", "fr", "de", "it" },
+            Languages = new[] { 1, 2, 3, 4, 5 },
             SportIds = new[] { 1 }
         };
 
@@ -82,7 +82,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { 1, 2, 3 }
         };
 
@@ -96,7 +96,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             LocationIds = new[] { 1, 2, 3 }
         };
 
@@ -110,7 +110,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             LeagueIds = new[] { 10, 20, 30 }
         };
 
@@ -124,7 +124,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             MarketIds = new[] { 100, 200, 300 }
         };
 
@@ -138,7 +138,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             ParticipantIds = new[] { 1000, 2000, 3000 }
         };
 
@@ -152,7 +152,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es" },
+            Languages = new[] { 1, 2 },
             SportIds = new[] { 1, 2 },
             LocationIds = new[] { 1, 2 },
             LeagueIds = new[] { 10, 20 },
@@ -170,7 +170,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = Array.Empty<int>(),
             LocationIds = Array.Empty<int>(),
             LeagueIds = Array.Empty<int>(),
@@ -189,7 +189,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = null,
             LocationIds = null,
             LeagueIds = null,
@@ -216,7 +216,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { languageCode.ToString() },
+            Languages = new[] { languageCode },
             SportIds = new[] { 1 }
         };
 
@@ -230,7 +230,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "en", "es", "es" },
+            Languages = new[] { 1, 1, 2, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -242,7 +242,7 @@ public class GetTranslationsRequestValidatorTests
     [Fact]
     public void Validate_WithLargeNumberOfLanguages_ShouldNotThrowException()
     {
-        var languages = Enumerable.Range(1, 100).Select(i => $"lang{i}").ToArray();
+        var languages = Enumerable.Range(1, 100).ToArray();
         var request = new GetTranslationsRequest
         {
             Languages = languages,
@@ -260,7 +260,7 @@ public class GetTranslationsRequestValidatorTests
         var largeIdArray = Enumerable.Range(1, 1000).ToArray();
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = largeIdArray,
             LocationIds = largeIdArray,
             LeagueIds = largeIdArray,
@@ -278,7 +278,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { -1, -2, -3 },
             LocationIds = new[] { -10, -20 },
             LeagueIds = new[] { -100 },
@@ -296,7 +296,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { 0 },
             LocationIds = new[] { 0 },
             LeagueIds = new[] { 0 },
@@ -314,7 +314,7 @@ public class GetTranslationsRequestValidatorTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { int.MaxValue },
             LocationIds = new[] { int.MaxValue },
             LeagueIds = new[] { int.MaxValue },

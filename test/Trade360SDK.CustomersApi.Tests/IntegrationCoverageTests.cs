@@ -6,6 +6,9 @@ using Trade360SDK.CustomersApi.Http;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Validators;
 using Trade360SDK.Microsoft.DependencyInjection.Extensions;
+using System.Net.Http;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -81,7 +84,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = Array.Empty<string>(),
+            Languages = Array.Empty<int>(),
             SportIds = new[] { 1 }
         };
 
@@ -96,7 +99,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", null!, "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -111,7 +114,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es", "fr" },
+            Languages = new[] { 1, 2, 3 },
             SportIds = new[] { 1, 2 }
         };
 
@@ -125,7 +128,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", " ", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -140,7 +143,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "", "es" },
+            Languages = new[] { 1, 0, 2 },
             SportIds = new[] { 1 }
         };
 
@@ -155,7 +158,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = null,
             LocationIds = null,
             LeagueIds = null,
@@ -208,7 +211,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en", "es", "fr" },
+            Languages = new[] { 1, 2, 3 },
             SportIds = new[] { 1, 2, 3 }
         };
 
@@ -222,7 +225,7 @@ public class IntegrationCoverageTests
     {
         var request = new GetTranslationsRequest
         {
-            Languages = new[] { "en" },
+            Languages = new[] { 1 },
             SportIds = new[] { 1 },
             LocationIds = new[] { 100 },
             LeagueIds = new[] { 200 }
@@ -260,5 +263,19 @@ public class IntegrationCoverageTests
         retrievedErrors.Should().BeEquivalentTo(errors);
     }
 
+    [Fact]
+    public async Task SetupHttpResponse_ShouldSetContentAndContentType()
+    {
+        var json = "{\"key\":\"value\"}";
+        var statusCode = System.Net.HttpStatusCode.OK;
 
+        var httpResponse = new HttpResponseMessage(statusCode)
+        {
+            Content = new StringContent(json, Encoding.UTF8)
+        };
+        httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        (await httpResponse.Content.ReadAsStringAsync()).Should().Be(json);
+        httpResponse.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+    }
 }

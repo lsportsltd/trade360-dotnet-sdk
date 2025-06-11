@@ -30,7 +30,7 @@ public class MetadataHttpClientComprehensiveTests
         mockMapper.Setup(m => m.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
             .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest
             {
-                Languages = dto.Languages ?? new List<string>(),
+                Languages = dto.Languages ?? new List<int>(),
                 SportIds = dto.SportIds ?? new List<int>(),
                 LocationIds = dto.LocationIds ?? new List<int>(),
                 LeagueIds = dto.LeagueIds ?? new List<int>(),
@@ -95,7 +95,7 @@ public class MetadataHttpClientComprehensiveTests
         var json = JsonSerializer.Serialize(baseResponse);
         var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
+            Content = new StringContent(json, Encoding.UTF8)
         };
         httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
@@ -215,7 +215,7 @@ public class MetadataHttpClientComprehensiveTests
 
         var request = new GetTranslationsRequestDto 
         { 
-            Languages = new[] { "en", "es" },
+            Languages = new[] { 1, 2 },
             SportIds = new[] { 1, 2 }
         };
         var result = await _client.GetTranslationsAsync(request, CancellationToken.None);
@@ -309,7 +309,7 @@ public class MetadataHttpClientComprehensiveTests
 
         var request = new GetTranslationsRequestDto 
         { 
-            Languages = new[] { "en", "es" },
+            Languages = new[] { 1, 2 },
             SportIds = new[] { 1, 2 }
         };
 
@@ -388,7 +388,7 @@ public class MetadataHttpClientComprehensiveTests
         var json = JsonSerializer.Serialize(baseResponse);
         var httpResponse = new HttpResponseMessage(statusCode)
         {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
+            Content = new StringContent(json, Encoding.UTF8)
         };
         httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 

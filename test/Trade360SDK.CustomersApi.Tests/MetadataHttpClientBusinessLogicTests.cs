@@ -164,10 +164,10 @@ public class MetadataHttpClientBusinessLogicTests
                 { "en", new List<LocalizedValue> { new LocalizedValue { LanguageId = 1, Value = "1X2" } } }
             }
         };
-        var requestDto = new GetTranslationsRequestDto { Languages = new List<string> { "en" }, SportIds = new List<int> { 1 } };
+        var requestDto = new GetTranslationsRequestDto { Languages = new List<int> { 1 }, SportIds = new List<int> { 1 } };
         var mappedRequest = new GetTranslationsRequest 
         { 
-            Languages = new List<string> { "en" }, 
+            Languages = new List<int> { 1 }, 
             SportIds = new List<int> { 1 } 
         };
 
@@ -292,13 +292,13 @@ public class MetadataHttpClientBusinessLogicTests
         };
         var requestDto = new GetTranslationsRequestDto 
         { 
-            Languages = new List<string> { "en", "es" },
+            Languages = new List<int> { 1, 2 },
             SportIds = new List<int> { 1, 2 },
             LeagueIds = new List<int> { 1, 2 }
         };
         var mappedRequest = new GetTranslationsRequest 
         { 
-            Languages = new List<string> { "en", "es" },
+            Languages = new List<int> { 1, 2 },
             SportIds = new List<int> { 1, 2 },
             LeagueIds = new List<int> { 1, 2 }
         };
@@ -363,7 +363,7 @@ public class MetadataHttpClientBusinessLogicTests
         var json = JsonSerializer.Serialize(baseResponse);
         var httpResponse = new HttpResponseMessage(statusCode)
         {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
+            Content = new StringContent(json, Encoding.UTF8)
         };
         httpResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 

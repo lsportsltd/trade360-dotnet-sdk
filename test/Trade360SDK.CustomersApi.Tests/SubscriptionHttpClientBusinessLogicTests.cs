@@ -38,38 +38,38 @@ namespace Trade360SDK.CustomersApi.Tests
         [Fact]
         public async Task GetPackageQuotaAsync_ShouldReturnExpectedResponse()
         {
-            var expectedResponse = new PackageQuotaResponse { Quota = 100 };
+            var expectedResponse = new PackageQuotaResponse { CreditRemaining = 100 };
             SetupHttpResponse(expectedResponse);
             var result = await _client.GetPackageQuotaAsync(CancellationToken.None);
             result.Should().NotBeNull();
-            result.Quota.Should().Be(100);
+            result.CreditRemaining.Should().Be(100);
         }
 
         [Fact]
         public async Task GetInplayFixtureSchedule_WithValidRequest_ShouldReturnExpectedResponse()
         {
-            var expectedResponse = new FixtureScheduleCollectionResponse { Schedules = new List<FixtureSchedule> { new FixtureSchedule { FixtureId = 1 } } };
-            var requestDto = new GetFixtureScheduleRequestDto { Fixtures = new List<int> { 1 } };
+            var expectedResponse = new FixtureScheduleCollectionResponse { Fixtures = new List<FixtureSchedule> { new FixtureSchedule { FixtureId = 1 } } };
+            var requestDto = new GetFixtureScheduleRequestDto { LeagueIds = new List<int> { 1 } };
             var mappedRequest = new GetFixtureScheduleRequest();
             _mockMapper.Setup(x => x.Map<GetFixtureScheduleRequest>(requestDto)).Returns(mappedRequest);
             SetupHttpResponse(expectedResponse);
             var result = await _client.GetInplayFixtureSchedule(requestDto, CancellationToken.None);
             result.Should().NotBeNull();
-            result.Schedules.Should().HaveCount(1);
+            result.Fixtures.Should().HaveCount(1);
             _mockMapper.Verify(x => x.Map<GetFixtureScheduleRequest>(requestDto), Times.Once);
         }
 
         [Fact]
         public async Task SubscribeByFixture_WithValidRequest_ShouldReturnExpectedResponse()
         {
-            var expectedResponse = new FixtureSubscriptionCollectionResponse { Subscriptions = new List<FixtureSubscription> { new FixtureSubscription { FixtureId = 1 } } };
+            var expectedResponse = new FixtureSubscriptionCollectionResponse { Fixtures = new List<FixtureSubscription> { new FixtureSubscription { FixtureId = 1 } } };
             var requestDto = new FixtureSubscriptionRequestDto { Fixtures = new List<int> { 1 } };
             var mappedRequest = new FixtureSubscriptionRequest();
             _mockMapper.Setup(x => x.Map<FixtureSubscriptionRequest>(requestDto)).Returns(mappedRequest);
             SetupHttpResponse(expectedResponse);
             var result = await _client.SubscribeByFixture(requestDto, CancellationToken.None);
             result.Should().NotBeNull();
-            result.Subscriptions.Should().HaveCount(1);
+            result.Fixtures.Should().HaveCount(1);
             _mockMapper.Verify(x => x.Map<FixtureSubscriptionRequest>(requestDto), Times.Once);
         }
 

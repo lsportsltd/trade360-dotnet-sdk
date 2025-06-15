@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y unzip
 RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
 
 # Download ReportGenerator (standalone .NET Core app)
-RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-netcoreapp3.0.zip \
+RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-net8.0.zip \
     && unzip reportgenerator.zip -d /reportgenerator
 
 # Merge all coverage.cobertura.xml files into one

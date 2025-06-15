@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Trade360SDK.Common.Configuration;
+using Xunit;
 
 namespace Trade360SDK.Common.Tests;
 
@@ -75,5 +76,29 @@ public class ConfigurationTests
         };
 
         credentials.MessageFormat.Should().Be(format);
+    }
+
+    [Fact]
+    public void Trade360Settings_Properties_ShouldGetAndSetValues()
+    {
+        var creds = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass", MessageFormat = "xml" };
+        var settings = new Trade360Settings
+        {
+            CustomersApiBaseUrl = "http://api",
+            SnapshotApiBaseUrl = "http://snap",
+            InplayPackageCredentials = creds,
+            PrematchPackageCredentials = creds
+        };
+        Assert.Equal("http://api", settings.CustomersApiBaseUrl);
+        Assert.Equal("http://snap", settings.SnapshotApiBaseUrl);
+        Assert.Equal(creds, settings.InplayPackageCredentials);
+        Assert.Equal(creds, settings.PrematchPackageCredentials);
+    }
+
+    [Fact]
+    public void PackageCredentials_DefaultMessageFormat_IsJson()
+    {
+        var creds = new PackageCredentials();
+        Assert.Equal("json", creds.MessageFormat);
     }
 }

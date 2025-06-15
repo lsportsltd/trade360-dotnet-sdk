@@ -47,5 +47,21 @@ namespace Trade360SDK.Common.Tests
             var ex = new Trade360Exception(errors);
             Assert.Equal("A; B", ex.Message);
         }
+
+        [Fact]
+        public void Constructor_WithMessage_SetsMessage()
+        {
+            var ex = new Trade360Exception("test message", new List<string?>());
+            Assert.Equal("test message", ex.Message);
+        }
+
+        [Fact]
+        public void Constructor_WithMessageAndInnerException_SetsProperties()
+        {
+            var inner = new Exception("inner");
+            var ex = new Trade360Exception("outer", inner);
+            Assert.Equal("outer", ex.Message);
+            Assert.Equal(inner, ex.InnerException);
+        }
     }
 } 

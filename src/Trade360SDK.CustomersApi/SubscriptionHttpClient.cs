@@ -29,6 +29,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<FixtureScheduleCollectionResponse> GetInplayFixtureSchedule(GetFixtureScheduleRequestDto requestDto, CancellationToken cancellationToken)
         {
+            if (requestDto == null) { throw new ArgumentNullException(nameof(requestDto)); }
             var request = _mapper.Map<GetFixtureScheduleRequest>(requestDto);
 
             var response = await PostEntityAsync<FixtureScheduleCollectionResponse>(
@@ -40,6 +41,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<FixtureSubscriptionCollectionResponse> SubscribeByFixture(FixtureSubscriptionRequestDto requestDto, CancellationToken cancellationToken)
         {
+            if (requestDto == null) throw new ArgumentNullException(nameof(requestDto));
             var request = _mapper.Map<FixtureSubscriptionRequest>(requestDto);
 
             var response = await PostEntityAsync<FixtureSubscriptionCollectionResponse>(

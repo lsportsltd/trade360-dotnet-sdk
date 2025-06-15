@@ -24,7 +24,7 @@ ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
 # Copy the coverage file to a known location
-RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/coverage.cobertura.xml \;
+RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ')"
 
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \

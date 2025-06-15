@@ -17,14 +17,24 @@ RUN apt-get update && apt-get install -y default-jre
 # Run tests
 RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
 
+# Download ReportGenerator (standalone .NET Core app)
+RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-netcoreapp3.0.zip \
+    && unzip reportgenerator.zip -d /reportgenerator
+
+# Merge all coverage.cobertura.xml files into one
+RUN dotnet /reportgenerator/ReportGenerator.dll \
+    -reports:coverage/*/coverage.cobertura.xml \
+    -targetdir:coverage/merged \
+    -reporttypes:Cobertura
+
+# Copy merged file to expected location for Codacy
+RUN cp coverage/merged/Cobertura.xml coverage/coverage.cobertura.xml
+
 # Codacy Config
 ENV CODACY_API_TOKEN=${CODACY_TOKEN}
 ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
-
-# Copy the coverage file to a known location
-RUN /bin/bash -c "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l CSharp $(find . -name 'coverage.cobertura.xml' -printf '-r %p ')"
 
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \

@@ -23,8 +23,14 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
-# Copy the coverage file to a known location
-RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/coverage.cobertura.xml \;
+# Merge all coverage.cobertura.xml files into one
+RUN dotnet /reportgenerator/ReportGenerator.dll \
+    -reports:coverage/*/coverage.cobertura.xml \
+    -targetdir:coverage/merged \
+    -reporttypes:Cobertura
+
+# Copy merged file to expected location for Codacy
+RUN cp coverage/merged/Cobertura.xml coverage/coverage.cobertura.xml
 
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \

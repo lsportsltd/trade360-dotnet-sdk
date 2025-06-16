@@ -35,3 +35,8 @@ RUN cp coverage/merged/Cobertura.xml coverage/coverage.cobertura.xml
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \
     bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
+
+# Download ReportGenerator (standalone .NET Core app)
+RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-netcoreapp3.0.zip \
+    && unzip reportgenerator.zip -d /reportgenerator \
+    && ls -lh /reportgenerator

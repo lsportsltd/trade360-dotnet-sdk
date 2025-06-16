@@ -15,7 +15,7 @@ ARG CODACY_TOKEN
 RUN apt-get update && apt-get install -y default-jre
 
 # Run tests
-RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
+RUN dotnet test -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
 
 # Codacy Config
 ENV CODACY_API_TOKEN=${CODACY_TOKEN}

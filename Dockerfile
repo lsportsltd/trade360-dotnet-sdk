@@ -14,8 +14,14 @@ ARG CODACY_TOKEN
 # Install Java for Codacy coverage reporter
 RUN apt-get update && apt-get install -y default-jre
 
-# Run tests
-RUN dotnet test -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+# Create the coverage directory
+RUN mkdir -p coverage
+
+# Run tests and generate coverage report to expected path
+RUN dotnet test -c Release --no-restore \
+    /p:CollectCoverage=true \
+    /p:CoverletOutputFormat=cobertura \
+    /p:CoverletOutput=coverage/coverage.cobertura.xml
 
 # Codacy Config
 ENV CODACY_API_TOKEN=${CODACY_TOKEN}
@@ -23,9 +29,8 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
-# Copy the coverage file to a known location
-RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/coverage.cobertura.xml \;
-
 # Download and run the Codacy reporter
-RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \
-    bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
+RUN curl -Ls https://coverage.codacy.com/get.sh | sh && \
+    ./codacy-coverage-reporter report \
+    -r coverage/coverage.cobertura.xml \
+    --language CSharp

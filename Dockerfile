@@ -26,11 +26,10 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
-# Download ReportGenerator (standalone .NET Core app)
-RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-netcoreapp2.1.zip \
-    && echo "Downloaded file contents:" \
-    && cat reportgenerator.zip \
-    && unzip reportgenerator.zip -d /reportgenerator \
+# Copy ReportGenerator from the repo into the image
+COPY tools/reportgenerator.zip /reportgenerator.zip
+
+RUN unzip /reportgenerator.zip -d /reportgenerator \
     && ls -lh /reportgenerator
 
 # Merge all coverage.cobertura.xml files into one

@@ -28,6 +28,8 @@ ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
 # Download ReportGenerator (standalone .NET Core app)
 RUN curl -L -o reportgenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.2.4/reportgenerator-netcoreapp3.0.zip \
+    && echo "Downloaded file contents:" \
+    && cat reportgenerator.zip \
     && unzip reportgenerator.zip -d /reportgenerator \
     && ls -lh /reportgenerator
 

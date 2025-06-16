@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Trade360SDK.Feed/Trade360SDK.Feed.csproj" />
-    <ProjectReference Include="../../src/Trade360SDK.Feed.RabbitMQ/Trade360SDK.Feed.RabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

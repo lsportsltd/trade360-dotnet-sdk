@@ -14,9 +14,6 @@ ARG CODACY_TOKEN
 # Install Java for Codacy coverage reporter
 RUN apt-get update && apt-get install -y default-jre
 
-# Install unzip for extracting ReportGenerator
-RUN apt-get update && apt-get install -y unzip
-
 # Run tests
 RUN dotnet test -c Release --no-restore --collect:"XPlat Code Coverage" --results-directory ./coverage
 
@@ -26,20 +23,8 @@ ENV CODACY_ORGANIZATION_PROVIDER=gh
 ENV CODACY_USERNAME=lsportsltd
 ENV CODACY_PROJECT_NAME=trade360-dotnet-sdk
 
-# Copy ReportGenerator from the repo into the image
-COPY tools/reportgenerator.zip /reportgenerator.zip
-
-RUN unzip /reportgenerator.zip -d /reportgenerator \
-    && ls -lh /reportgenerator
-
-# Merge all coverage.cobertura.xml files into one
-RUN dotnet /reportgenerator/ReportGenerator.dll \
-    -reports:coverage/*/coverage.cobertura.xml \
-    -targetdir:coverage/merged \
-    -reporttypes:Cobertura
-
-# Copy merged file to expected location for Codacy
-RUN cp coverage/merged/Cobertura.xml coverage/coverage.cobertura.xml
+# Copy the coverage file to a known location
+RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/coverage.cobertura.xml \;
 
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \

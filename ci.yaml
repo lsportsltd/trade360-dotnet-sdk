@@ -16,25 +16,8 @@ stages:
       product: stm
       team: guns-n-roses
 
-  - stage: PublishCoverage
-    displayName: 'Publish Coverage Artifact'
-    jobs:
-      - job: PublishCoverageJob
-        displayName: 'Publish Coverage'
-        pool:
-          name: k8s-agents-ci
-        steps:
-          - checkout: self
-          - script: |
-              find $(Build.SourcesDirectory) -name coverage.cobertura.xml
-            displayName: 'List coverage files after tests'
-          - publish: $(Build.SourcesDirectory)
-            artifact: coverage
-            displayName: 'Publish coverage files'
-
-  - stage: CodacyCoverage
+  - stage: CoverageAndCodacy
     displayName: 'Merge and Upload Coverage to Codacy'
-    dependsOn: PublishCoverage
     jobs:
       - job: MergeAndUploadCoverage
         displayName: 'Merge and Upload Coverage'
@@ -42,15 +25,15 @@ stages:
           name: k8s-agents-ci
         steps:
           - checkout: self
-          - download: current
-            artifact: coverage
-            displayName: 'Download coverage files'
+          - script: |
+              find $(Build.SourcesDirectory) -name coverage.cobertura.xml
+            displayName: 'List coverage files after tests'
           - script: |
               dotnet tool install -g dotnet-reportgenerator-globaltool
             displayName: 'Install ReportGenerator'
           - script: |
               export PATH="$PATH:$HOME/.dotnet/tools"
-              reportgenerator -reports:"$(Pipeline.Workspace)/coverage/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/coverage-merged -reporttypes:Cobertura
+              reportgenerator -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/coverage-merged -reporttypes:Cobertura
             displayName: 'Merge coverage reports'
           - script: |
               curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh

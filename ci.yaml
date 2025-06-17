@@ -16,6 +16,31 @@ stages:
       product: stm
       team: guns-n-roses
   
+           
+  - stage: CodacyCoverage
+    displayName: 'Merge and Upload Coverage to Codacy'
+    dependsOn: CI
+    jobs:
+      - job: MergeAndUploadCoverage
+        displayName: 'Merge and Upload Coverage'
+        pool:
+          name: k8s-agents-ci
+        steps:
+          - checkout: self
+          - script: |
+              dotnet tool install -g dotnet-reportgenerator-globaltool
+            displayName: 'Install ReportGenerator'
+          - script: |
+              export PATH="$PATH:$HOME/.dotnet/tools"
+              reportgenerator -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/coverage-merged -reporttypes:Cobertura
+            displayName: 'Merge coverage reports'
+          - script: |
+              curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh
+              chmod +x codacy-coverage-reporter.sh
+              ./codacy-coverage-reporter.sh report -l CSharp -r $(Build.SourcesDirectory)/coverage-merged/Cobertura.xml
+            displayName: 'Upload merged coverage to Codacy'
+
+            
   - stage: PublishToNuget
     displayName: 'Publish to Nuget Registry'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))

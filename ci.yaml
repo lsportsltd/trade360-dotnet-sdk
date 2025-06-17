@@ -15,20 +15,26 @@ stages:
       domain: trade360-sdk
       product: stm
       team: guns-n-roses
-  
-  # Debug: List coverage files after tests
-  - script: |
-      find $(Build.SourcesDirectory) -name coverage.cobertura.xml
-    displayName: 'List coverage files after tests'
 
-  # Publish coverage files as artifact
-  - publish: $(Build.SourcesDirectory)
-    artifact: coverage
-    displayName: 'Publish coverage files'
+  - stage: PublishCoverage
+    displayName: 'Publish Coverage Artifact'
+    jobs:
+      - job: PublishCoverageJob
+        displayName: 'Publish Coverage'
+        pool:
+          name: k8s-agents-ci
+        steps:
+          - checkout: self
+          - script: |
+              find $(Build.SourcesDirectory) -name coverage.cobertura.xml
+            displayName: 'List coverage files after tests'
+          - publish: $(Build.SourcesDirectory)
+            artifact: coverage
+            displayName: 'Publish coverage files'
 
   - stage: CodacyCoverage
     displayName: 'Merge and Upload Coverage to Codacy'
-    dependsOn: CI
+    dependsOn: PublishCoverage
     jobs:
       - job: MergeAndUploadCoverage
         displayName: 'Merge and Upload Coverage'
@@ -52,7 +58,6 @@ stages:
               ./codacy-coverage-reporter.sh report -l CSharp -r $(Build.SourcesDirectory)/coverage-merged/Cobertura.xml
             displayName: 'Upload merged coverage to Codacy'
 
-            
   - stage: PublishToNuget
     displayName: 'Publish to Nuget Registry'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))

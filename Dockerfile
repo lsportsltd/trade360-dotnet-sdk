@@ -29,4 +29,3 @@ RUN find ./coverage -name 'coverage.cobertura.xml' -exec cp {} ./coverage/covera
 # Download and run the Codacy reporter
 RUN curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh && \
     bash codacy-coverage-reporter.sh report -l CSharp -r ./coverage/coverage.cobertura.xml
-

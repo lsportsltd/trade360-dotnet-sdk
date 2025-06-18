@@ -1,0 +1,12 @@
+---
+engines:
+  duplication:
+    exclude_paths:
+      - "test/**"
+    config:
+      languages:
+        - "CSharp"
+exclude_paths:
+  - "README.md"
+  - "nuget/**"
+  - "coverage/**"

@@ -15,80 +15,7 @@ stages:
       domain: trade360-sdk
       product: stm
       team: guns-n-roses
-
-  - stage: PublishCoverage
-    displayName: 'Publish Coverage Artifact'
-    dependsOn: []  # Depends on the template stage (will auto-depend on previous stage)
-    condition: succeeded()
-    jobs:
-      - job: PublishCoverageJob
-        displayName: 'Publish Coverage'
-        pool:
-          name: k8s-agents-ci
-        steps:
-          - checkout: none  # We don't need source code, just artifacts
-          - script: |
-              echo "Looking for coverage files in agent workspace..."
-              find $(Agent.BuildDirectory) -name "coverage.cobertura.xml" -type f 2>/dev/null || echo "No coverage files found"
-              find $(Agent.TempDirectory) -name "coverage.cobertura.xml" -type f 2>/dev/null || echo "No coverage files found in temp"
-              find $(Pipeline.Workspace) -name "coverage.cobertura.xml" -type f 2>/dev/null || echo "No coverage files found in workspace"
-            displayName: 'Debug: List all coverage files'
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: $(Agent.BuildDirectory)
-              artifactName: 'coverage-files'
-              publishLocation: 'pipeline'
-            displayName: 'Publish all build artifacts (including coverage)'
-
-  - stage: CoverageAndCodacy
-    displayName: 'Merge and Upload Coverage to Codacy'
-    dependsOn: PublishCoverage
-    condition: succeeded()
-    jobs:
-      - job: MergeAndUploadCoverage
-        displayName: 'Merge and Upload Coverage'
-        pool:
-          name: k8s-agents-ci
-        steps:
-          - checkout: none
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              artifactName: 'coverage-files'
-              targetPath: $(Pipeline.Workspace)/coverage-files
-            displayName: 'Download coverage files'
-          - script: |
-              echo "Contents of downloaded coverage files:"
-              find $(Pipeline.Workspace)/coverage-files -name "*.xml" -type f
-              echo "Looking specifically for coverage.cobertura.xml files:"
-              find $(Pipeline.Workspace)/coverage-files -name "coverage.cobertura.xml" -type f
-            displayName: 'Debug: List downloaded files'
-          - script: |
-              dotnet tool install -g dotnet-reportgenerator-globaltool
-            displayName: 'Install ReportGenerator'
-          - script: |
-              export PATH="$PATH:$HOME/.dotnet/tools"
-              mkdir -p $(Build.SourcesDirectory)/coverage-merged
-              echo "Merging coverage reports..."
-              reportgenerator \
-                -reports:"$(Pipeline.Workspace)/coverage-files/**/coverage.cobertura.xml" \
-                -targetdir:"$(Build.SourcesDirectory)/coverage-merged" \
-                -reporttypes:"Cobertura" \
-                -verbosity:"Verbose"
-              echo "Merged coverage file contents:"
-              ls -la $(Build.SourcesDirectory)/coverage-merged/
-            displayName: 'Merge coverage reports'
-          - script: |
-              if [ -f "$(Build.SourcesDirectory)/coverage-merged/Cobertura.xml" ]; then
-                echo "Found merged coverage file, uploading to Codacy..."
-                curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh
-                chmod +x codacy-coverage-reporter.sh
-                ./codacy-coverage-reporter.sh report -l CSharp -r $(Build.SourcesDirectory)/coverage-merged/Cobertura.xml
-              else
-                echo "ERROR: No merged coverage file found!"
-                exit 1
-              fi
-            displayName: 'Upload merged coverage to Codacy'
-
+  
   - stage: PublishToNuget
     displayName: 'Publish to Nuget Registry'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
@@ -125,11 +52,6 @@ stages:
               publishTestResults: true
               arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
 
-          - task: PublishCodeCoverageResults@1
-            displayName: 'Publish code coverage report'
-            inputs:
-              codeCoverageTool: 'Cobertura'
-              summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
           - script: |
               # Turn off command echoing to prevent secrets from appearing in logs

@@ -16,11 +16,11 @@ stages:
       product: stm
       team: guns-n-roses
 
-  - stage: CoverageAndCodacy
-    displayName: 'Merge and Upload Coverage to Codacy'
+  - stage: PublishCoverage
+    displayName: 'Publish Coverage Artifact'
     jobs:
-      - job: MergeAndUploadCoverage
-        displayName: 'Merge and Upload Coverage'
+      - job: PublishCoverageJob
+        displayName: 'Publish Coverage'
         pool:
           name: k8s-agents-ci
         steps:
@@ -28,12 +28,32 @@ stages:
           - script: |
               find $(Build.SourcesDirectory) -name coverage.cobertura.xml
             displayName: 'List coverage files after tests'
+          - publish: $(Build.SourcesDirectory)
+            artifact: coverage
+            displayName: 'Publish coverage files'
+
+  - stage: CoverageAndCodacy
+    displayName: 'Merge and Upload Coverage to Codacy'
+    dependsOn: PublishCoverage
+    jobs:
+      - job: MergeAndUploadCoverage
+        displayName: 'Merge and Upload Coverage'
+        pool:
+          name: k8s-agents-ci
+        steps:
+          - checkout: self
+          - download: current
+            artifact: coverage
+            displayName: 'Download coverage files'
+          - script: |
+              find $(Pipeline.Workspace)/coverage
+            displayName: 'List files in coverage artifact'
           - script: |
               dotnet tool install -g dotnet-reportgenerator-globaltool
             displayName: 'Install ReportGenerator'
           - script: |
               export PATH="$PATH:$HOME/.dotnet/tools"
-              reportgenerator -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/coverage-merged -reporttypes:Cobertura
+              reportgenerator -reports:"$(Pipeline.Workspace)/coverage/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/coverage-merged -reporttypes:Cobertura
             displayName: 'Merge coverage reports'
           - script: |
               curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh

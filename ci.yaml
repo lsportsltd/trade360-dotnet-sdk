@@ -45,13 +45,55 @@ stages:
               arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
 
           - task: DotNetCoreCLI@2
-            displayName: Run Tests
+            displayName: 'Run Tests with Coverage'
             inputs:
               command: 'test'
-              projects: '$(project)'
+              projects: '**/*Tests/*.csproj'
               publishTestResults: true
-              arguments: '--no-build --configuration $(releaseconfig) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+              arguments: '--no-build --configuration $(releaseconfig) --collect:"XPlat Code Coverage" --results-directory $(Agent.TempDirectory)/TestResults'
 
+          - script: |
+              echo "=== Coverage Collection Debug ==="
+              echo "Looking for coverage files in TestResults..."
+              find $(Agent.TempDirectory)/TestResults -name "*.xml" -type f
+              echo ""
+              echo "Specifically looking for coverage.cobertura.xml files..."
+              find $(Agent.TempDirectory)/TestResults -name "coverage.cobertura.xml" -type f
+              echo ""
+              echo "Looking for any Cobertura files..."
+              find $(Agent.TempDirectory)/TestResults -name "*cobertura*" -type f
+            displayName: 'Debug: List coverage files'
+
+          - script: |
+              # Install ReportGenerator
+              dotnet tool install -g dotnet-reportgenerator-globaltool
+              export PATH="$PATH:$HOME/.dotnet/tools"
+              
+              # Create output directory
+              mkdir -p $(Build.SourcesDirectory)/merged-coverage
+              
+              # Merge all coverage files
+              echo "Merging coverage reports..."
+              reportgenerator \
+                -reports:"$(Agent.TempDirectory)/TestResults/**/coverage.cobertura.xml" \
+                -targetdir:"$(Build.SourcesDirectory)/merged-coverage" \
+                -reporttypes:"Cobertura" \
+                -verbosity:"Verbose"
+              
+              echo "Merged coverage file contents:"
+              ls -la $(Build.SourcesDirectory)/merged-coverage/
+              
+              # Upload to Codacy
+              if [ -f "$(Build.SourcesDirectory)/merged-coverage/Cobertura.xml" ]; then
+                echo "Uploading merged coverage to Codacy..."
+                curl -Ls https://coverage.codacy.com/get.sh -o codacy-coverage-reporter.sh
+                chmod +x codacy-coverage-reporter.sh
+                ./codacy-coverage-reporter.sh report -l CSharp -r $(Build.SourcesDirectory)/merged-coverage/Cobertura.xml
+              else
+                echo "ERROR: No merged coverage file found!"
+                exit 1
+              fi
+            displayName: 'Merge and Upload Coverage to Codacy'
 
           - script: |
               # Turn off command echoing to prevent secrets from appearing in logs

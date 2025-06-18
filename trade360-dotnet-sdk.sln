@@ -23,9 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Example", "sdk.samples\Trade360SDK.SnapshotApi.Example\Trade360SDK.SnapshotApi.Example.csproj", "{A3A7E388-2FCD-4A6F-9B81-BCBBFDD6B15A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Microsoft.DependencyInjection", "src\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj", "{D0651137-2737-48AD-8E2B-F62933AC0C88}"
-EndProjectProject("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Common.Tests", "test\Trade360SDK.Common.Tests\Trade360SDK.Common.Tests.csproj", "{4775BE13-C927-4088-BB3D-C6A60EDBB128}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.Tests", "test\Trade360SDK.Feed.Tests\Trade360SDK.Feed.Tests.csproj", "{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}"
 EndProject
@@ -36,6 +35,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Tests", "test\Trade360SDK.SnapshotApi.Tests\Trade360SDK.SnapshotApi.Tests.csproj", "{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Microsoft.DependencyInjection.Tests", "test\Trade360SDK.Microsoft.DependencyInjection.Tests\Trade360SDK.Microsoft.DependencyInjection.Tests.csproj", "{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Common.Entities.Tests", "test\Trade360SDK.Common.Entities.Tests\Trade360SDK.Common.Entities.Tests.csproj", "{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

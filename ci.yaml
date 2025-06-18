@@ -18,7 +18,7 @@ stages:
   
   - stage: PublishToNuget
     displayName: 'Publish to Nuget Registry'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch']))
     jobs:
       - job: PublishPackage
         pool: k8s-agents-ci
@@ -43,7 +43,7 @@ stages:
               command: 'build'
               projects: '$(project)'
               arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
-              
+
           - script: |
               # Turn off command echoing to prevent secrets from appearing in logs
               set +x

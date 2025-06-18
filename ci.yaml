@@ -18,7 +18,7 @@ stages:
   
   - stage: PublishToNuget
     displayName: 'Publish to Nuget Registry'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch']))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'])
     jobs:
       - job: PublishPackage
         pool: k8s-agents-ci

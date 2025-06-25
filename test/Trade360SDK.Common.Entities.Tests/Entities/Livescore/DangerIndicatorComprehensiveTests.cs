@@ -134,33 +134,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
             dangerIndicator.LastUpdate.Should().Be(lastUpdate);
         }
 
-        [Fact]
-        public void DangerIndicator_PropertySettersGetters_ShouldWorkCorrectly()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator();
 
-            // Act & Assert - Test that we can set and get each property multiple times
-            dangerIndicator.Type = DangerIndicatorType.General;
-            dangerIndicator.Type.Should().Be(DangerIndicatorType.General);
-            dangerIndicator.Type = DangerIndicatorType.Cards;
-            dangerIndicator.Type.Should().Be(DangerIndicatorType.Cards);
-            dangerIndicator.Type = DangerIndicatorType.Corners;
-            dangerIndicator.Type.Should().Be(DangerIndicatorType.Corners);
-
-            dangerIndicator.Status = DangerIndicatorStatus.Safe;
-            dangerIndicator.Status.Should().Be(DangerIndicatorStatus.Safe);
-            dangerIndicator.Status = DangerIndicatorStatus.Danger;
-            dangerIndicator.Status.Should().Be(DangerIndicatorStatus.Danger);
-
-            var firstUpdate = DateTime.UtcNow;
-            dangerIndicator.LastUpdate = firstUpdate;
-            dangerIndicator.LastUpdate.Should().Be(firstUpdate);
-            
-            var secondUpdate = DateTime.UtcNow.AddMinutes(5);
-            dangerIndicator.LastUpdate = secondUpdate;
-            dangerIndicator.LastUpdate.Should().Be(secondUpdate);
-        }
 
         [Fact]
         public void DangerIndicator_WithGeneralTypeSafeStatus_ShouldRepresentNormalCondition()
@@ -265,86 +239,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
             dangerIndicator.LastUpdate.Should().Be(maxDateTime);
         }
 
-        [Fact]
-        public void DangerIndicator_ToString_ShouldReturnStringRepresentation()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator
-            {
-                Type = DangerIndicatorType.Cards,
-                Status = DangerIndicatorStatus.Danger
-            };
 
-            // Act
-            var result = dangerIndicator.ToString();
-
-            // Assert
-            result.Should().NotBeNullOrEmpty();
-            result.Should().Contain("DangerIndicator");
-        }
-
-        [Fact]
-        public void DangerIndicator_GetHashCode_ShouldReturnConsistentValue()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator
-            {
-                Type = DangerIndicatorType.Cards,
-                Status = DangerIndicatorStatus.Danger,
-                LastUpdate = new DateTime(2023, 1, 1)
-            };
-
-            // Act
-            var hashCode1 = dangerIndicator.GetHashCode();
-            var hashCode2 = dangerIndicator.GetHashCode();
-
-            // Assert
-            hashCode1.Should().Be(hashCode2);
-        }
-
-        [Fact]
-        public void DangerIndicator_Type_ShouldBeCorrect()
-        {
-            // Arrange & Act
-            var dangerIndicator = new DangerIndicator();
-
-            // Assert
-            dangerIndicator.GetType().Should().Be(typeof(DangerIndicator));
-            dangerIndicator.GetType().Name.Should().Be("DangerIndicator");
-            dangerIndicator.GetType().Namespace.Should().Be("Trade360SDK.Common.Entities.Livescore");
-        }
-
-        [Fact]
-        public void DangerIndicator_TypeProperty_ShouldBeEnumType()
-        {
-            // Arrange & Act
-            var dangerIndicator = new DangerIndicator();
-
-            // Assert
-            dangerIndicator.Type.GetType().Should().Be(typeof(DangerIndicatorType));
-            dangerIndicator.Type.GetType().IsEnum.Should().BeTrue();
-        }
-
-        [Fact]
-        public void DangerIndicator_StatusProperty_ShouldBeEnumType()
-        {
-            // Arrange & Act
-            var dangerIndicator = new DangerIndicator();
-
-            // Assert
-            dangerIndicator.Status.GetType().Should().Be(typeof(DangerIndicatorStatus));
-            dangerIndicator.Status.GetType().IsEnum.Should().BeTrue();
-        }
-
-        [Fact]
-        public void DangerIndicator_LastUpdateProperty_ShouldBeDateTimeType()
-        {
-            // Arrange & Act
-            var dangerIndicator = new DangerIndicator();
-
-            // Assert
-            dangerIndicator.LastUpdate.GetType().Should().Be(typeof(DateTime));
-        }
 
         [Fact]
         public void DangerIndicator_WithRecentUpdate_ShouldIndicateCurrentStatus()

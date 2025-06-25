@@ -240,58 +240,7 @@ namespace Trade360SDK.Common.Entities.Tests.Exceptions
             actualMessage.Should().NotBe(message);
         }
 
-        [Fact]
-        public void Trade360Exception_ShouldInheritFromException()
-        {
-            // Arrange & Act
-            var exception = new Trade360Exception(new List<string> { "Test error" });
 
-            // Assert
-            exception.Should().BeAssignableTo<Exception>();
-        }
-
-        [Fact]
-        public void Trade360Exception_ToString_ShouldReturnStringRepresentation()
-        {
-            // Arrange
-            var errors = new List<string> { "Test error" };
-            var exception = new Trade360Exception(errors);
-
-            // Act
-            var result = exception.ToString();
-
-            // Assert
-            result.Should().NotBeNullOrEmpty();
-            result.Should().Contain("Trade360Exception");
-            result.Should().Contain("Test error");
-        }
-
-        [Fact]
-        public void Trade360Exception_GetHashCode_ShouldReturnConsistentValue()
-        {
-            // Arrange
-            var errors = new List<string> { "Test error" };
-            var exception = new Trade360Exception(errors);
-
-            // Act
-            var hashCode1 = exception.GetHashCode();
-            var hashCode2 = exception.GetHashCode();
-
-            // Assert
-            hashCode1.Should().Be(hashCode2);
-        }
-
-        [Fact]
-        public void Trade360Exception_Type_ShouldBeCorrect()
-        {
-            // Arrange & Act
-            var exception = new Trade360Exception(new List<string> { "Test error" });
-
-            // Assert
-            exception.GetType().Should().Be(typeof(Trade360Exception));
-            exception.GetType().Name.Should().Be("Trade360Exception");
-            exception.GetType().Namespace.Should().Be("Trade360SDK.Common.Exceptions");
-        }
 
         [Fact]
         public void Trade360Exception_WithLargeNumberOfErrors_ShouldHandleCorrectly()

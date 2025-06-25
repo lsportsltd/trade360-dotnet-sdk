@@ -22,7 +22,13 @@ namespace Trade360SDK.SnapshotApi.Http
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
-            _packageId = packageCredentials!.PackageId;
+            
+            if (packageCredentials == null)
+            {
+                throw new InvalidOperationException("Package credentials cannot be null");
+            }
+            
+            _packageId = packageCredentials.PackageId;
             _username = packageCredentials.Username;
             _password = packageCredentials.Password;
         }

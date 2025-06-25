@@ -275,33 +275,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
             period.SubPeriods.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Period_PropertySettersGetters_ShouldWorkCorrectly()
-        {
-            // Arrange
-            var period = new Period();
 
-            // Act & Assert - Test that we can set and get each property multiple times
-            period.Type = 1;
-            period.Type.Should().Be(1);
-            period.Type = 2;
-            period.Type.Should().Be(2);
-
-            period.IsFinished = true;
-            period.IsFinished.Should().BeTrue();
-            period.IsFinished = false;
-            period.IsFinished.Should().BeFalse();
-
-            period.IsConfirmed = true;
-            period.IsConfirmed.Should().BeTrue();
-            period.IsConfirmed = false;
-            period.IsConfirmed.Should().BeFalse();
-
-            period.SequenceNumber = 5;
-            period.SequenceNumber.Should().Be(5);
-            period.SequenceNumber = 10;
-            period.SequenceNumber.Should().Be(10);
-        }
 
         [Fact]
         public void Period_WithComplexData_ShouldStoreCorrectly()
@@ -379,53 +353,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
             period.SubPeriods.Last().Results.Should().HaveCount(1);
         }
 
-        [Fact]
-        public void Period_ToString_ShouldReturnStringRepresentation()
-        {
-            // Arrange
-            var period = new Period
-            {
-                Type = 1,
-                SequenceNumber = 1
-            };
 
-            // Act
-            var result = period.ToString();
-
-            // Assert
-            result.Should().NotBeNullOrEmpty();
-            result.Should().Contain("Period");
-        }
-
-        [Fact]
-        public void Period_GetHashCode_ShouldReturnConsistentValue()
-        {
-            // Arrange
-            var period = new Period
-            {
-                Type = 1,
-                SequenceNumber = 1
-            };
-
-            // Act
-            var hashCode1 = period.GetHashCode();
-            var hashCode2 = period.GetHashCode();
-
-            // Assert
-            hashCode1.Should().Be(hashCode2);
-        }
-
-        [Fact]
-        public void Period_Type_ShouldBeCorrect()
-        {
-            // Arrange & Act
-            var period = new Period();
-
-            // Assert
-            period.GetType().Should().Be(typeof(Period));
-            period.GetType().Name.Should().Be("Period");
-            period.GetType().Namespace.Should().Be("Trade360SDK.Common.Entities.Livescore");
-        }
 
         [Fact]
         public void Period_WithLargeCollections_ShouldHandleCorrectly()

@@ -3,9 +3,9 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.0.2</PackageVersion>
 		<PackageReleaseNotes>
-			- 1.0.1 version includes an update in entities markets
+			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model 
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

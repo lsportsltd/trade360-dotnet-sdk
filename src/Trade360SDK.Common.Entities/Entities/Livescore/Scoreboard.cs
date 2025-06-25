@@ -12,6 +12,8 @@ namespace Trade360SDK.Common.Entities.Livescore
         public int CurrentPeriod { get; set; }
 
         public string? Time { get; set; }
+        
+        public Clock? Clock { get; set; }
 
         public IEnumerable<Result>? Results { get; set; }
     }

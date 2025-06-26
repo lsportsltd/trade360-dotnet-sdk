@@ -3,7 +3,7 @@ using Trade360SDK.Common.Entities.OutrightSport;
 using Trade360SDK.Common.Entities.Enums;
 using Xunit;
 
-namespace Trade360SDK.Common.Tests
+namespace Trade360SDK.Common.Entities.Tests
 {
     public class OutrightLivescoreScoreTests
     {

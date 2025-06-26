@@ -6,7 +6,7 @@ using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Shared;
 using Xunit;
 
-namespace Trade360SDK.Common.Tests
+namespace Trade360SDK.Common.Entities.Tests
 {
     public class OutrightLeagueFixtureTests
     {

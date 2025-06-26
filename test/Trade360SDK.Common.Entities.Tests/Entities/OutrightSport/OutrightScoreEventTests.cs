@@ -1,7 +1,7 @@
 using Trade360SDK.Common.Entities.OutrightSport;
 using Xunit;
 
-namespace Trade360SDK.Common.Tests
+namespace Trade360SDK.Common.Entities.Tests
 {
     public class OutrightScoreEventTests
     {

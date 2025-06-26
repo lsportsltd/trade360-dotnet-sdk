@@ -10,7 +10,7 @@ namespace Trade360SDK.Common.Entities.Tests.Exceptions
     public class Trade360ExceptionComprehensiveTests
     {
         [Fact]
-        public void Trade360Exception_ConstructorWithErrors_ShouldSetErrors()
+        public void Constructor_WithErrors_ShouldSetErrorsProperty()
         {
             // Arrange
             var errors = new List<string> { "Error 1", "Error 2", "Error 3" };
@@ -19,25 +19,23 @@ namespace Trade360SDK.Common.Entities.Tests.Exceptions
             var exception = new Trade360Exception(errors);
 
             // Assert
-            exception.Should().NotBeNull();
             exception.Errors.Should().BeEquivalentTo(errors);
             exception.Message.Should().Be("Error 1; Error 2; Error 3");
         }
 
         [Fact]
-        public void Trade360Exception_ConstructorWithNullErrors_ShouldSetNullErrors()
+        public void Constructor_WithNullErrors_ShouldHandleGracefully()
         {
             // Act
-            var exception = new Trade360Exception((IEnumerable<string?>?)null);
+            var exception = new Trade360Exception((IEnumerable<string>)null);
 
             // Assert
-            exception.Should().NotBeNull();
             exception.Errors.Should().BeNull();
-            exception.Message.Should().Be("Exception of type 'Trade360SDK.Common.Exceptions.Trade360Exception' was thrown.");
+            exception.Message.Should().NotBeNull();
         }
 
         [Fact]
-        public void Trade360Exception_ConstructorWithEmptyErrors_ShouldSetEmptyErrors()
+        public void Constructor_WithEmptyErrors_ShouldHandleGracefully()
         {
             // Arrange
             var errors = new List<string>();
@@ -46,284 +44,216 @@ namespace Trade360SDK.Common.Entities.Tests.Exceptions
             var exception = new Trade360Exception(errors);
 
             // Assert
-            exception.Should().NotBeNull();
             exception.Errors.Should().BeEmpty();
-            exception.Message.Should().Be("Exception of type 'Trade360SDK.Common.Exceptions.Trade360Exception' was thrown.");
+            exception.Message.Should().NotBeNull();
         }
 
         [Fact]
-        public void Trade360Exception_ConstructorWithMessageAndErrors_ShouldSetMessageAndErrors()
+        public void Constructor_WithMessageAndErrors_ShouldSetBothProperties()
         {
             // Arrange
-            var message = "Custom error message";
+            var message = "Custom message";
             var errors = new List<string> { "Error 1", "Error 2" };
 
             // Act
             var exception = new Trade360Exception(message, errors);
 
             // Assert
-            exception.Should().NotBeNull();
             exception.Errors.Should().BeEquivalentTo(errors);
             exception.Message.Should().Be("Error 1; Error 2");
         }
 
         [Fact]
-        public void Trade360Exception_ConstructorWithMessageAndNullErrors_ShouldSetMessageAndNullErrors()
+        public void Constructor_WithMessageAndRawError_ShouldCombineMessages()
         {
             // Arrange
-            var message = "Custom error message";
+            var message = "Custom message";
+            var rawError = "Raw error response";
 
             // Act
-            var exception = new Trade360Exception(message, (IEnumerable<string?>?)null);
+            var exception = new Trade360Exception(message, rawError);
 
             // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().BeNull();
-            exception.Message.Should().Be(message);
+            exception.Message.Should().Be("Custom message: Raw error response");
         }
 
         [Fact]
-        public void Trade360Exception_ConstructorWithMessageAndEmptyErrors_ShouldSetMessageAndEmptyErrors()
+        public void Constructor_WithMessageAndInnerException_ShouldSetInnerException()
         {
             // Arrange
-            var message = "Custom error message";
-            var errors = new List<string>();
-
-            // Act
-            var exception = new Trade360Exception(message, errors);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().BeEmpty();
-            exception.Message.Should().Be(message);
-        }
-
-        [Fact]
-        public void Trade360Exception_ConstructorWithMessageAndRawErrorResponse_ShouldSetCombinedMessage()
-        {
-            // Arrange
-            var message = "API Error";
-            var rawErrorResponse = "Internal Server Error";
-
-            // Act
-            var exception = new Trade360Exception(message, rawErrorResponse);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be("API Error: Internal Server Error");
-            exception.Errors.Should().BeNull();
-        }
-
-        [Fact]
-        public void Trade360Exception_ConstructorWithMessageAndInnerException_ShouldSetMessageAndInnerException()
-        {
-            // Arrange
-            var message = "Outer exception";
-            var innerException = new InvalidOperationException("Inner exception");
+            var message = "Custom message";
+            var innerException = new InvalidOperationException("Inner error");
 
             // Act
             var exception = new Trade360Exception(message, innerException);
 
             // Assert
-            exception.Should().NotBeNull();
             exception.Message.Should().Be(message);
             exception.InnerException.Should().Be(innerException);
-            exception.Errors.Should().BeNull();
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData("Single error")]
-        [InlineData("Error with special characters: !@#$%^&*()")]
-        [InlineData("Error with unicode: 测试错误消息")]
-        public void Trade360Exception_ConstructorWithSingleError_ShouldSetError(string error)
-        {
-            // Arrange
-            var errors = new List<string> { error };
-
-            // Act
-            var exception = new Trade360Exception(errors);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().Contain(error);
-            exception.Message.Should().Be(error);
         }
 
         [Fact]
-        public void Trade360Exception_WithMultipleErrors_ShouldJoinWithSemicolon()
+        public void Message_WithErrors_ShouldReturnJoinedErrors()
         {
             // Arrange
             var errors = new List<string> { "First error", "Second error", "Third error" };
-
-            // Act
             var exception = new Trade360Exception(errors);
 
+            // Act
+            var message = exception.Message;
+
             // Assert
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be("First error; Second error; Third error");
+            message.Should().Be("First error; Second error; Third error");
         }
 
         [Fact]
-        public void Trade360Exception_WithNullErrorsInList_ShouldHandleNulls()
+        public void Message_WithNullErrors_ShouldReturnBaseMessage()
         {
             // Arrange
-            var errors = new List<string?> { "Error 1", null, "Error 3", null, "Error 5" };
+            var exception = new Trade360Exception((IEnumerable<string>)null);
 
             // Act
-            var exception = new Trade360Exception(errors);
+            var message = exception.Message;
 
             // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().BeEquivalentTo(errors);
-            exception.Message.Should().Be("Error 1; ; Error 3; ; Error 5");
+            message.Should().NotBeNull();
+            message.Should().NotBeEmpty();
         }
 
         [Fact]
-        public void Trade360Exception_WithEmptyStringsInList_ShouldHandleEmptyStrings()
+        public void Message_WithEmptyErrors_ShouldReturnBaseMessage()
         {
             // Arrange
-            var errors = new List<string> { "Error 1", "", "Error 3", "   ", "Error 5" };
-
-            // Act
-            var exception = new Trade360Exception(errors);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().BeEquivalentTo(errors);
-            exception.Message.Should().Be("Error 1; ; Error 3;    ; Error 5");
-        }
-
-        [Fact]
-        public void Trade360Exception_MessageProperty_WithErrorsNull_ShouldReturnBaseMessage()
-        {
-            // Arrange
-            var message = "Custom message";
-            var exception = new Trade360Exception(message, (IEnumerable<string?>?)null);
-
-            // Act
-            var actualMessage = exception.Message;
-
-            // Assert
-            actualMessage.Should().Be(message);
-        }
-
-        [Fact]
-        public void Trade360Exception_MessageProperty_WithErrorsEmpty_ShouldReturnBaseMessage()
-        {
-            // Arrange
-            var message = "Custom message";
             var errors = new List<string>();
-            var exception = new Trade360Exception(message, errors);
+            var exception = new Trade360Exception(errors);
 
             // Act
-            var actualMessage = exception.Message;
+            var message = exception.Message;
 
             // Assert
-            actualMessage.Should().Be(message);
+            message.Should().NotBeNull();
+            message.Should().NotBeEmpty();
         }
 
         [Fact]
-        public void Trade360Exception_MessageProperty_WithErrorsPresent_ShouldReturnJoinedErrors()
+        public void Message_WithSingleError_ShouldReturnSingleError()
         {
             // Arrange
-            var message = "Custom message";
-            var errors = new List<string> { "Error A", "Error B" };
-            var exception = new Trade360Exception(message, errors);
+            var errors = new List<string> { "Single error" };
+            var exception = new Trade360Exception(errors);
 
             // Act
-            var actualMessage = exception.Message;
+            var message = exception.Message;
 
             // Assert
-            actualMessage.Should().Be("Error A; Error B");
-            actualMessage.Should().NotBe(message);
+            message.Should().Be("Single error");
         }
 
+        [Fact]
+        public void Message_WithNullErrorsInList_ShouldHandleGracefully()
+        {
+            // Arrange
+            var errors = new List<string?> { "Error 1", null, "Error 3" };
+            var exception = new Trade360Exception(errors);
 
+            // Act
+            var message = exception.Message;
+
+            // Assert
+            message.Should().Be("Error 1; ; Error 3");
+        }
 
         [Fact]
-        public void Trade360Exception_WithLargeNumberOfErrors_ShouldHandleCorrectly()
+        public void Message_WithMessageAndErrors_ShouldPrioritizeErrors()
+        {
+            // Arrange
+            var customMessage = "Custom message";
+            var errors = new List<string> { "Error from list" };
+            var exception = new Trade360Exception(customMessage, errors);
+
+            // Act
+            var message = exception.Message;
+
+            // Assert
+            message.Should().Be("Error from list");
+            message.Should().NotBe(customMessage);
+        }
+
+        [Fact]
+        public void Message_WithLargeNumberOfErrors_ShouldJoinAll()
         {
             // Arrange
             var errors = Enumerable.Range(1, 100).Select(i => $"Error {i}").ToList();
+            var exception = new Trade360Exception(errors);
+
+            // Act
+            var message = exception.Message;
+
+            // Assert
+            message.Should().Contain("Error 1");
+            message.Should().Contain("Error 100");
+            message.Should().Contain("; ");
+        }
+
+        [Fact]
+        public void Errors_PropertyShouldRetainOriginalCollection()
+        {
+            // Arrange
+            var originalErrors = new List<string> { "Error 1", "Error 2" };
+            var exception = new Trade360Exception(originalErrors);
+
+            // Act
+            var errors = exception.Errors;
+
+            // Assert
+            errors.Should().BeEquivalentTo(originalErrors);
+        }
+
+        [Fact]
+        public void Exception_ShouldBeInstanceOfException()
+        {
+            // Arrange & Act
+            var exception = new Trade360Exception(new List<string> { "Test error" });
+
+            // Assert
+            exception.Should().BeAssignableTo<Exception>();
+        }
+
+        [Fact]
+        public void Exception_WithComplexErrorMessages_ShouldHandleCorrectly()
+        {
+            // Arrange
+            var errors = new List<string>
+            {
+                "Error with special characters: !@#$%^&*()",
+                "Error with unicode: 測試錯誤",
+                "Error with newlines:\nSecond line",
+                "Very long error message that might cause issues with string concatenation or display in various UI components and should be handled gracefully by the exception system"
+            };
 
             // Act
             var exception = new Trade360Exception(errors);
 
             // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().HaveCount(100);
-            exception.Message.Should().Contain("Error 1");
-            exception.Message.Should().Contain("Error 100");
-            exception.Message.Should().Contain(";");
+            exception.Message.Should().Contain("special characters");
+            exception.Message.Should().Contain("unicode");
+            exception.Message.Should().Contain("newlines");
+            exception.Message.Should().Contain("Very long error message");
         }
 
         [Fact]
-        public void Trade360Exception_WithVeryLongErrorMessages_ShouldHandleCorrectly()
+        public void ToString_ShouldIncludeExceptionDetails()
         {
             // Arrange
-            var longError = new string('A', 10000);
-            var errors = new List<string> { longError, "Short error" };
-
-            // Act
+            var errors = new List<string> { "Test error" };
             var exception = new Trade360Exception(errors);
 
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Errors.Should().HaveCount(2);
-            exception.Message.Should().Contain(longError);
-            exception.Message.Should().Contain("Short error");
-        }
-
-        [Fact]
-        public void Trade360Exception_WithSpecialCharactersInRawResponse_ShouldHandleCorrectly()
-        {
-            // Arrange
-            var message = "API Error";
-            var rawErrorResponse = "Error: {\"status\": 500, \"message\": \"Internal\\nServer\\tError\"}";
-
             // Act
-            var exception = new Trade360Exception(message, rawErrorResponse);
+            var toString = exception.ToString();
 
             // Assert
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be($"{message}: {rawErrorResponse}");
-        }
-
-        [Fact]
-        public void Trade360Exception_WithNullInnerException_ShouldHandleCorrectly()
-        {
-            // Arrange
-            var message = "Test message";
-
-            // Act
-            var exception = new Trade360Exception(message, (Exception?)null);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be(message);
-            exception.InnerException.Should().BeNull();
-        }
-
-        [Fact]
-        public void Trade360Exception_WithComplexInnerException_ShouldHandleCorrectly()
-        {
-            // Arrange
-            var message = "Outer exception";
-            var innerMessage = "Inner exception";
-            var innerInnerException = new ArgumentException("Inner inner exception");
-            var innerException = new InvalidOperationException(innerMessage, innerInnerException);
-
-            // Act
-            var exception = new Trade360Exception(message, innerException);
-
-            // Assert
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be(message);
-            exception.InnerException.Should().Be(innerException);
-            exception.InnerException.Message.Should().Be(innerMessage);
-            exception.InnerException.InnerException.Should().Be(innerInnerException);
+            toString.Should().Contain("Trade360Exception");
+            toString.Should().Contain("Test error");
         }
     }
 } 

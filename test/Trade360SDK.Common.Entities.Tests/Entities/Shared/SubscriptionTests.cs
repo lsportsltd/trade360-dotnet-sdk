@@ -2,7 +2,7 @@ using Trade360SDK.Common.Entities.Shared;
 using Trade360SDK.Common.Entities.Enums;
 using Xunit;
 
-namespace Trade360SDK.Common.Tests
+namespace Trade360SDK.Common.Entities.Tests
 {
     public class SubscriptionTests
     {

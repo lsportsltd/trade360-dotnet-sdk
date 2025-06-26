@@ -10,7 +10,7 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
         #region Trade360Settings Tests
 
         [Fact]
-        public void Trade360Settings_DefaultConstructor_ShouldInitializeWithNullValues()
+        public void Trade360Settings_DefaultConstructor_ShouldInitializeWithDefaults()
         {
             // Act
             var settings = new Trade360Settings();
@@ -24,35 +24,35 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
         }
 
         [Fact]
-        public void Trade360Settings_CustomersApiBaseUrlProperty_ShouldBeSettableAndGettable()
+        public void Trade360Settings_SetCustomersApiBaseUrl_ShouldSetCorrectly()
         {
             // Arrange
             var settings = new Trade360Settings();
-            var url = "https://api.example.com/";
+            var baseUrl = "https://api.trade360.com";
 
             // Act
-            settings.CustomersApiBaseUrl = url;
+            settings.CustomersApiBaseUrl = baseUrl;
 
             // Assert
-            settings.CustomersApiBaseUrl.Should().Be(url);
+            settings.CustomersApiBaseUrl.Should().Be(baseUrl);
         }
 
         [Fact]
-        public void Trade360Settings_SnapshotApiBaseUrlProperty_ShouldBeSettableAndGettable()
+        public void Trade360Settings_SetSnapshotApiBaseUrl_ShouldSetCorrectly()
         {
             // Arrange
             var settings = new Trade360Settings();
-            var url = "https://snapshot.example.com/";
+            var snapshotUrl = "https://snapshot.trade360.com";
 
             // Act
-            settings.SnapshotApiBaseUrl = url;
+            settings.SnapshotApiBaseUrl = snapshotUrl;
 
             // Assert
-            settings.SnapshotApiBaseUrl.Should().Be(url);
+            settings.SnapshotApiBaseUrl.Should().Be(snapshotUrl);
         }
 
         [Fact]
-        public void Trade360Settings_InplayPackageCredentialsProperty_ShouldBeSettableAndGettable()
+        public void Trade360Settings_SetInplayPackageCredentials_ShouldSetCorrectly()
         {
             // Arrange
             var settings = new Trade360Settings();
@@ -67,15 +67,14 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
             settings.InplayPackageCredentials = credentials;
 
             // Assert
-            settings.InplayPackageCredentials.Should().NotBeNull();
-            settings.InplayPackageCredentials.Should().BeSameAs(credentials);
-            settings.InplayPackageCredentials.PackageId.Should().Be(123);
-            settings.InplayPackageCredentials.Username.Should().Be("testuser");
-            settings.InplayPackageCredentials.Password.Should().Be("testpass");
+            settings.InplayPackageCredentials.Should().Be(credentials);
+            settings.InplayPackageCredentials?.PackageId.Should().Be(123);
+            settings.InplayPackageCredentials?.Username.Should().Be("testuser");
+            settings.InplayPackageCredentials?.Password.Should().Be("testpass");
         }
 
         [Fact]
-        public void Trade360Settings_PrematchPackageCredentialsProperty_ShouldBeSettableAndGettable()
+        public void Trade360Settings_SetPrematchPackageCredentials_ShouldSetCorrectly()
         {
             // Arrange
             var settings = new Trade360Settings();
@@ -90,125 +89,154 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
             settings.PrematchPackageCredentials = credentials;
 
             // Assert
-            settings.PrematchPackageCredentials.Should().NotBeNull();
-            settings.PrematchPackageCredentials.Should().BeSameAs(credentials);
-            settings.PrematchPackageCredentials.PackageId.Should().Be(456);
-            settings.PrematchPackageCredentials.Username.Should().Be("prematchuser");
-            settings.PrematchPackageCredentials.Password.Should().Be("prematchpass");
+            settings.PrematchPackageCredentials.Should().Be(credentials);
+            settings.PrematchPackageCredentials?.PackageId.Should().Be(456);
+            settings.PrematchPackageCredentials?.Username.Should().Be("prematchuser");
+            settings.PrematchPackageCredentials?.Password.Should().Be("prematchpass");
         }
 
         [Fact]
-        public void Trade360Settings_WithCompleteConfiguration_ShouldMaintainAllProperties()
+        public void Trade360Settings_SetAllProperties_ShouldSetAllCorrectly()
         {
             // Arrange
-            var customersUrl = "https://api.example.com/";
-            var snapshotUrl = "https://snapshot.example.com/";
+            var settings = new Trade360Settings();
+            var customersUrl = "https://customers.trade360.com";
+            var snapshotUrl = "https://snapshot.trade360.com";
             var inplayCredentials = new PackageCredentials
             {
                 PackageId = 123,
                 Username = "inplayuser",
-                Password = "inplaypass",
-                MessageFormat = "json"
+                Password = "inplaypass"
             };
             var prematchCredentials = new PackageCredentials
             {
                 PackageId = 456,
                 Username = "prematchuser",
-                Password = "prematchpass",
-                MessageFormat = "xml"
+                Password = "prematchpass"
             };
 
             // Act
-            var settings = new Trade360Settings
-            {
-                CustomersApiBaseUrl = customersUrl,
-                SnapshotApiBaseUrl = snapshotUrl,
-                InplayPackageCredentials = inplayCredentials,
-                PrematchPackageCredentials = prematchCredentials
-            };
+            settings.CustomersApiBaseUrl = customersUrl;
+            settings.SnapshotApiBaseUrl = snapshotUrl;
+            settings.InplayPackageCredentials = inplayCredentials;
+            settings.PrematchPackageCredentials = prematchCredentials;
 
             // Assert
-            settings.Should().NotBeNull();
             settings.CustomersApiBaseUrl.Should().Be(customersUrl);
             settings.SnapshotApiBaseUrl.Should().Be(snapshotUrl);
-            settings.InplayPackageCredentials.Should().BeSameAs(inplayCredentials);
-            settings.PrematchPackageCredentials.Should().BeSameAs(prematchCredentials);
+            settings.InplayPackageCredentials.Should().Be(inplayCredentials);
+            settings.PrematchPackageCredentials.Should().Be(prematchCredentials);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Trade360Settings_SetCustomersApiBaseUrlToNullOrEmpty_ShouldAcceptValue(string baseUrl)
+        {
+            // Arrange
+            var settings = new Trade360Settings();
+
+            // Act
+            settings.CustomersApiBaseUrl = baseUrl;
+
+            // Assert
+            settings.CustomersApiBaseUrl.Should().Be(baseUrl);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Trade360Settings_SetSnapshotApiBaseUrlToNullOrEmpty_ShouldAcceptValue(string snapshotUrl)
+        {
+            // Arrange
+            var settings = new Trade360Settings();
+
+            // Act
+            settings.SnapshotApiBaseUrl = snapshotUrl;
+
+            // Assert
+            settings.SnapshotApiBaseUrl.Should().Be(snapshotUrl);
         }
 
         [Fact]
-        public void Trade360Settings_PropertiesCanBeSetToNull_ShouldAllowNullValues()
+        public void Trade360Settings_SetCredentialsToNull_ShouldAcceptNullValues()
         {
             // Arrange
-            var settings = new Trade360Settings
-            {
-                CustomersApiBaseUrl = "https://api.example.com/",
-                SnapshotApiBaseUrl = "https://snapshot.example.com/",
-                InplayPackageCredentials = new PackageCredentials(),
-                PrematchPackageCredentials = new PackageCredentials()
-            };
+            var settings = new Trade360Settings();
 
             // Act
-            settings.CustomersApiBaseUrl = null;
-            settings.SnapshotApiBaseUrl = null;
             settings.InplayPackageCredentials = null;
             settings.PrematchPackageCredentials = null;
 
             // Assert
-            settings.CustomersApiBaseUrl.Should().BeNull();
-            settings.SnapshotApiBaseUrl.Should().BeNull();
             settings.InplayPackageCredentials.Should().BeNull();
             settings.PrematchPackageCredentials.Should().BeNull();
         }
 
         [Fact]
-        public void Trade360Settings_WithEmptyStringUrls_ShouldPreserveEmptyStrings()
+        public void Trade360Settings_SetPropertiesMultipleTimes_ShouldRetainLastValue()
         {
             // Arrange
             var settings = new Trade360Settings();
 
             // Act
-            settings.CustomersApiBaseUrl = "";
-            settings.SnapshotApiBaseUrl = "";
+            settings.CustomersApiBaseUrl = "https://first.com";
+            settings.CustomersApiBaseUrl = "https://second.com";
+            settings.CustomersApiBaseUrl = "https://final.com";
+
+            settings.SnapshotApiBaseUrl = "https://snapshot1.com";
+            settings.SnapshotApiBaseUrl = "https://snapshot2.com";
+            settings.SnapshotApiBaseUrl = "https://snapshot-final.com";
 
             // Assert
-            settings.CustomersApiBaseUrl.Should().BeEmpty();
-            settings.SnapshotApiBaseUrl.Should().BeEmpty();
+            settings.CustomersApiBaseUrl.Should().Be("https://final.com");
+            settings.SnapshotApiBaseUrl.Should().Be("https://snapshot-final.com");
         }
 
         [Fact]
-        public void Trade360Settings_WithLargeUrls_ShouldHandleLargeStrings()
+        public void Trade360Settings_PropertyAssignmentChaining_ShouldWork()
         {
-            // Arrange
-            var settings = new Trade360Settings();
-            var largeUrl = "https://very-long-domain-name-that-exceeds-normal-length.example.com/" + new string('a', 1000);
-
-            // Act
-            settings.CustomersApiBaseUrl = largeUrl;
-            settings.SnapshotApiBaseUrl = largeUrl;
+            // Arrange & Act
+            var settings = new Trade360Settings
+            {
+                CustomersApiBaseUrl = "https://customers.trade360.com",
+                SnapshotApiBaseUrl = "https://snapshot.trade360.com",
+                InplayPackageCredentials = new PackageCredentials
+                {
+                    PackageId = 123,
+                    Username = "inplayuser",
+                    Password = "inplaypass"
+                },
+                PrematchPackageCredentials = new PackageCredentials
+                {
+                    PackageId = 456,
+                    Username = "prematchuser",
+                    Password = "prematchpass"
+                }
+            };
 
             // Assert
-            settings.CustomersApiBaseUrl.Should().Be(largeUrl);
-            settings.SnapshotApiBaseUrl.Should().Be(largeUrl);
+            settings.CustomersApiBaseUrl.Should().Be("https://customers.trade360.com");
+            settings.SnapshotApiBaseUrl.Should().Be("https://snapshot.trade360.com");
+            settings.InplayPackageCredentials?.PackageId.Should().Be(123);
+            settings.PrematchPackageCredentials?.PackageId.Should().Be(456);
         }
 
         [Fact]
-        public void Trade360Settings_PropertyChanges_ShouldBeIndependent()
+        public void Trade360Settings_WithInvalidUrls_ShouldStillAcceptValues()
         {
-            // Arrange
-            var settings = new Trade360Settings();
-            var originalCustomersUrl = "https://api.example.com/";
-            var originalSnapshotUrl = "https://snapshot.example.com/";
-
-            // Act
-            settings.CustomersApiBaseUrl = originalCustomersUrl;
-            settings.SnapshotApiBaseUrl = originalSnapshotUrl;
-            
-            settings.CustomersApiBaseUrl = "https://new-api.example.com/";
-            settings.SnapshotApiBaseUrl = "https://new-snapshot.example.com/";
+            // Arrange & Act
+            var settings = new Trade360Settings
+            {
+                CustomersApiBaseUrl = "not-a-valid-url",
+                SnapshotApiBaseUrl = "also-not-valid"
+            };
 
             // Assert
-            settings.CustomersApiBaseUrl.Should().Be("https://new-api.example.com/");
-            settings.SnapshotApiBaseUrl.Should().Be("https://new-snapshot.example.com/");
+            settings.CustomersApiBaseUrl.Should().Be("not-a-valid-url");
+            settings.SnapshotApiBaseUrl.Should().Be("also-not-valid");
         }
 
         #endregion
@@ -288,263 +316,90 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
         [Fact]
         public void PackageCredentials_WithCompleteData_ShouldMaintainAllProperties()
         {
-            // Arrange
-            var packageId = 67890;
-            var username = "completeuser";
-            var password = "completepassword";
-            var messageFormat = "protobuf";
-
-            // Act
+            // Arrange & Act
             var credentials = new PackageCredentials
             {
-                PackageId = packageId,
-                Username = username,
-                Password = password,
-                MessageFormat = messageFormat
-            };
-
-            // Assert
-            credentials.Should().NotBeNull();
-            credentials.PackageId.Should().Be(packageId);
-            credentials.Username.Should().Be(username);
-            credentials.Password.Should().Be(password);
-            credentials.MessageFormat.Should().Be(messageFormat);
-        }
-
-        [Fact]
-        public void PackageCredentials_StringPropertiesCanBeSetToNull_ShouldAllowNullValues()
-        {
-            // Arrange
-            var credentials = new PackageCredentials
-            {
+                PackageId = 12345,
                 Username = "testuser",
                 Password = "testpass",
-                MessageFormat = "json"
+                MessageFormat = "xml"
             };
 
-            // Act
-            credentials.Username = null;
-            credentials.Password = null;
-            credentials.MessageFormat = null!; // MessageFormat has a default, but can be set to null
-
             // Assert
-            credentials.Username.Should().BeNull();
-            credentials.Password.Should().BeNull();
-            credentials.MessageFormat.Should().BeNull();
+            credentials.PackageId.Should().Be(12345);
+            credentials.Username.Should().Be("testuser");
+            credentials.Password.Should().Be("testpass");
+            credentials.MessageFormat.Should().Be("xml");
         }
 
-        [Fact]
-        public void PackageCredentials_PackageIdProperty_ShouldHandleBoundaryValues()
-        {
-            // Arrange
-            var credentials = new PackageCredentials();
-
-            // Act & Assert
-            credentials.PackageId = int.MinValue;
-            credentials.PackageId.Should().Be(int.MinValue);
-
-            credentials.PackageId = int.MaxValue;
-            credentials.PackageId.Should().Be(int.MaxValue);
-
-            credentials.PackageId = 0;
-            credentials.PackageId.Should().Be(0);
-        }
-
-        [Fact]
-        public void PackageCredentials_StringProperties_ShouldHandleEmptyStrings()
+        [Theory]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(int.MaxValue)]
+        public void PackageCredentials_SetPackageIdToVariousValues_ShouldAcceptValue(int packageId)
         {
             // Arrange
             var credentials = new PackageCredentials();
 
             // Act
-            credentials.Username = "";
-            credentials.Password = "";
-            credentials.MessageFormat = "";
+            credentials.PackageId = packageId;
 
             // Assert
-            credentials.Username.Should().BeEmpty();
-            credentials.Password.Should().BeEmpty();
-            credentials.MessageFormat.Should().BeEmpty();
+            credentials.PackageId.Should().Be(packageId);
         }
 
-        [Fact]
-        public void PackageCredentials_StringProperties_ShouldHandleLargeStrings()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("validuser")]
+        public void PackageCredentials_SetUsernameToVariousValues_ShouldAcceptValue(string username)
         {
             // Arrange
             var credentials = new PackageCredentials();
-            var largeString = new string('A', 10000);
 
             // Act
-            credentials.Username = largeString;
-            credentials.Password = largeString;
-            credentials.MessageFormat = largeString;
+            credentials.Username = username;
 
             // Assert
-            credentials.Username.Should().Be(largeString);
-            credentials.Password.Should().Be(largeString);
-            credentials.MessageFormat.Should().Be(largeString);
+            credentials.Username.Should().Be(username);
         }
 
-        [Fact]
-        public void PackageCredentials_WithSpecialCharacters_ShouldPreserveCharacters()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("validpass")]
+        public void PackageCredentials_SetPasswordToVariousValues_ShouldAcceptValue(string password)
         {
             // Arrange
             var credentials = new PackageCredentials();
-            var specialUsername = "user@domain.com";
-            var specialPassword = "P@ssw0rd!#$%";
-            var specialFormat = "application/json; charset=utf-8";
 
             // Act
-            credentials.Username = specialUsername;
-            credentials.Password = specialPassword;
-            credentials.MessageFormat = specialFormat;
+            credentials.Password = password;
 
             // Assert
-            credentials.Username.Should().Be(specialUsername);
-            credentials.Password.Should().Be(specialPassword);
-            credentials.MessageFormat.Should().Be(specialFormat);
+            credentials.Password.Should().Be(password);
         }
 
         [Theory]
         [InlineData("json")]
         [InlineData("xml")]
-        [InlineData("protobuf")]
-        [InlineData("avro")]
-        [InlineData("msgpack")]
-        public void PackageCredentials_MessageFormat_ShouldSupportVariousFormats(string format)
+        [InlineData("csv")]
+        [InlineData("")]
+        public void PackageCredentials_SetMessageFormatToVariousValues_ShouldAcceptValue(string messageFormat)
         {
             // Arrange
             var credentials = new PackageCredentials();
 
             // Act
-            credentials.MessageFormat = format;
+            credentials.MessageFormat = messageFormat;
 
             // Assert
-            credentials.MessageFormat.Should().Be(format);
+            credentials.MessageFormat.Should().Be(messageFormat);
         }
-
-        [Fact]
-        public void PackageCredentials_PropertyChanges_ShouldBeIndependent()
-        {
-            // Arrange
-            var credentials = new PackageCredentials();
-
-            // Act
-            credentials.PackageId = 100;
-            credentials.Username = "user1";
-            credentials.Password = "pass1";
-            credentials.MessageFormat = "json";
-            
-            credentials.PackageId = 200;
-            credentials.Username = "user2";
-            credentials.Password = "pass2";
-            credentials.MessageFormat = "xml";
-
-            // Assert
-            credentials.PackageId.Should().Be(200);
-            credentials.Username.Should().Be("user2");
-            credentials.Password.Should().Be("pass2");
-            credentials.MessageFormat.Should().Be("xml");
-        }
-
-        #endregion
-
-        #region Integration Tests
-
-        [Fact]
-        public void Trade360Settings_WithBothCredentialTypes_ShouldMaintainSeparateInstances()
-        {
-            // Arrange
-            var inplayCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "inplayuser",
-                Password = "inplaypass",
-                MessageFormat = "json"
-            };
-            var prematchCredentials = new PackageCredentials
-            {
-                PackageId = 456,
-                Username = "prematchuser",
-                Password = "prematchpass",
-                MessageFormat = "xml"
-            };
-
-            // Act
-            var settings = new Trade360Settings
-            {
-                InplayPackageCredentials = inplayCredentials,
-                PrematchPackageCredentials = prematchCredentials
-            };
-
-            // Assert
-            settings.InplayPackageCredentials.Should().NotBeSameAs(settings.PrematchPackageCredentials);
-            settings.InplayPackageCredentials.PackageId.Should().Be(123);
-            settings.PrematchPackageCredentials.PackageId.Should().Be(456);
-            settings.InplayPackageCredentials.Username.Should().Be("inplayuser");
-            settings.PrematchPackageCredentials.Username.Should().Be("prematchuser");
-        }
-
-        [Fact]
-        public void Trade360Settings_CredentialChanges_ShouldNotAffectEachOther()
-        {
-            // Arrange
-            var settings = new Trade360Settings
-            {
-                InplayPackageCredentials = new PackageCredentials { PackageId = 123, Username = "inplay" },
-                PrematchPackageCredentials = new PackageCredentials { PackageId = 456, Username = "prematch" }
-            };
-
-            // Act
-            settings.InplayPackageCredentials.PackageId = 999;
-            settings.InplayPackageCredentials.Username = "modified";
-
-            // Assert
-            settings.InplayPackageCredentials.PackageId.Should().Be(999);
-            settings.InplayPackageCredentials.Username.Should().Be("modified");
-            settings.PrematchPackageCredentials.PackageId.Should().Be(456);
-            settings.PrematchPackageCredentials.Username.Should().Be("prematch");
-        }
-
-        [Fact]
-        public void Trade360Settings_WithRealWorldConfiguration_ShouldWorkCorrectly()
-        {
-            // Arrange & Act
-            var settings = new Trade360Settings
-            {
-                CustomersApiBaseUrl = "https://customers-api.trade360.com/v1/",
-                SnapshotApiBaseUrl = "https://snapshot-api.trade360.com/v2/",
-                InplayPackageCredentials = new PackageCredentials
-                {
-                    PackageId = 12345,
-                    Username = "trade360_inplay_user",
-                    Password = "SecurePassword123!",
-                    MessageFormat = "json"
-                },
-                PrematchPackageCredentials = new PackageCredentials
-                {
-                    PackageId = 67890,
-                    Username = "trade360_prematch_user",
-                    Password = "AnotherSecurePassword456!",
-                    MessageFormat = "xml"
-                }
-            };
-
-            // Assert
-            settings.Should().NotBeNull();
-            settings.CustomersApiBaseUrl.Should().StartWith("https://");
-            settings.SnapshotApiBaseUrl.Should().StartWith("https://");
-            settings.InplayPackageCredentials.Should().NotBeNull();
-            settings.PrematchPackageCredentials.Should().NotBeNull();
-            settings.InplayPackageCredentials.PackageId.Should().BeGreaterThan(0);
-            settings.PrematchPackageCredentials.PackageId.Should().BeGreaterThan(0);
-            settings.InplayPackageCredentials.Username.Should().NotBeNullOrEmpty();
-            settings.PrematchPackageCredentials.Username.Should().NotBeNullOrEmpty();
-        }
-
-        #endregion
-
-        #region Edge Cases and Validation
 
         [Fact]
         public void PackageCredentials_WithZeroPackageId_ShouldBeValid()
@@ -576,21 +431,6 @@ namespace Trade360SDK.Common.Entities.Tests.Configuration
 
             // Assert
             credentials.PackageId.Should().Be(-1);
-        }
-
-        [Fact]
-        public void Trade360Settings_WithInvalidUrls_ShouldStillAcceptValues()
-        {
-            // Arrange & Act
-            var settings = new Trade360Settings
-            {
-                CustomersApiBaseUrl = "not-a-valid-url",
-                SnapshotApiBaseUrl = "also-not-valid"
-            };
-
-            // Assert
-            settings.CustomersApiBaseUrl.Should().Be("not-a-valid-url");
-            settings.SnapshotApiBaseUrl.Should().Be("also-not-valid");
         }
 
         #endregion

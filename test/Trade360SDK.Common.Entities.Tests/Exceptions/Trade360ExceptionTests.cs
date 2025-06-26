@@ -4,7 +4,7 @@ using System.Linq;
 using Trade360SDK.Common.Exceptions;
 using Xunit;
 
-namespace Trade360SDK.Common.Tests
+namespace Trade360SDK.Common.Entities.Tests
 {
     public class Trade360ExceptionTests
     {

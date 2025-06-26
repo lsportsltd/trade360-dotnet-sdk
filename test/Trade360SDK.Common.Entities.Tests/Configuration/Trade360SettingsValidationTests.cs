@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Trade360SDK.Common.Configuration;
 
-namespace Trade360SDK.Common.Tests;
+namespace Trade360SDK.Common.Entities.Tests;
 
 public class Trade360SettingsValidationTests
 {

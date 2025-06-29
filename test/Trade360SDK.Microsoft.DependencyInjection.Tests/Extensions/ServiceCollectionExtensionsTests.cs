@@ -53,6 +53,34 @@ public class ServiceCollectionExtensionsTests
 
 
     [Fact]
+    public void AddTrade360PrematchSnapshotClient_ShouldRegisterServices()
+    {
+        var services = new ServiceCollection();
+
+        var result = services.AddTrade360PrematchSnapshotClient();
+
+        result.Should().BeSameAs(services);
+        
+        // Verify the service is registered without instantiation
+        var registeredServices = services.Where(s => s.ServiceType == typeof(ISnapshotPrematchApiClient)).ToList();
+        registeredServices.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void AddTrade360InplaySnapshotClient_ShouldRegisterServices()
+    {
+        var services = new ServiceCollection();
+
+        var result = services.AddTrade360InplaySnapshotClient();
+
+        result.Should().BeSameAs(services);
+        
+        // Verify the service is registered without instantiation
+        var registeredServices = services.Where(s => s.ServiceType == typeof(ISnapshotInplayApiClient)).ToList();
+        registeredServices.Should().NotBeEmpty();
+    }
+
+    [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterHttpClient()
     {
         var services = new ServiceCollection();

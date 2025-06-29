@@ -6,7 +6,7 @@ namespace Trade360SDK.CustomersApi.Mapper
 {
     public class MappingProfile : Profile
     {
-       public MappingProfile()
+        public MappingProfile()
         {
             CreateMap<GetLeaguesRequestDto, GetLeaguesRequest>();
             CreateMap<GetMarketsRequestDto, GetMarketsRequest>();

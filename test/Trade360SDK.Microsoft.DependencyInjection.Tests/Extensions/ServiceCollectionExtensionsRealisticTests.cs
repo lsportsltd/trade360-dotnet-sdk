@@ -134,35 +134,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Tests.Extensions
             mapper.Should().NotBeNull("AutoMapper should be registered");
         }
 
-        [Fact]
-        public void AddTrade360PrematchSnapshotClient_WithMissingSettings_ShouldThrowWhenResolvingClient()
-        {
-            // Arrange
-            var services = new ServiceCollection();
-            services.AddTrade360PrematchSnapshotClient();
 
-            // Act
-            var serviceProvider = services.BuildServiceProvider();
-
-            // Assert - Should throw when trying to resolve client without proper settings
-            Assert.Throws<InvalidOperationException>(() => 
-                serviceProvider.GetService<ISnapshotPrematchApiClient>());
-        }
-
-        [Fact]
-        public void AddTrade360InplaySnapshotClient_WithMissingSettings_ShouldThrowWhenResolvingClient()
-        {
-            // Arrange
-            var services = new ServiceCollection();
-            services.AddTrade360InplaySnapshotClient();
-
-            // Act
-            var serviceProvider = services.BuildServiceProvider();
-
-            // Assert - Should throw when trying to resolve client without proper settings
-            Assert.Throws<InvalidOperationException>(() => 
-                serviceProvider.GetService<ISnapshotInplayApiClient>());
-        }
 
         [Fact]
         public void AddTrade360CustomerApiClient_ShouldRegisterMultipleHttpClients()

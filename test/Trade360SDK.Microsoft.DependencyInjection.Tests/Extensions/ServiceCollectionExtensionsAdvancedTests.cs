@@ -56,7 +56,7 @@ public class ServiceCollectionExtensionsAdvancedTests
     {
         var act = () => _services.AddTrade360CustomerApiClient(null);
 
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();;
     }
 
     [Fact]
@@ -84,16 +84,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterHttpClient()
     {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com";
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "testuser",
-                Password = "testpass"
-            };
-        });
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         _services.AddTrade360PrematchSnapshotClient();
 
@@ -104,16 +96,8 @@ public class ServiceCollectionExtensionsAdvancedTests
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterAutoMapper()
     {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com";
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "testuser",
-                Password = "testpass"
-            };
-        });
+        var mockConfiguration = new Mock<IConfiguration>();
+        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
 
         _services.AddTrade360PrematchSnapshotClient();
 

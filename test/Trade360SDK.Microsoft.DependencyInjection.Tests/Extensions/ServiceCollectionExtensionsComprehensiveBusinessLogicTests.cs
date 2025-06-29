@@ -107,7 +107,7 @@ public class ServiceCollectionExtensionsComprehensiveBusinessLogicTests
     {
         var act = () => _services.AddTrade360CustomerApiClient(null);
 
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();;
     }
 
     [Fact]

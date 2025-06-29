@@ -35,7 +35,7 @@ public class ServiceCollectionExtensionsComprehensiveTests
         var services = new ServiceCollection();
         var act = () => services.AddTrade360CustomerApiClient(null);
 
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();;
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class ServiceCollectionExtensionsComprehensiveTests
         {
             services.AddTrade360PrematchSnapshotClient();
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.GetService<ISnapshotPrematchApiClient>();
+            serviceProvider.GetRequiredService<ISnapshotPrematchApiClient>();
         };
 
         act.Should().Throw<InvalidOperationException>();
@@ -154,7 +154,7 @@ public class ServiceCollectionExtensionsComprehensiveTests
         {
             services.AddTrade360InplaySnapshotClient();
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.GetService<ISnapshotInplayApiClient>();
+            serviceProvider.GetRequiredService<ISnapshotInplayApiClient>();
         };
 
         act.Should().Throw<InvalidOperationException>();

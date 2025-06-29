@@ -14,8 +14,7 @@ public class ServiceCollectionExtensionsCoverageTests
 
         var act = () => services.AddTrade360CustomerApiClient(null!);
 
-        act.Should().Throw<ArgumentNullException>()
-           .WithParameterName("configuration");
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]

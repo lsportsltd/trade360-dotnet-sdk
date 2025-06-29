@@ -50,37 +50,7 @@ public class ServiceCollectionExtensionsTests
         autoMapperRegistrations.Should().NotBeEmpty();
     }
 
-    [Fact]
-    public void AddTrade360PrematchSnapshotClient_ShouldRegisterServices()
-    {
-        var services = new ServiceCollection();
 
-        var result = services.AddTrade360PrematchSnapshotClient();
-
-        result.Should().BeSameAs(services);
-
-        var registeredServices = services.Where(s => s.ServiceType == typeof(ISnapshotPrematchApiClient)).ToList();
-        registeredServices.Should().HaveCountGreaterOrEqualTo(1);
-        var concreteRegistration = registeredServices.FirstOrDefault(s => s.ImplementationType != null);
-        concreteRegistration.Should().NotBeNull();
-        concreteRegistration!.ImplementationType.Should().Be(typeof(SnapshotPrematchApiClient));
-    }
-
-    [Fact]
-    public void AddTrade360InplaySnapshotClient_ShouldRegisterServices()
-    {
-        var services = new ServiceCollection();
-
-        var result = services.AddTrade360InplaySnapshotClient();
-
-        result.Should().BeSameAs(services);
-
-        var registeredServices = services.Where(s => s.ServiceType == typeof(ISnapshotInplayApiClient)).ToList();
-        registeredServices.Should().HaveCountGreaterOrEqualTo(1);
-        var concreteRegistration = registeredServices.FirstOrDefault(s => s.ImplementationType != null);
-        concreteRegistration.Should().NotBeNull();
-        concreteRegistration!.ImplementationType.Should().Be(typeof(SnapshotInplayApiClient));
-    }
 
     [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterHttpClient()

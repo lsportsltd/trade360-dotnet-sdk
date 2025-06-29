@@ -17,26 +17,39 @@ namespace Trade360SDK.SnapshotApi.Http
         private readonly int _packageId;
         private readonly string? _username;
         private readonly string? _password;
+        private readonly bool _hasValidCredentials;
 
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, Trade360Settings settings, PackageCredentials? packageCredentials)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl ?? throw new InvalidOperationException());
+            _httpClient.BaseAddress = new Uri(settings.SnapshotApiBaseUrl ?? throw new InvalidOperationException("SnapshotApiBaseUrl is not configured"));
             
-            if (packageCredentials == null)
+            if (packageCredentials != null)
             {
-                throw new InvalidOperationException("Package credentials cannot be null");
+                _packageId = packageCredentials.PackageId;
+                _username = packageCredentials.Username;
+                _password = packageCredentials.Password;
+                _hasValidCredentials = true;
             }
-            
-            _packageId = packageCredentials.PackageId;
-            _username = packageCredentials.Username;
-            _password = packageCredentials.Password;
+            else
+            {
+                // Allow construction but mark as invalid - will validate when actually used
+                _packageId = 0;
+                _username = null;
+                _password = null;
+                _hasValidCredentials = false;
+            }
         }
 
         protected async Task<TEntity> PostEntityAsync<TEntity>(
             string uri,
             BaseRequest request, CancellationToken cancellationToken) where TEntity : class
         {
+            if (!_hasValidCredentials)
+            {
+                throw new InvalidOperationException("Package credentials are not configured. Please configure the PrematchPackageCredentials or InplayPackageCredentials in Trade360Settings before using the snapshot client.");
+            }
+
             request.PackageId = _packageId;
             request.UserName = _username;
             request.Password = _password;

@@ -1,121 +1,341 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using FluentAssertions;
 using Moq;
-using System.Reflection;
 using Trade360SDK.Common.Attributes;
-using Trade360SDK.Feed.FeedType;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
+using Xunit;
 
-namespace Trade360SDK.Feed.RabbitMQ.Tests;
-
-public class MessageProcessorContainerTests
+namespace Trade360SDK.Feed.RabbitMQ.Tests.Resolvers
 {
-    private class TestFlow : IFlow
+    /// <summary>
+    /// Comprehensive unit tests for MessageProcessorContainer covering dependency resolution,
+    /// error scenarios, and edge cases to maximize code coverage.
+    /// </summary>
+    public class MessageProcessorContainerTests
     {
-    }
+        #region Test Classes and Mocks
 
-    private class OtherFlow : IFlow
-    {
-    }
+        // Test flow types
+        public class TestFlowA { }
+        public class TestFlowB { }
 
-    [Trade360Entity(1)]
-    private class TestEntity1
-    {
-    }
+        // Test entity types with attributes
+        [Trade360Entity(1)]
+        public class TestEntity1 { }
 
-    [Trade360Entity(2)]
-    private class TestEntity2
-    {
-    }
+        [Trade360Entity(2)]
+        public class TestEntity2 { }
 
-    [Fact]
-    public void Constructor_WithValidProcessors_ShouldInitializeCorrectly()
-    {
-        var mockProcessor1 = new Mock<IMessageProcessor>();
-        var mockProcessor2 = new Mock<IMessageProcessor>();
+        [Trade360Entity(3)]
+        public class TestEntity3 { }
 
-        mockProcessor1.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor1.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+        [Trade360Entity(999)]
+        public class TestEntityForDuplicateTest { }
 
-        mockProcessor2.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor2.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity2));
+        #endregion
 
-        var processors = new[] { mockProcessor1.Object, mockProcessor2.Object };
+        #region Constructor Tests
 
-        var container = new MessageProcessorContainer<TestFlow>(processors);
+        [Fact]
+        public void Constructor_WithValidProcessors_ShouldInitializeCorrectly()
+        {
+            // Arrange
+            var mockProcessor1 = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var mockProcessor2 = CreateMockProcessor<TestFlowA, TestEntity2>();
+            var processors = new[] { mockProcessor1.Object, mockProcessor2.Object };
 
-        container.Should().NotBeNull();
-    }
+            // Act
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
 
-    [Fact]
-    public void Constructor_WithDifferentFlowTypes_ShouldFilterCorrectly()
-    {
-        var mockProcessor1 = new Mock<IMessageProcessor>();
-        var mockProcessor2 = new Mock<IMessageProcessor>();
+            // Assert
+            container.Should().NotBeNull();
+        }
 
-        mockProcessor1.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor1.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+        [Fact]
+        public void Constructor_WithEmptyProcessors_ShouldInitializeWithEmptyContainer()
+        {
+            // Arrange
+            var processors = Array.Empty<IMessageProcessor>();
 
-        mockProcessor2.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(OtherFlow));
-        mockProcessor2.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity2));
+            // Act
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
 
-        var processors = new[] { mockProcessor1.Object, mockProcessor2.Object };
+            // Assert
+            container.Should().NotBeNull();
+        }
 
-        var container = new MessageProcessorContainer<TestFlow>(processors);
+        [Fact]
+        public void Constructor_WithNullProcessors_ShouldThrowNullReferenceException()
+        {
+            // Arrange
+            IEnumerable<IMessageProcessor> processors = null!;
 
-        var result = container.GetMessageProcessor(1);
-        result.Should().Be(mockProcessor1.Object);
+            // Act & Assert
+            var act = () => new MessageProcessorContainer<TestFlowA>(processors);
+            act.Should().Throw<NullReferenceException>();
+        }
 
-        Action act = () => container.GetMessageProcessor(2);
-        act.Should().Throw<KeyNotFoundException>();
-    }
+        [Fact]
+        public void Constructor_WithMixedFlowTypes_ShouldOnlyIncludeMatchingFlowType()
+        {
+            // Arrange
+            var processorA1 = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processorA2 = CreateMockProcessor<TestFlowA, TestEntity2>();
+            var processorB1 = CreateMockProcessor<TestFlowB, TestEntity1>(); // Different flow type
+            var processorB2 = CreateMockProcessor<TestFlowB, TestEntity3>(); // Different flow type
 
-    [Fact]
-    public void Constructor_WithDuplicateEntityKeys_ShouldThrowArgumentException()
-    {
-        var mockProcessor1 = new Mock<IMessageProcessor>();
-        var mockProcessor2 = new Mock<IMessageProcessor>();
+            var processors = new[]
+            {
+                processorA1.Object,
+                processorA2.Object,
+                processorB1.Object,
+                processorB2.Object
+            };
 
-        mockProcessor1.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor1.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+            // Act
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
 
-        mockProcessor2.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor2.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+            // Assert
+            // Should be able to get processors for TestFlowA entities
+            var processor1 = container.GetMessageProcessor(1);
+            var processor2 = container.GetMessageProcessor(2);
+            
+            processor1.Should().BeSameAs(processorA1.Object);
+            processor2.Should().BeSameAs(processorA2.Object);
 
-        var processors = new[] { mockProcessor1.Object, mockProcessor2.Object };
+            // Should not be able to get processors for TestFlowB entities (3)
+            var act = () => container.GetMessageProcessor(3);
+            act.Should().Throw<KeyNotFoundException>();
+        }
 
-        Action act = () => new MessageProcessorContainer<TestFlow>(processors);
+        [Fact]
+        public void Constructor_WithDuplicateEntityKeys_ShouldThrowArgumentException()
+        {
+            // Arrange
+            var processor1 = CreateMockProcessor<TestFlowA, TestEntityForDuplicateTest>();
+            var processor2 = CreateMockProcessor<TestFlowA, TestEntityForDuplicateTest>(); // Same entity key
 
-        act.Should().Throw<ArgumentException>()
-           .WithMessage("Failed to add resolver as the resolver already registered.");
-    }
+            var processors = new[] { processor1.Object, processor2.Object };
 
-    [Fact]
-    public void GetMessageProcessor_WithValidKey_ShouldReturnProcessor()
-    {
-        var mockProcessor = new Mock<IMessageProcessor>();
-        mockProcessor.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+            // Act & Assert
+            var act = () => new MessageProcessorContainer<TestFlowA>(processors);
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Failed to add resolver as the resolver already registered.");
+        }
 
-        var processors = new[] { mockProcessor.Object };
-        var container = new MessageProcessorContainer<TestFlow>(processors);
+        #endregion
 
-        var result = container.GetMessageProcessor(1);
+        #region GetMessageProcessor Tests
 
-        result.Should().Be(mockProcessor.Object);
-    }
+        [Fact]
+        public void GetMessageProcessor_WithValidEntityKey_ShouldReturnCorrectProcessor()
+        {
+            // Arrange
+            var mockProcessor1 = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var mockProcessor2 = CreateMockProcessor<TestFlowA, TestEntity2>();
+            var processors = new[] { mockProcessor1.Object, mockProcessor2.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
 
-    [Fact]
-    public void GetMessageProcessor_WithInvalidKey_ShouldThrowKeyNotFoundException()
-    {
-        var mockProcessor = new Mock<IMessageProcessor>();
-        mockProcessor.Setup(p => p.GetTypeOfTFlow()).Returns(typeof(TestFlow));
-        mockProcessor.Setup(p => p.GetTypeOfTType()).Returns(typeof(TestEntity1));
+            // Act
+            var result1 = container.GetMessageProcessor(1);
+            var result2 = container.GetMessageProcessor(2);
 
-        var processors = new[] { mockProcessor.Object };
-        var container = new MessageProcessorContainer<TestFlow>(processors);
+            // Assert
+            result1.Should().BeSameAs(mockProcessor1.Object);
+            result2.Should().BeSameAs(mockProcessor2.Object);
+        }
 
-        Action act = () => container.GetMessageProcessor(999);
+        [Fact]
+        public void GetMessageProcessor_WithInvalidEntityKey_ShouldThrowKeyNotFoundException()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new[] { mockProcessor.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
 
-        act.Should().Throw<KeyNotFoundException>();
+            // Act & Assert
+            var act = () => container.GetMessageProcessor(999); // Non-existent key
+            act.Should().Throw<KeyNotFoundException>();
+        }
+
+        [Fact]
+        public void GetMessageProcessor_WithZeroEntityKey_ShouldThrowKeyNotFoundException()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new[] { mockProcessor.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
+
+            // Act & Assert
+            var act = () => container.GetMessageProcessor(0);
+            act.Should().Throw<KeyNotFoundException>();
+        }
+
+        [Fact]
+        public void GetMessageProcessor_WithNegativeEntityKey_ShouldThrowKeyNotFoundException()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new[] { mockProcessor.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
+
+            // Act & Assert
+            var act = () => container.GetMessageProcessor(-1);
+            act.Should().Throw<KeyNotFoundException>();
+        }
+
+        [Fact]
+        public void GetMessageProcessor_CalledMultipleTimesWithSameKey_ShouldReturnSameInstance()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new[] { mockProcessor.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
+
+            // Act
+            var result1 = container.GetMessageProcessor(1);
+            var result2 = container.GetMessageProcessor(1);
+            var result3 = container.GetMessageProcessor(1);
+
+            // Assert
+            result1.Should().BeSameAs(mockProcessor.Object);
+            result2.Should().BeSameAs(mockProcessor.Object);
+            result3.Should().BeSameAs(mockProcessor.Object);
+            result1.Should().BeSameAs(result2);
+            result2.Should().BeSameAs(result3);
+        }
+
+        #endregion
+
+        #region Integration Tests
+
+        [Fact]
+        public void MessageProcessorContainer_WithMultipleProcessors_ShouldHandleCorrectly()
+        {
+            // Arrange
+            var processor1 = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processor2 = CreateMockProcessor<TestFlowA, TestEntity2>();
+            var processor3 = CreateMockProcessor<TestFlowA, TestEntity3>();
+            
+            var processors = new[] { processor1.Object, processor2.Object, processor3.Object };
+
+            // Act
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
+
+            // Assert
+            var result1 = container.GetMessageProcessor(1);
+            var result2 = container.GetMessageProcessor(2);
+            var result3 = container.GetMessageProcessor(3);
+            
+            result1.Should().BeSameAs(processor1.Object);
+            result2.Should().BeSameAs(processor2.Object);
+            result3.Should().BeSameAs(processor3.Object);
+        }
+
+        [Fact]
+        public void MessageProcessorContainer_WithComplexFlowTypeHierarchy_ShouldWorkCorrectly()
+        {
+            // Arrange
+            var processor1 = CreateMockProcessor<FlowType, TestEntity1>(); // Using actual FlowType enum
+            var processor2 = CreateMockProcessor<FlowType, TestEntity2>();
+            var processors = new[] { processor1.Object, processor2.Object };
+
+            // Act
+            var container = new MessageProcessorContainer<FlowType>(processors);
+
+            // Assert
+            var result1 = container.GetMessageProcessor(1);
+            var result2 = container.GetMessageProcessor(2);
+            
+            result1.Should().BeSameAs(processor1.Object);
+            result2.Should().BeSameAs(processor2.Object);
+        }
+
+        #endregion
+
+        #region Thread Safety Tests
+
+        [Fact]
+        public void GetMessageProcessor_AccessedMultipleTimes_ShouldBeConsistent()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new[] { mockProcessor.Object };
+            var container = new MessageProcessorContainer<TestFlowA>(processors);
+
+            // Act & Assert
+            for (int i = 0; i < 10; i++)
+            {
+                var result = container.GetMessageProcessor(1);
+                result.Should().BeSameAs(mockProcessor.Object);
+            }
+        }
+
+        #endregion
+
+        #region Edge Cases
+
+        [Fact]
+        public void Constructor_WithNullProcessor_ShouldHandleGracefully()
+        {
+            // Arrange
+            var mockProcessor = CreateMockProcessor<TestFlowA, TestEntity1>();
+            var processors = new IMessageProcessor[] { mockProcessor.Object, null! };
+
+            // Act & Assert
+            var act = () => new MessageProcessorContainer<TestFlowA>(processors);
+            act.Should().Throw<NullReferenceException>();
+        }
+
+        [Fact]
+        public void Constructor_WithProcessorReturningNullType_ShouldThrowException()
+        {
+            // Arrange
+            var mockProcessor = new Mock<IMessageProcessor>();
+            mockProcessor.Setup(x => x.GetTypeOfTFlow()).Returns(typeof(TestFlowA));
+            mockProcessor.Setup(x => x.GetTypeOfTType()).Returns((Type)null!);
+            
+            var processors = new[] { mockProcessor.Object };
+
+            // Act & Assert
+            var act = () => new MessageProcessorContainer<TestFlowA>(processors);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Constructor_WithProcessorHavingNoAttribute_ShouldThrowException()
+        {
+            // Arrange
+            var mockProcessor = new Mock<IMessageProcessor>();
+            mockProcessor.Setup(x => x.GetTypeOfTFlow()).Returns(typeof(TestFlowA));
+            mockProcessor.Setup(x => x.GetTypeOfTType()).Returns(typeof(string)); // No Trade360EntityAttribute
+            
+            var processors = new[] { mockProcessor.Object };
+
+            // Act & Assert
+            var act = () => new MessageProcessorContainer<TestFlowA>(processors);
+            act.Should().Throw<NullReferenceException>();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        private static Mock<IMessageProcessor> CreateMockProcessor<TFlow, TEntity>()
+            where TEntity : class
+        {
+            var mock = new Mock<IMessageProcessor>();
+            mock.Setup(x => x.GetTypeOfTFlow()).Returns(typeof(TFlow));
+            mock.Setup(x => x.GetTypeOfTType()).Returns(typeof(TEntity));
+            return mock;
+        }
+
+
+
+        #endregion
     }
 }

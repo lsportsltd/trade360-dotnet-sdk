@@ -225,7 +225,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.MessageTypes
         {
             // Arrange
             var update = new KeepAliveUpdate();
-            var keepAlive = new KeepAlive.KeepAlive();
+            var keepAlive = new Trade360SDK.Common.Entities.KeepAlive.KeepAlive();
 
             // Act
             update.KeepAlive = keepAlive;

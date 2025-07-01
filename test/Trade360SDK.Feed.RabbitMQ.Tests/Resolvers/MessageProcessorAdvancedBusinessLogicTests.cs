@@ -93,7 +93,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed to deserialize message body")),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
 
         _mockHandler.Verify(h => h.ProcessAsync(

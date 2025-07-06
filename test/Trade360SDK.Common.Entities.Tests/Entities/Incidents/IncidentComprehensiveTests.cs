@@ -8,234 +8,327 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Incidents
     public class IncidentComprehensiveTests
     {
         [Fact]
-        public void Incident_DefaultConstructor_ShouldInitializeWithDefaults()
+        public void Constructor_ShouldInitializeWithDefaultValues()
         {
             // Act
             var incident = new Incident();
 
             // Assert
-            incident.SportId.Should().Be(0);
+            incident.SportId.Should().Be(default(int));
             incident.SportName.Should().BeNull();
-            incident.IncidentId.Should().Be(0);
+            incident.IncidentId.Should().Be(default(int));
             incident.IncidentName.Should().BeNull();
             incident.Description.Should().BeNull();
             incident.LastUpdate.Should().Be(default(DateTime));
             incident.CreationDate.Should().Be(default(DateTime));
         }
 
-        [Fact]
-        public void Incident_SportId_ShouldSetAndGetCorrectly()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(100)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void SportId_WithVariousValues_ShouldStoreCorrectly(int sportId)
         {
             // Arrange
             var incident = new Incident();
-            var expectedSportId = 123;
+
+            // Act
+            incident.SportId = sportId;
+
+            // Assert
+            incident.SportId.Should().Be(sportId);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("Football")]
+        [InlineData("Basketball")]
+        [InlineData("Tennis")]
+        [InlineData("Very Long Sport Name That Contains Many Characters")]
+        [InlineData("Sport123")]
+        [InlineData("Special@Sport!")]
+        public void SportName_WithValidStrings_ShouldStoreCorrectly(string sportName)
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.SportName = sportName;
+
+            // Assert
+            incident.SportName.Should().Be(sportName);
+        }
+
+        [Fact]
+        public void SportName_WithNull_ShouldAcceptValue()
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.SportName = null;
+
+            // Assert
+            incident.SportName.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(999)]
+        [InlineData(-5)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void IncidentId_WithVariousValues_ShouldStoreCorrectly(int incidentId)
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.IncidentId = incidentId;
+
+            // Assert
+            incident.IncidentId.Should().Be(incidentId);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("Match Started")]
+        [InlineData("Goal Scored")]
+        [InlineData("Red Card")]
+        [InlineData("Half Time")]
+        [InlineData("Very Long Incident Name With Many Details")]
+        public void IncidentName_WithValidStrings_ShouldStoreCorrectly(string incidentName)
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.IncidentName = incidentName;
+
+            // Assert
+            incident.IncidentName.Should().Be(incidentName);
+        }
+
+        [Fact]
+        public void IncidentName_WithNull_ShouldAcceptValue()
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.IncidentName = null;
+
+            // Assert
+            incident.IncidentName.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("Simple description")]
+        [InlineData("Very detailed description of the incident that happened during the match")]
+        [InlineData("Special Characters: @#$%^&*()")]
+        [InlineData("Unicode: 测试描述")]
+        public void Description_WithValidStrings_ShouldStoreCorrectly(string description)
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.Description = description;
+
+            // Assert
+            incident.Description.Should().Be(description);
+        }
+
+        [Fact]
+        public void Description_WithNull_ShouldAcceptValue()
+        {
+            // Arrange
+            var incident = new Incident();
+
+            // Act
+            incident.Description = null;
+
+            // Assert
+            incident.Description.Should().BeNull();
+        }
+
+        [Fact]
+        public void LastUpdate_WithCurrentDateTime_ShouldStoreCorrectly()
+        {
+            // Arrange
+            var incident = new Incident();
+            var currentTime = DateTime.Now;
+
+            // Act
+            incident.LastUpdate = currentTime;
+
+            // Assert
+            incident.LastUpdate.Should().Be(currentTime);
+        }
+
+        [Fact]
+        public void CreationDate_WithCurrentDateTime_ShouldStoreCorrectly()
+        {
+            // Arrange
+            var incident = new Incident();
+            var currentTime = DateTime.Now;
+
+            // Act
+            incident.CreationDate = currentTime;
+
+            // Assert
+            incident.CreationDate.Should().Be(currentTime);
+        }
+
+        [Theory]
+        [InlineData("2023-01-01")]
+        [InlineData("2025-12-31")]
+        [InlineData("1990-06-15")]
+        public void LastUpdate_WithSpecificDates_ShouldStoreCorrectly(string dateString)
+        {
+            // Arrange
+            var incident = new Incident();
+            var specificDate = DateTime.Parse(dateString);
+
+            // Act
+            incident.LastUpdate = specificDate;
+
+            // Assert
+            incident.LastUpdate.Should().Be(specificDate);
+        }
+
+        [Theory]
+        [InlineData("2022-03-15")]
+        [InlineData("2024-08-20")]
+        [InlineData("2000-01-01")]
+        public void CreationDate_WithSpecificDates_ShouldStoreCorrectly(string dateString)
+        {
+            // Arrange
+            var incident = new Incident();
+            var specificDate = DateTime.Parse(dateString);
+
+            // Act
+            incident.CreationDate = specificDate;
+
+            // Assert
+            incident.CreationDate.Should().Be(specificDate);
+        }
+
+        [Fact]
+        public void Properties_CanBeSetIndependently()
+        {
+            // Arrange
+            var incident = new Incident();
+            const int expectedSportId = 1;
+            const string expectedSportName = "Football";
+            const int expectedIncidentId = 123;
+            const string expectedIncidentName = "Goal";
+            const string expectedDescription = "Amazing goal!";
+            var expectedLastUpdate = new DateTime(2023, 6, 15, 14, 30, 0);
+            var expectedCreationDate = new DateTime(2023, 6, 15, 14, 25, 0);
 
             // Act
             incident.SportId = expectedSportId;
-
-            // Assert
-            incident.SportId.Should().Be(expectedSportId);
-        }
-
-        [Fact]
-        public void Incident_SportName_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedSportName = "Football";
-
-            // Act
             incident.SportName = expectedSportName;
-
-            // Assert
-            incident.SportName.Should().Be(expectedSportName);
-        }
-
-        [Fact]
-        public void Incident_IncidentId_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedIncidentId = 456;
-
-            // Act
             incident.IncidentId = expectedIncidentId;
-
-            // Assert
-            incident.IncidentId.Should().Be(expectedIncidentId);
-        }
-
-        [Fact]
-        public void Incident_IncidentName_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedIncidentName = "Goal Scored";
-
-            // Act
             incident.IncidentName = expectedIncidentName;
-
-            // Assert
-            incident.IncidentName.Should().Be(expectedIncidentName);
-        }
-
-        [Fact]
-        public void Incident_Description_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedDescription = "Player scored a goal in the 45th minute";
-
-            // Act
             incident.Description = expectedDescription;
-
-            // Assert
-            incident.Description.Should().Be(expectedDescription);
-        }
-
-        [Fact]
-        public void Incident_LastUpdate_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedLastUpdate = new DateTime(2023, 12, 25, 15, 30, 45);
-
-            // Act
             incident.LastUpdate = expectedLastUpdate;
-
-            // Assert
-            incident.LastUpdate.Should().Be(expectedLastUpdate);
-        }
-
-        [Fact]
-        public void Incident_CreationDate_ShouldSetAndGetCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var expectedCreationDate = new DateTime(2023, 12, 25, 14, 0, 0);
-
-            // Act
             incident.CreationDate = expectedCreationDate;
 
             // Assert
+            incident.SportId.Should().Be(expectedSportId);
+            incident.SportName.Should().Be(expectedSportName);
+            incident.IncidentId.Should().Be(expectedIncidentId);
+            incident.IncidentName.Should().Be(expectedIncidentName);
+            incident.Description.Should().Be(expectedDescription);
+            incident.LastUpdate.Should().Be(expectedLastUpdate);
             incident.CreationDate.Should().Be(expectedCreationDate);
         }
 
         [Fact]
-        public void Incident_WithCompleteData_ShouldSetAllProperties()
+        public void ObjectInitializer_ShouldSetAllProperties()
         {
             // Arrange
-            var incident = new Incident();
-            var sportId = 1;
-            var sportName = "Soccer";
-            var incidentId = 101;
-            var incidentName = "Red Card";
-            var description = "Player received red card for dangerous play";
-            var lastUpdate = DateTime.UtcNow;
-            var creationDate = DateTime.UtcNow.AddMinutes(-5);
+            const int expectedSportId = 2;
+            const string expectedSportName = "Basketball";
+            const int expectedIncidentId = 456;
+            const string expectedIncidentName = "Timeout";
+            const string expectedDescription = "Team timeout called";
+            var expectedLastUpdate = new DateTime(2023, 7, 20, 16, 45, 30);
+            var expectedCreationDate = new DateTime(2023, 7, 20, 16, 40, 15);
 
             // Act
-            incident.SportId = sportId;
-            incident.SportName = sportName;
-            incident.IncidentId = incidentId;
-            incident.IncidentName = incidentName;
-            incident.Description = description;
-            incident.LastUpdate = lastUpdate;
-            incident.CreationDate = creationDate;
+            var incident = new Incident
+            {
+                SportId = expectedSportId,
+                SportName = expectedSportName,
+                IncidentId = expectedIncidentId,
+                IncidentName = expectedIncidentName,
+                Description = expectedDescription,
+                LastUpdate = expectedLastUpdate,
+                CreationDate = expectedCreationDate
+            };
 
             // Assert
-            incident.SportId.Should().Be(sportId);
-            incident.SportName.Should().Be(sportName);
-            incident.IncidentId.Should().Be(incidentId);
-            incident.IncidentName.Should().Be(incidentName);
-            incident.Description.Should().Be(description);
-            incident.LastUpdate.Should().Be(lastUpdate);
-            incident.CreationDate.Should().Be(creationDate);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData("Basketball")]
-        [InlineData("American Football")]
-        [InlineData("Tennis")]
-        public void Incident_SportName_ShouldHandleVariousStrings(string sportName)
-        {
-            // Arrange
-            var incident = new Incident();
-
-            // Act
-            incident.SportName = sportName;
-
-            // Assert
-            incident.SportName.Should().Be(sportName);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData("Penalty")]
-        [InlineData("Substitution")]
-        [InlineData("Timeout")]
-        public void Incident_IncidentName_ShouldHandleVariousStrings(string incidentName)
-        {
-            // Arrange
-            var incident = new Incident();
-
-            // Act
-            incident.IncidentName = incidentName;
-
-            // Assert
-            incident.IncidentName.Should().Be(incidentName);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData("Short description")]
-        [InlineData("A very long description that contains multiple sentences and detailed information about what happened during the incident")]
-        public void Incident_Description_ShouldHandleVariousStrings(string description)
-        {
-            // Arrange
-            var incident = new Incident();
-
-            // Act
-            incident.Description = description;
-
-            // Assert
-            incident.Description.Should().Be(description);
+            incident.SportId.Should().Be(expectedSportId);
+            incident.SportName.Should().Be(expectedSportName);
+            incident.IncidentId.Should().Be(expectedIncidentId);
+            incident.IncidentName.Should().Be(expectedIncidentName);
+            incident.Description.Should().Be(expectedDescription);
+            incident.LastUpdate.Should().Be(expectedLastUpdate);
+            incident.CreationDate.Should().Be(expectedCreationDate);
         }
 
         [Fact]
-        public void Incident_SportId_ShouldHandleNegativeValues()
+        public void Properties_CanBeOverwritten()
         {
             // Arrange
-            var incident = new Incident();
-            var negativeSportId = -1;
+            var incident = new Incident
+            {
+                SportId = 1,
+                SportName = "Tennis",
+                IncidentId = 789,
+                IncidentName = "Serve",
+                Description = "First serve",
+                LastUpdate = DateTime.MinValue,
+                CreationDate = DateTime.MinValue
+            };
+
+            const int newSportId = 5;
+            const string newSportName = "Hockey";
+            const int newIncidentId = 999;
+            const string newIncidentName = "Goal";
+            const string newDescription = "Power play goal";
+            var newLastUpdate = DateTime.MaxValue;
+            var newCreationDate = DateTime.MaxValue;
 
             // Act
-            incident.SportId = negativeSportId;
+            incident.SportId = newSportId;
+            incident.SportName = newSportName;
+            incident.IncidentId = newIncidentId;
+            incident.IncidentName = newIncidentName;
+            incident.Description = newDescription;
+            incident.LastUpdate = newLastUpdate;
+            incident.CreationDate = newCreationDate;
 
             // Assert
-            incident.SportId.Should().Be(negativeSportId);
+            incident.SportId.Should().Be(newSportId);
+            incident.SportName.Should().Be(newSportName);
+            incident.IncidentId.Should().Be(newIncidentId);
+            incident.IncidentName.Should().Be(newIncidentName);
+            incident.Description.Should().Be(newDescription);
+            incident.LastUpdate.Should().Be(newLastUpdate);
+            incident.CreationDate.Should().Be(newCreationDate);
         }
 
         [Fact]
-        public void Incident_IncidentId_ShouldHandleNegativeValues()
-        {
-            // Arrange
-            var incident = new Incident();
-            var negativeIncidentId = -1;
-
-            // Act
-            incident.IncidentId = negativeIncidentId;
-
-            // Assert
-            incident.IncidentId.Should().Be(negativeIncidentId);
-        }
-
-        [Fact]
-        public void Incident_DateTimes_ShouldHandleMinMaxValues()
+        public void DateTimeProperties_WithMinAndMaxValues_ShouldStoreCorrectly()
         {
             // Arrange
             var incident = new Incident();
@@ -250,79 +343,81 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Incidents
         }
 
         [Fact]
-        public void Incident_DateTimes_ShouldHandleUtcValues()
-        {
-            // Arrange
-            var incident = new Incident();
-            var utcNow = DateTime.UtcNow;
-
-            // Act
-            incident.LastUpdate = utcNow;
-            incident.CreationDate = utcNow;
-
-            // Assert
-            incident.LastUpdate.Should().Be(utcNow);
-            incident.CreationDate.Should().Be(utcNow);
-        }
-
-        [Fact]
-        public void Incident_WithUnicodeCharacters_ShouldHandleCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var unicodeSportName = "足球";
-            var unicodeIncidentName = "进球";
-            var unicodeDescription = "球员在第45分钟进球";
-
-            // Act
-            incident.SportName = unicodeSportName;
-            incident.IncidentName = unicodeIncidentName;
-            incident.Description = unicodeDescription;
-
-            // Assert
-            incident.SportName.Should().Be(unicodeSportName);
-            incident.IncidentName.Should().Be(unicodeIncidentName);
-            incident.Description.Should().Be(unicodeDescription);
-        }
-
-        [Fact]
-        public void Incident_WithSpecialCharacters_ShouldHandleCorrectly()
-        {
-            // Arrange
-            var incident = new Incident();
-            var specialCharacters = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
-
-            // Act
-            incident.SportName = specialCharacters;
-            incident.IncidentName = specialCharacters;
-            incident.Description = specialCharacters;
-
-            // Assert
-            incident.SportName.Should().Be(specialCharacters);
-            incident.IncidentName.Should().Be(specialCharacters);
-            incident.Description.Should().Be(specialCharacters);
-        }
-
-        [Fact]
-        public void Incident_PropertyAssignment_ShouldAllowNullValues()
+        public void ToString_ShouldNotThrow()
         {
             // Arrange
             var incident = new Incident
             {
-                SportName = "Initial Sport",
-                IncidentName = "Initial Incident",
-                Description = "Initial Description"
+                SportId = 3,
+                SportName = "Baseball",
+                IncidentId = 321,
+                IncidentName = "Home Run",
+                Description = "Grand slam!",
+                LastUpdate = DateTime.Now,
+                CreationDate = DateTime.Today
             };
 
-            // Act
-            incident.SportName = null;
-            incident.IncidentName = null;
-            incident.Description = null;
+            // Act & Assert
+            var act = () => incident.ToString();
+            act.Should().NotThrow();
+        }
 
-            // Assert
-            incident.SportName.Should().BeNull();
-            incident.IncidentName.Should().BeNull();
-            incident.Description.Should().BeNull();
+        [Fact]
+        public void GetHashCode_ShouldNotThrow()
+        {
+            // Arrange
+            var incident = new Incident
+            {
+                SportId = 4,
+                SportName = "Soccer",
+                IncidentId = 654,
+                IncidentName = "Corner Kick",
+                Description = "Left corner",
+                LastUpdate = DateTime.UtcNow,
+                CreationDate = DateTime.Today.AddHours(-2)
+            };
+
+            // Act & Assert
+            var act = () => incident.GetHashCode();
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Equals_WithSameReference_ShouldReturnTrue()
+        {
+            // Arrange
+            var incident = new Incident
+            {
+                SportId = 6,
+                SportName = "Volleyball",
+                IncidentId = 987,
+                IncidentName = "Spike",
+                Description = "Winning spike",
+                LastUpdate = DateTime.Now,
+                CreationDate = DateTime.Today
+            };
+
+            // Act & Assert
+            incident.Equals(incident).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Equals_WithNull_ShouldReturnFalse()
+        {
+            // Arrange
+            var incident = new Incident
+            {
+                SportId = 7,
+                SportName = "Cricket",
+                IncidentId = 111,
+                IncidentName = "Wicket",
+                Description = "Clean bowled",
+                LastUpdate = DateTime.Now,
+                CreationDate = DateTime.Today
+            };
+
+            // Act & Assert
+            incident.Equals(null).Should().BeFalse();
         }
     }
 } 

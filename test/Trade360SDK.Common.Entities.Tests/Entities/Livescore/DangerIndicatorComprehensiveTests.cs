@@ -9,37 +9,22 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
     public class DangerIndicatorComprehensiveTests
     {
         [Fact]
-        public void DangerIndicator_DefaultConstructor_ShouldCreateInstanceWithDefaultValues()
+        public void Constructor_ShouldInitializeWithDefaultValues()
         {
             // Act
             var dangerIndicator = new DangerIndicator();
 
             // Assert
-            dangerIndicator.Should().NotBeNull();
-            dangerIndicator.Type.Should().Be((DangerIndicatorType)0);
-            dangerIndicator.Status.Should().Be((DangerIndicatorStatus)0);
+            dangerIndicator.Type.Should().Be(default(DangerIndicatorType));
+            dangerIndicator.Status.Should().Be(default(DangerIndicatorStatus));
             dangerIndicator.LastUpdate.Should().Be(default(DateTime));
-        }
-
-        [Fact]
-        public void DangerIndicator_SetType_ShouldSetValue()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator();
-            var type = DangerIndicatorType.Cards;
-
-            // Act
-            dangerIndicator.Type = type;
-
-            // Assert
-            dangerIndicator.Type.Should().Be(type);
         }
 
         [Theory]
         [InlineData(DangerIndicatorType.General)]
         [InlineData(DangerIndicatorType.Cards)]
         [InlineData(DangerIndicatorType.Corners)]
-        public void DangerIndicator_SetVariousTypes_ShouldSetValue(DangerIndicatorType type)
+        public void Type_WithVariousValues_ShouldStoreCorrectly(DangerIndicatorType type)
         {
             // Arrange
             var dangerIndicator = new DangerIndicator();
@@ -49,26 +34,12 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
 
             // Assert
             dangerIndicator.Type.Should().Be(type);
-        }
-
-        [Fact]
-        public void DangerIndicator_SetStatus_ShouldSetValue()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator();
-            var status = DangerIndicatorStatus.Danger;
-
-            // Act
-            dangerIndicator.Status = status;
-
-            // Assert
-            dangerIndicator.Status.Should().Be(status);
         }
 
         [Theory]
         [InlineData(DangerIndicatorStatus.Safe)]
         [InlineData(DangerIndicatorStatus.Danger)]
-        public void DangerIndicator_SetVariousStatuses_ShouldSetValue(DangerIndicatorStatus status)
+        public void Status_WithVariousValues_ShouldStoreCorrectly(DangerIndicatorStatus status)
         {
             // Arrange
             var dangerIndicator = new DangerIndicator();
@@ -81,60 +52,190 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
         }
 
         [Fact]
-        public void DangerIndicator_SetLastUpdate_ShouldSetValue()
+        public void LastUpdate_WithCurrentDateTime_ShouldStoreCorrectly()
         {
             // Arrange
             var dangerIndicator = new DangerIndicator();
-            var lastUpdate = DateTime.UtcNow;
+            var currentTime = DateTime.Now;
 
             // Act
-            dangerIndicator.LastUpdate = lastUpdate;
+            dangerIndicator.LastUpdate = currentTime;
 
             // Assert
-            dangerIndicator.LastUpdate.Should().Be(lastUpdate);
+            dangerIndicator.LastUpdate.Should().Be(currentTime);
         }
 
         [Fact]
-        public void DangerIndicator_SetLastUpdateWithSpecificDate_ShouldSetValue()
+        public void LastUpdate_WithUtcDateTime_ShouldStoreCorrectly()
         {
             // Arrange
             var dangerIndicator = new DangerIndicator();
-            var lastUpdate = new DateTime(2023, 12, 25, 15, 30, 45, DateTimeKind.Utc);
+            var utcTime = DateTime.UtcNow;
 
             // Act
-            dangerIndicator.LastUpdate = lastUpdate;
+            dangerIndicator.LastUpdate = utcTime;
 
             // Assert
-            dangerIndicator.LastUpdate.Should().Be(lastUpdate);
-            dangerIndicator.LastUpdate.Year.Should().Be(2023);
-            dangerIndicator.LastUpdate.Month.Should().Be(12);
-            dangerIndicator.LastUpdate.Day.Should().Be(25);
-            dangerIndicator.LastUpdate.Hour.Should().Be(15);
-            dangerIndicator.LastUpdate.Minute.Should().Be(30);
-            dangerIndicator.LastUpdate.Second.Should().Be(45);
+            dangerIndicator.LastUpdate.Should().Be(utcTime);
+        }
+
+        [Theory]
+        [InlineData("2023-01-01")]
+        [InlineData("2025-12-31")]
+        [InlineData("1900-01-01")]
+        public void LastUpdate_WithSpecificDates_ShouldStoreCorrectly(string dateString)
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator();
+            var specificDate = DateTime.Parse(dateString);
+
+            // Act
+            dangerIndicator.LastUpdate = specificDate;
+
+            // Assert
+            dangerIndicator.LastUpdate.Should().Be(specificDate);
         }
 
         [Fact]
-        public void DangerIndicator_SetAllProperties_ShouldSetAllValues()
+        public void Properties_CanBeSetIndependently()
         {
             // Arrange
             var dangerIndicator = new DangerIndicator();
-            var type = DangerIndicatorType.Corners;
-            var status = DangerIndicatorStatus.Danger;
-            var lastUpdate = DateTime.UtcNow;
+            var expectedType = DangerIndicatorType.Cards;
+            var expectedStatus = DangerIndicatorStatus.Danger;
+            var expectedLastUpdate = new DateTime(2023, 6, 15, 14, 30, 0);
 
             // Act
-            dangerIndicator.Type = type;
-            dangerIndicator.Status = status;
-            dangerIndicator.LastUpdate = lastUpdate;
+            dangerIndicator.Type = expectedType;
+            dangerIndicator.Status = expectedStatus;
+            dangerIndicator.LastUpdate = expectedLastUpdate;
 
             // Assert
-            dangerIndicator.Type.Should().Be(type);
-            dangerIndicator.Status.Should().Be(status);
-            dangerIndicator.LastUpdate.Should().Be(lastUpdate);
+            dangerIndicator.Type.Should().Be(expectedType);
+            dangerIndicator.Status.Should().Be(expectedStatus);
+            dangerIndicator.LastUpdate.Should().Be(expectedLastUpdate);
         }
 
+        [Fact]
+        public void Properties_CanBeOverwritten()
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator
+            {
+                Type = DangerIndicatorType.General,
+                Status = DangerIndicatorStatus.Safe,
+                LastUpdate = DateTime.MinValue
+            };
 
+            var newType = DangerIndicatorType.Corners;
+            var newStatus = DangerIndicatorStatus.Danger;
+            var newLastUpdate = DateTime.MaxValue;
+
+            // Act
+            dangerIndicator.Type = newType;
+            dangerIndicator.Status = newStatus;
+            dangerIndicator.LastUpdate = newLastUpdate;
+
+            // Assert
+            dangerIndicator.Type.Should().Be(newType);
+            dangerIndicator.Status.Should().Be(newStatus);
+            dangerIndicator.LastUpdate.Should().Be(newLastUpdate);
+        }
+
+        [Fact]
+        public void ObjectInitializer_ShouldSetAllProperties()
+        {
+            // Arrange
+            var expectedType = DangerIndicatorType.Cards;
+            var expectedStatus = DangerIndicatorStatus.Danger;
+            var expectedLastUpdate = new DateTime(2023, 12, 25, 18, 45, 30);
+
+            // Act
+            var dangerIndicator = new DangerIndicator
+            {
+                Type = expectedType,
+                Status = expectedStatus,
+                LastUpdate = expectedLastUpdate
+            };
+
+            // Assert
+            dangerIndicator.Type.Should().Be(expectedType);
+            dangerIndicator.Status.Should().Be(expectedStatus);
+            dangerIndicator.LastUpdate.Should().Be(expectedLastUpdate);
+        }
+
+        [Fact]
+        public void LastUpdate_WithMinValue_ShouldStoreCorrectly()
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator();
+
+            // Act
+            dangerIndicator.LastUpdate = DateTime.MinValue;
+
+            // Assert
+            dangerIndicator.LastUpdate.Should().Be(DateTime.MinValue);
+        }
+
+        [Fact]
+        public void LastUpdate_WithMaxValue_ShouldStoreCorrectly()
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator();
+
+            // Act
+            dangerIndicator.LastUpdate = DateTime.MaxValue;
+
+            // Assert
+            dangerIndicator.LastUpdate.Should().Be(DateTime.MaxValue);
+        }
+
+        [Fact]
+        public void DangerIndicator_ShouldSupportPropertyChaining()
+        {
+            // Arrange & Act
+            var dangerIndicator = new DangerIndicator();
+            dangerIndicator.Type = DangerIndicatorType.General;
+            dangerIndicator.Status = DangerIndicatorStatus.Safe;
+            dangerIndicator.LastUpdate = DateTime.Today;
+
+            // Assert
+            dangerIndicator.Type.Should().Be(DangerIndicatorType.General);
+            dangerIndicator.Status.Should().Be(DangerIndicatorStatus.Safe);
+            dangerIndicator.LastUpdate.Should().Be(DateTime.Today);
+        }
+
+        [Fact]
+        public void ToString_ShouldNotThrow()
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator
+            {
+                Type = DangerIndicatorType.Cards,
+                Status = DangerIndicatorStatus.Danger,
+                LastUpdate = DateTime.Now
+            };
+
+            // Act & Assert
+            var act = () => dangerIndicator.ToString();
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void GetHashCode_ShouldNotThrow()
+        {
+            // Arrange
+            var dangerIndicator = new DangerIndicator
+            {
+                Type = DangerIndicatorType.Corners,
+                Status = DangerIndicatorStatus.Safe,
+                LastUpdate = DateTime.UtcNow
+            };
+
+            // Act & Assert
+            var act = () => dangerIndicator.GetHashCode();
+            act.Should().NotThrow();
+        }
 
         [Fact]
         public void DangerIndicator_WithGeneralTypeSafeStatus_ShouldRepresentNormalCondition()
@@ -210,36 +311,6 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Livescore
             dangerIndicator.Status.Should().Be(status);
             dangerIndicator.LastUpdate.Should().Be(lastUpdate);
         }
-
-        [Fact]
-        public void DangerIndicator_WithMinDateTime_ShouldSetValue()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator();
-            var minDateTime = DateTime.MinValue;
-
-            // Act
-            dangerIndicator.LastUpdate = minDateTime;
-
-            // Assert
-            dangerIndicator.LastUpdate.Should().Be(minDateTime);
-        }
-
-        [Fact]
-        public void DangerIndicator_WithMaxDateTime_ShouldSetValue()
-        {
-            // Arrange
-            var dangerIndicator = new DangerIndicator();
-            var maxDateTime = DateTime.MaxValue;
-
-            // Act
-            dangerIndicator.LastUpdate = maxDateTime;
-
-            // Assert
-            dangerIndicator.LastUpdate.Should().Be(maxDateTime);
-        }
-
-
 
         [Fact]
         public void DangerIndicator_WithRecentUpdate_ShouldIndicateCurrentStatus()

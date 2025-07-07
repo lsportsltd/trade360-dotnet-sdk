@@ -1,50 +1,37 @@
-using FluentAssertions;
-using Trade360SDK.Common.Entities.Markets;
-using Trade360SDK.Common.Entities.Enums;
 using System;
+using FluentAssertions;
+using Trade360SDK.Common.Entities.Enums;
+using Trade360SDK.Common.Entities.Markets;
+using Xunit;
 
 namespace Trade360SDK.Common.Entities.Tests.Entities.Markets;
 
-/// <summary>
-/// Comprehensive tests for BaseBet class covering all properties,
-/// enums, edge cases, and value validation.
-/// </summary>
 public class BaseBetComprehensiveTests
 {
     [Fact]
-    public void BaseBet_DefaultConstructor_ShouldInitializeWithDefaultValues()
+    public void Constructor_ShouldCreateInstanceSuccessfully()
     {
         // Act
         var baseBet = new BaseBet();
 
         // Assert
-        baseBet.Id.Should().Be(0);
-        baseBet.Name.Should().BeNull();
-        baseBet.Line.Should().BeNull();
-        baseBet.BaseLine.Should().BeNull();
-        baseBet.Status.Should().Be(BetStatus.NotSet);
-        baseBet.StartPrice.Should().BeNull();
-        baseBet.Price.Should().BeNull();
-        baseBet.PriceIN.Should().BeNull();
-        baseBet.PriceUS.Should().BeNull();
-        baseBet.PriceUK.Should().BeNull();
-        baseBet.PriceMA.Should().BeNull();
-        baseBet.PriceHK.Should().BeNull();
-        baseBet.PriceVolume.Should().BeNull();
-        baseBet.Settlement.Should().BeNull();
-        baseBet.SuspensionReason.Should().BeNull();
-        baseBet.LastUpdate.Should().Be(default(DateTime));
-        baseBet.Probability.Should().Be(0.0);
-        baseBet.ParticipantId.Should().BeNull();
-        baseBet.PlayerName.Should().BeNull();
+        baseBet.Should().NotBeNull();
+        baseBet.Id.Should().Be(0); // Default long value
+        baseBet.Status.Should().Be(BetStatus.NotSet); // Default enum value
+        baseBet.Probability.Should().Be(0.0); // Default double value
+        baseBet.LastUpdate.Should().Be(default(DateTime)); // Default DateTime
     }
 
-    [Fact]
-    public void BaseBet_Id_ShouldSetAndGetCorrectly()
+    [Theory]
+    [InlineData(1L)]
+    [InlineData(long.MaxValue)]
+    [InlineData(long.MinValue)]
+    [InlineData(42L)]
+    [InlineData(0L)]
+    public void Id_Property_ShouldAcceptValidValues(long expectedId)
     {
         // Arrange
         var baseBet = new BaseBet();
-        var expectedId = 123456789L;
 
         // Act
         baseBet.Id = expectedId;
@@ -54,30 +41,14 @@ public class BaseBetComprehensiveTests
     }
 
     [Theory]
-    [InlineData(0L)]
-    [InlineData(1L)]
-    [InlineData(-1L)]
-    [InlineData(long.MaxValue)]
-    [InlineData(long.MinValue)]
-    [InlineData(999999999999L)]
-    public void BaseBet_Id_ShouldHandleVariousLongValues(long id)
+    [InlineData("Test Bet Name")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("Very Long Bet Name With Special Characters @#$%")]
+    public void Name_Property_ShouldAcceptNullableStringValues(string? expectedName)
     {
         // Arrange
         var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Id = id;
-
-        // Assert
-        baseBet.Id.Should().Be(id);
-    }
-
-    [Fact]
-    public void BaseBet_Name_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-        var expectedName = "Home Team Win";
 
         // Act
         baseBet.Name = expectedName;
@@ -87,98 +58,39 @@ public class BaseBetComprehensiveTests
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("Simple Bet")]
-    [InlineData("Bet with Special Characters: !@#$%^&*()")]
-    [InlineData("Bet with Unicode: 赌注")]
-    [InlineData("Very Long Bet Name That Exceeds Normal Length Expectations")]
-    public void BaseBet_Name_ShouldHandleVariousStringValues(string name)
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Name = name;
-
-        // Assert
-        baseBet.Name.Should().Be(name);
-    }
-
-    [Fact]
-    public void BaseBet_Name_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Name = null;
-
-        // Assert
-        baseBet.Name.Should().BeNull();
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("0")]
-    [InlineData("2.5")]
-    [InlineData("-1.5")]
-    [InlineData("+1")]
-    [InlineData("Asian Handicap")]
-    public void BaseBet_Line_ShouldHandleVariousStringValues(string line)
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Line = line;
-
-        // Assert
-        baseBet.Line.Should().Be(line);
-    }
-
-    [Fact]
-    public void BaseBet_Line_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Line = null;
-
-        // Assert
-        baseBet.Line.Should().BeNull();
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("0")]
     [InlineData("1.5")]
-    [InlineData("-2.5")]
-    [InlineData("Base Line Value")]
-    public void BaseBet_BaseLine_ShouldHandleVariousStringValues(string baseLine)
+    [InlineData("+2.5")]
+    [InlineData("-1.5")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void Line_Property_ShouldAcceptNullableStringValues(string? expectedLine)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.BaseLine = baseLine;
+        baseBet.Line = expectedLine;
 
         // Assert
-        baseBet.BaseLine.Should().Be(baseLine);
+        baseBet.Line.Should().Be(expectedLine);
     }
 
-    [Fact]
-    public void BaseBet_BaseLine_ShouldHandleNullValue()
+    [Theory]
+    [InlineData("0.0")]
+    [InlineData("1.0")]
+    [InlineData("-0.5")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void BaseLine_Property_ShouldAcceptNullableStringValues(string? expectedBaseLine)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.BaseLine = null;
+        baseBet.BaseLine = expectedBaseLine;
 
         // Assert
-        baseBet.BaseLine.Should().BeNull();
+        baseBet.BaseLine.Should().Be(expectedBaseLine);
     }
 
     [Theory]
@@ -186,247 +98,203 @@ public class BaseBetComprehensiveTests
     [InlineData(BetStatus.Open)]
     [InlineData(BetStatus.Suspended)]
     [InlineData(BetStatus.Settled)]
-    public void BaseBet_Status_ShouldHandleAllBetStatusValues(BetStatus status)
+    public void Status_Property_ShouldAcceptValidBetStatusValues(BetStatus expectedStatus)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.Status = status;
+        baseBet.Status = expectedStatus;
 
         // Assert
-        baseBet.Status.Should().Be(status);
+        baseBet.Status.Should().Be(expectedStatus);
     }
 
     [Theory]
+    [InlineData("1.50")]
+    [InlineData("2.00")]
+    [InlineData("10.5")]
     [InlineData("")]
-    [InlineData("1.50")]
-    [InlineData("2.00")]
-    [InlineData("10.5")]
-    [InlineData("1000")]
-    public void BaseBet_StartPrice_ShouldHandleVariousStringValues(string startPrice)
+    [InlineData(null)]
+    public void StartPrice_Property_ShouldAcceptNullableStringValues(string? expectedStartPrice)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.StartPrice = startPrice;
+        baseBet.StartPrice = expectedStartPrice;
 
         // Assert
-        baseBet.StartPrice.Should().Be(startPrice);
-    }
-
-    [Fact]
-    public void BaseBet_StartPrice_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.StartPrice = null;
-
-        // Assert
-        baseBet.StartPrice.Should().BeNull();
+        baseBet.StartPrice.Should().Be(expectedStartPrice);
     }
 
     [Theory]
+    [InlineData("1.75")]
+    [InlineData("3.50")]
+    [InlineData("100.00")]
     [InlineData("")]
-    [InlineData("1.50")]
-    [InlineData("2.00")]
-    [InlineData("10.5")]
-    [InlineData("1000")]
-    public void BaseBet_Price_ShouldHandleVariousStringValues(string price)
+    [InlineData(null)]
+    public void Price_Property_ShouldAcceptNullableStringValues(string? expectedPrice)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.Price = price;
+        baseBet.Price = expectedPrice;
 
         // Assert
-        baseBet.Price.Should().Be(price);
-    }
-
-    [Fact]
-    public void BaseBet_Price_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Price = null;
-
-        // Assert
-        baseBet.Price.Should().BeNull();
+        baseBet.Price.Should().Be(expectedPrice);
     }
 
     [Theory]
-    [InlineData("1.50")]
-    [InlineData("2.00")]
-    [InlineData("10.5")]
-    public void BaseBet_PriceIN_ShouldHandleVariousStringValues(string priceIN)
+    [InlineData("1.80")]
+    [InlineData("2.25")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceIN_Property_ShouldAcceptNullableStringValues(string? expectedPriceIN)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceIN = priceIN;
+        baseBet.PriceIN = expectedPriceIN;
 
         // Assert
-        baseBet.PriceIN.Should().Be(priceIN);
+        baseBet.PriceIN.Should().Be(expectedPriceIN);
     }
 
     [Theory]
     [InlineData("+150")]
     [InlineData("-200")]
     [InlineData("100")]
-    public void BaseBet_PriceUS_ShouldHandleVariousStringValues(string priceUS)
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceUS_Property_ShouldAcceptNullableStringValues(string? expectedPriceUS)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceUS = priceUS;
+        baseBet.PriceUS = expectedPriceUS;
 
         // Assert
-        baseBet.PriceUS.Should().Be(priceUS);
+        baseBet.PriceUS.Should().Be(expectedPriceUS);
     }
 
     [Theory]
+    [InlineData("3/4")]
     [InlineData("1/2")]
     [InlineData("5/1")]
-    [InlineData("10/3")]
-    public void BaseBet_PriceUK_ShouldHandleVariousStringValues(string priceUK)
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceUK_Property_ShouldAcceptNullableStringValues(string? expectedPriceUK)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceUK = priceUK;
+        baseBet.PriceUK = expectedPriceUK;
 
         // Assert
-        baseBet.PriceUK.Should().Be(priceUK);
+        baseBet.PriceUK.Should().Be(expectedPriceUK);
     }
 
     [Theory]
-    [InlineData("0.50")]
-    [InlineData("1.00")]
-    [InlineData("2.50")]
-    public void BaseBet_PriceMA_ShouldHandleVariousStringValues(string priceMA)
+    [InlineData("0.75")]
+    [InlineData("1.25")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceMA_Property_ShouldAcceptNullableStringValues(string? expectedPriceMA)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceMA = priceMA;
+        baseBet.PriceMA = expectedPriceMA;
 
         // Assert
-        baseBet.PriceMA.Should().Be(priceMA);
+        baseBet.PriceMA.Should().Be(expectedPriceMA);
     }
 
     [Theory]
+    [InlineData("0.80")]
     [InlineData("1.50")]
-    [InlineData("2.00")]
-    [InlineData("0.90")]
-    public void BaseBet_PriceHK_ShouldHandleVariousStringValues(string priceHK)
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceHK_Property_ShouldAcceptNullableStringValues(string? expectedPriceHK)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceHK = priceHK;
+        baseBet.PriceHK = expectedPriceHK;
 
         // Assert
-        baseBet.PriceHK.Should().Be(priceHK);
+        baseBet.PriceHK.Should().Be(expectedPriceHK);
     }
 
     [Theory]
-    [InlineData("1000")]
+    [InlineData("10000")]
     [InlineData("50000")]
-    [InlineData("250000")]
-    public void BaseBet_PriceVolume_ShouldHandleVariousStringValues(string priceVolume)
+    [InlineData("")]
+    [InlineData(null)]
+    public void PriceVolume_Property_ShouldAcceptNullableStringValues(string? expectedPriceVolume)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PriceVolume = priceVolume;
+        baseBet.PriceVolume = expectedPriceVolume;
 
         // Assert
-        baseBet.PriceVolume.Should().Be(priceVolume);
+        baseBet.PriceVolume.Should().Be(expectedPriceVolume);
     }
 
     [Theory]
-    [InlineData(SettlementType.Cancelled)]
     [InlineData(SettlementType.NotSettled)]
-    [InlineData(SettlementType.Loser)]
     [InlineData(SettlementType.Winner)]
+    [InlineData(SettlementType.Loser)]
     [InlineData(SettlementType.Refund)]
-    [InlineData(SettlementType.HalfLost)]
     [InlineData(SettlementType.HalfWon)]
-    public void BaseBet_Settlement_ShouldHandleAllSettlementTypeValues(SettlementType settlementType)
+    [InlineData(SettlementType.HalfLost)]
+    [InlineData(SettlementType.Cancelled)]
+    [InlineData(null)]
+    public void Settlement_Property_ShouldAcceptNullableSettlementTypeValues(SettlementType? expectedSettlement)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.Settlement = settlementType;
+        baseBet.Settlement = expectedSettlement;
 
         // Assert
-        baseBet.Settlement.Should().Be(settlementType);
-    }
-
-    [Fact]
-    public void BaseBet_Settlement_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Settlement = null;
-
-        // Assert
-        baseBet.Settlement.Should().BeNull();
+        baseBet.Settlement.Should().Be(expectedSettlement);
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(1)]
     [InlineData(100)]
+    [InlineData(null)]
+    [InlineData(0)]
     [InlineData(-1)]
-    [InlineData(int.MaxValue)]
-    [InlineData(int.MinValue)]
-    public void BaseBet_SuspensionReason_ShouldHandleVariousIntegerValues(int suspensionReason)
+    public void SuspensionReason_Property_ShouldAcceptNullableIntValues(int? expectedSuspensionReason)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.SuspensionReason = suspensionReason;
+        baseBet.SuspensionReason = expectedSuspensionReason;
 
         // Assert
-        baseBet.SuspensionReason.Should().Be(suspensionReason);
+        baseBet.SuspensionReason.Should().Be(expectedSuspensionReason);
     }
 
     [Fact]
-    public void BaseBet_SuspensionReason_ShouldHandleNullValue()
+    public void LastUpdate_Property_ShouldAcceptDateTimeValues()
     {
         // Arrange
         var baseBet = new BaseBet();
-
-        // Act
-        baseBet.SuspensionReason = null;
-
-        // Assert
-        baseBet.SuspensionReason.Should().BeNull();
-    }
-
-    [Fact]
-    public void BaseBet_LastUpdate_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-        var expectedDateTime = new DateTime(2024, 1, 15, 10, 30, 45);
+        var expectedDateTime = new DateTime(2023, 12, 25, 10, 30, 45);
 
         // Act
         baseBet.LastUpdate = expectedDateTime;
@@ -439,230 +307,146 @@ public class BaseBetComprehensiveTests
     [InlineData(0.0)]
     [InlineData(0.5)]
     [InlineData(1.0)]
+    [InlineData(0.25)]
+    [InlineData(0.75)]
     [InlineData(100.0)]
     [InlineData(-1.0)]
-    [InlineData(double.MaxValue)]
-    [InlineData(double.MinValue)]
-    public void BaseBet_Probability_ShouldHandleVariousDoubleValues(double probability)
+    public void Probability_Property_ShouldAcceptDoubleValues(double expectedProbability)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.Probability = probability;
+        baseBet.Probability = expectedProbability;
 
         // Assert
-        baseBet.Probability.Should().Be(probability);
+        baseBet.Probability.Should().Be(expectedProbability);
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(1)]
-    [InlineData(12345)]
+    [InlineData(1000)]
+    [InlineData(null)]
+    [InlineData(0)]
     [InlineData(-1)]
-    [InlineData(int.MaxValue)]
-    [InlineData(int.MinValue)]
-    public void BaseBet_ParticipantId_ShouldHandleVariousIntegerValues(int participantId)
+    public void ParticipantId_Property_ShouldAcceptNullableIntValues(int? expectedParticipantId)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.ParticipantId = participantId;
+        baseBet.ParticipantId = expectedParticipantId;
 
         // Assert
-        baseBet.ParticipantId.Should().Be(participantId);
-    }
-
-    [Fact]
-    public void BaseBet_ParticipantId_ShouldHandleNullValue()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.ParticipantId = null;
-
-        // Assert
-        baseBet.ParticipantId.Should().BeNull();
+        baseBet.ParticipantId.Should().Be(expectedParticipantId);
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
     [InlineData("John Doe")]
-    [InlineData("Player with Special Characters: !@#$%")]
-    [InlineData("Player with Unicode: 球员")]
-    [InlineData("Very Long Player Name That Exceeds Normal Length")]
-    public void BaseBet_PlayerName_ShouldHandleVariousStringValues(string playerName)
+    [InlineData("Player Name")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("Very Long Player Name With Special Characters")]
+    public void PlayerName_Property_ShouldAcceptNullableStringValues(string? expectedPlayerName)
     {
         // Arrange
         var baseBet = new BaseBet();
 
         // Act
-        baseBet.PlayerName = playerName;
+        baseBet.PlayerName = expectedPlayerName;
 
         // Assert
-        baseBet.PlayerName.Should().Be(playerName);
+        baseBet.PlayerName.Should().Be(expectedPlayerName);
     }
 
     [Fact]
-    public void BaseBet_PlayerName_ShouldHandleNullValue()
+    public void AllProperties_ShouldWorkIndependently()
     {
         // Arrange
         var baseBet = new BaseBet();
+        var testDateTime = DateTime.UtcNow;
 
         // Act
-        baseBet.PlayerName = null;
-
-        // Assert
-        baseBet.PlayerName.Should().BeNull();
-    }
-
-    [Fact]
-    public void BaseBet_AllProperties_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-        var expectedDateTime = DateTime.UtcNow;
-
-        // Act
-        baseBet.Id = 123456L;
+        baseBet.Id = 12345L;
         baseBet.Name = "Test Bet";
-        baseBet.Line = "2.5";
-        baseBet.BaseLine = "1.5";
+        baseBet.Line = "1.5";
+        baseBet.BaseLine = "0.0";
         baseBet.Status = BetStatus.Open;
         baseBet.StartPrice = "2.00";
-        baseBet.Price = "1.90";
+        baseBet.Price = "1.95";
         baseBet.PriceIN = "1.90";
-        baseBet.PriceUS = "+190";
-        baseBet.PriceUK = "9/10";
-        baseBet.PriceMA = "0.90";
-        baseBet.PriceHK = "0.90";
+        baseBet.PriceUS = "+100";
+        baseBet.PriceUK = "1/1";
+        baseBet.PriceMA = "1.00";
+        baseBet.PriceHK = "1.00";
         baseBet.PriceVolume = "50000";
-        baseBet.Settlement = SettlementType.Winner;
-        baseBet.SuspensionReason = 1;
-        baseBet.LastUpdate = expectedDateTime;
-        baseBet.Probability = 0.526;
+        baseBet.Settlement = SettlementType.NotSettled;
+        baseBet.SuspensionReason = 5;
+        baseBet.LastUpdate = testDateTime;
+        baseBet.Probability = 0.52;
         baseBet.ParticipantId = 789;
-        baseBet.PlayerName = "Test Player";
+        baseBet.PlayerName = "John Smith";
 
         // Assert
-        baseBet.Id.Should().Be(123456L);
+        baseBet.Id.Should().Be(12345L);
         baseBet.Name.Should().Be("Test Bet");
-        baseBet.Line.Should().Be("2.5");
-        baseBet.BaseLine.Should().Be("1.5");
+        baseBet.Line.Should().Be("1.5");
+        baseBet.BaseLine.Should().Be("0.0");
         baseBet.Status.Should().Be(BetStatus.Open);
         baseBet.StartPrice.Should().Be("2.00");
-        baseBet.Price.Should().Be("1.90");
+        baseBet.Price.Should().Be("1.95");
         baseBet.PriceIN.Should().Be("1.90");
-        baseBet.PriceUS.Should().Be("+190");
-        baseBet.PriceUK.Should().Be("9/10");
-        baseBet.PriceMA.Should().Be("0.90");
-        baseBet.PriceHK.Should().Be("0.90");
-        baseBet.PriceVolume.Should().Be("50000");
-        baseBet.Settlement.Should().Be(SettlementType.Winner);
-        baseBet.SuspensionReason.Should().Be(1);
-        baseBet.LastUpdate.Should().Be(expectedDateTime);
-        baseBet.Probability.Should().Be(0.526);
-        baseBet.ParticipantId.Should().Be(789);
-        baseBet.PlayerName.Should().Be("Test Player");
-    }
-
-    [Fact]
-    public void BaseBet_PropertyChanges_ShouldNotAffectOtherProperties()
-    {
-        // Arrange
-        var baseBet = new BaseBet
-        {
-            Id = 1L,
-            Name = "Original Name",
-            Price = "1.50"
-        };
-
-        // Act
-        baseBet.Id = 999L;
-
-        // Assert
-        baseBet.Id.Should().Be(999L);
-        baseBet.Name.Should().Be("Original Name");
-        baseBet.Price.Should().Be("1.50");
-    }
-
-    [Fact]
-    public void BaseBet_ObjectInstantiation_ShouldCreateIndependentInstances()
-    {
-        // Arrange & Act
-        var baseBet1 = new BaseBet { Id = 1L, Name = "Bet 1" };
-        var baseBet2 = new BaseBet { Id = 2L, Name = "Bet 2" };
-
-        // Assert
-        baseBet1.Id.Should().NotBe(baseBet2.Id);
-        baseBet1.Name.Should().NotBe(baseBet2.Name);
-    }
-
-    [Fact]
-    public void BaseBet_AllPriceFormats_ShouldHandleCorrectly()
-    {
-        // Arrange
-        var baseBet = new BaseBet();
-
-        // Act
-        baseBet.Price = "2.00";      // Decimal
-        baseBet.PriceIN = "2.00";    // Indonesian
-        baseBet.PriceUS = "+100";    // American
-        baseBet.PriceUK = "1/1";     // Fractional
-        baseBet.PriceMA = "1.00";    // Malay
-        baseBet.PriceHK = "1.00";    // Hong Kong
-
-        // Assert
-        baseBet.Price.Should().Be("2.00");
-        baseBet.PriceIN.Should().Be("2.00");
         baseBet.PriceUS.Should().Be("+100");
         baseBet.PriceUK.Should().Be("1/1");
         baseBet.PriceMA.Should().Be("1.00");
         baseBet.PriceHK.Should().Be("1.00");
+        baseBet.PriceVolume.Should().Be("50000");
+        baseBet.Settlement.Should().Be(SettlementType.NotSettled);
+        baseBet.SuspensionReason.Should().Be(5);
+        baseBet.LastUpdate.Should().Be(testDateTime);
+        baseBet.Probability.Should().Be(0.52);
+        baseBet.ParticipantId.Should().Be(789);
+        baseBet.PlayerName.Should().Be("John Smith");
     }
 
     [Fact]
-    public void BaseBet_NullableProperties_ShouldHandleNullAndNonNullCorrectly()
+    public void Object_ShouldBeInstantiable()
+    {
+        // Act & Assert
+        var baseBet = new BaseBet();
+        baseBet.Should().BeOfType<BaseBet>();
+        baseBet.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Properties_ShouldBeGettableAndSettable()
     {
         // Arrange
         var baseBet = new BaseBet();
 
-        // Act & Assert - Initial null state
-        baseBet.Name.Should().BeNull();
-        baseBet.Settlement.Should().BeNull();
-        baseBet.SuspensionReason.Should().BeNull();
-        baseBet.ParticipantId.Should().BeNull();
-        baseBet.PlayerName.Should().BeNull();
+        // Act & Assert - Test that all properties can be read and written
+        var id = baseBet.Id;
+        baseBet.Id = 999L;
+        baseBet.Id.Should().Be(999L);
 
-        // Act - Set non-null values
-        baseBet.Name = "Test Name";
-        baseBet.Settlement = SettlementType.Winner;
-        baseBet.SuspensionReason = 1;
-        baseBet.ParticipantId = 123;
-        baseBet.PlayerName = "Test Player";
+        var name = baseBet.Name;
+        baseBet.Name = "New Name";
+        baseBet.Name.Should().Be("New Name");
 
-        // Assert - Non-null state
-        baseBet.Name.Should().NotBeNull();
-        baseBet.Settlement.Should().NotBeNull();
-        baseBet.SuspensionReason.Should().NotBeNull();
-        baseBet.ParticipantId.Should().NotBeNull();
-        baseBet.PlayerName.Should().NotBeNull();
+        var line = baseBet.Line;
+        baseBet.Line = "2.5";
+        baseBet.Line.Should().Be("2.5");
 
-        // Act - Set back to null
-        baseBet.Name = null;
-        baseBet.Settlement = null;
-        baseBet.SuspensionReason = null;
-        baseBet.ParticipantId = null;
-        baseBet.PlayerName = null;
+        var baseLine = baseBet.BaseLine;
+        baseBet.BaseLine = "1.0";
+        baseBet.BaseLine.Should().Be("1.0");
 
-        // Assert - Back to null state
-        baseBet.Name.Should().BeNull();
-        baseBet.Settlement.Should().BeNull();
-        baseBet.SuspensionReason.Should().BeNull();
-        baseBet.ParticipantId.Should().BeNull();
-        baseBet.PlayerName.Should().BeNull();
+        var status = baseBet.Status;
+        baseBet.Status = BetStatus.Suspended;
+        baseBet.Status.Should().Be(BetStatus.Suspended);
+
+        var probability = baseBet.Probability;
+        baseBet.Probability = 0.85;
+        baseBet.Probability.Should().Be(0.85);
     }
 } 

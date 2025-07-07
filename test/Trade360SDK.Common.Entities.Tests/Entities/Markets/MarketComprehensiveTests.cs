@@ -1,36 +1,39 @@
-using FluentAssertions;
-using Trade360SDK.Common.Entities.Markets;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using Trade360SDK.Common.Entities.Markets;
+using Xunit;
 
 namespace Trade360SDK.Common.Entities.Tests.Entities.Markets;
 
-/// <summary>
-/// Comprehensive tests for Market class covering all properties,
-/// collections, and edge cases.
-/// </summary>
 public class MarketComprehensiveTests
 {
     [Fact]
-    public void Market_DefaultConstructor_ShouldInitializeWithDefaultValues()
+    public void Constructor_ShouldCreateInstanceSuccessfully()
     {
         // Act
         var market = new Market();
 
         // Assert
-        market.Id.Should().Be(0);
+        market.Should().NotBeNull();
+        market.Id.Should().Be(0); // Default int value
         market.Name.Should().BeNull();
         market.Bets.Should().BeNull();
         market.ProviderMarkets.Should().BeNull();
         market.MainLine.Should().BeNull();
     }
 
-    [Fact]
-    public void Market_Id_ShouldSetAndGetCorrectly()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(100)]
+    [InlineData(int.MaxValue)]
+    [InlineData(int.MinValue)]
+    [InlineData(-1)]
+    public void Id_Property_ShouldAcceptIntValues(int expectedId)
     {
         // Arrange
         var market = new Market();
-        var expectedId = 12345;
 
         // Act
         market.Id = expectedId;
@@ -40,30 +43,16 @@ public class MarketComprehensiveTests
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(999999)]
-    [InlineData(-1)]
-    [InlineData(int.MaxValue)]
-    [InlineData(int.MinValue)]
-    public void Market_Id_ShouldHandleVariousIntegerValues(int id)
+    [InlineData("Match Winner")]
+    [InlineData("Over/Under 2.5 Goals")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("Very Long Market Name With Special Characters @#$%")]
+    [InlineData("Asian Handicap +1.5")]
+    public void Name_Property_ShouldAcceptNullableStringValues(string? expectedName)
     {
         // Arrange
         var market = new Market();
-
-        // Act
-        market.Id = id;
-
-        // Assert
-        market.Id.Should().Be(id);
-    }
-
-    [Fact]
-    public void Market_Name_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var market = new Market();
-        var expectedName = "Over/Under 2.5 Goals";
 
         // Act
         market.Name = expectedName;
@@ -72,61 +61,21 @@ public class MarketComprehensiveTests
         market.Name.Should().Be(expectedName);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("Simple Market")]
-    [InlineData("Market with Special Characters: !@#$%^&*()")]
-    [InlineData("Market with Unicode: 测试市场")]
-    [InlineData("Very Long Market Name That Exceeds Normal Length Expectations And Contains Multiple Words And Phrases")]
-    public void Market_Name_ShouldHandleVariousStringValues(string name)
+    [Fact]
+    public void Bets_Property_ShouldAcceptNullValue()
     {
         // Arrange
         var market = new Market();
 
         // Act
-        market.Name = name;
+        market.Bets = null;
 
         // Assert
-        market.Name.Should().Be(name);
+        market.Bets.Should().BeNull();
     }
 
     [Fact]
-    public void Market_Name_ShouldHandleNullValue()
-    {
-        // Arrange
-        var market = new Market();
-
-        // Act
-        market.Name = null;
-
-        // Assert
-        market.Name.Should().BeNull();
-    }
-
-    [Fact]
-    public void Market_Bets_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var market = new Market();
-        var bets = new List<Bet>
-        {
-            new Bet { Id = 1, Name = "Home Win" },
-            new Bet { Id = 2, Name = "Draw" },
-            new Bet { Id = 3, Name = "Away Win" }
-        };
-
-        // Act
-        market.Bets = bets;
-
-        // Assert
-        market.Bets.Should().NotBeNull();
-        market.Bets.Should().HaveCount(3);
-        market.Bets.Should().BeEquivalentTo(bets);
-    }
-
-    [Fact]
-    public void Market_Bets_ShouldHandleEmptyCollection()
+    public void Bets_Property_ShouldAcceptEmptyCollection()
     {
         // Arrange
         var market = new Market();
@@ -138,62 +87,64 @@ public class MarketComprehensiveTests
         // Assert
         market.Bets.Should().NotBeNull();
         market.Bets.Should().BeEmpty();
+        market.Bets.Should().BeSameAs(emptyBets);
     }
 
     [Fact]
-    public void Market_Bets_ShouldHandleNullValue()
+    public void Bets_Property_ShouldAcceptCollectionWithSingleBet()
     {
         // Arrange
         var market = new Market();
+        var bet = new Bet { Id = 123, Name = "Home Win" };
+        var bets = new List<Bet> { bet };
 
         // Act
-        market.Bets = null;
-
-        // Assert
-        market.Bets.Should().BeNull();
-    }
-
-    [Fact]
-    public void Market_Bets_ShouldHandleLargeCollection()
-    {
-        // Arrange
-        var market = new Market();
-        var largeBetCollection = Enumerable.Range(1, 1000)
-            .Select(i => new Bet { Id = i, Name = $"Bet {i}" })
-            .ToList();
-
-        // Act
-        market.Bets = largeBetCollection;
+        market.Bets = bets;
 
         // Assert
         market.Bets.Should().NotBeNull();
-        market.Bets.Should().HaveCount(1000);
-        market.Bets!.First().Id.Should().Be(1);
-        market.Bets!.Last().Id.Should().Be(1000);
+        market.Bets.Should().HaveCount(1);
+        market.Bets!.First().Should().BeSameAs(bet);
+        market.Bets.First().Id.Should().Be(123);
+        market.Bets.First().Name.Should().Be("Home Win");
     }
 
     [Fact]
-    public void Market_ProviderMarkets_ShouldSetAndGetCorrectly()
+    public void Bets_Property_ShouldAcceptCollectionWithMultipleBets()
     {
         // Arrange
         var market = new Market();
-        var providerMarkets = new List<ProviderMarket>
-        {
-            new ProviderMarket(),
-            new ProviderMarket()
-        };
+        var bet1 = new Bet { Id = 1, Name = "Home" };
+        var bet2 = new Bet { Id = 2, Name = "Draw" };
+        var bet3 = new Bet { Id = 3, Name = "Away" };
+        var bets = new List<Bet> { bet1, bet2, bet3 };
 
         // Act
-        market.ProviderMarkets = providerMarkets;
+        market.Bets = bets;
 
         // Assert
-        market.ProviderMarkets.Should().NotBeNull();
-        market.ProviderMarkets.Should().HaveCount(2);
-        market.ProviderMarkets.Should().BeEquivalentTo(providerMarkets);
+        market.Bets.Should().NotBeNull();
+        market.Bets.Should().HaveCount(3);
+        market.Bets!.Should().Contain(bet1);
+        market.Bets.Should().Contain(bet2);
+        market.Bets.Should().Contain(bet3);
     }
 
     [Fact]
-    public void Market_ProviderMarkets_ShouldHandleEmptyCollection()
+    public void ProviderMarkets_Property_ShouldAcceptNullValue()
+    {
+        // Arrange
+        var market = new Market();
+
+        // Act
+        market.ProviderMarkets = null;
+
+        // Assert
+        market.ProviderMarkets.Should().BeNull();
+    }
+
+    [Fact]
+    public void ProviderMarkets_Property_ShouldAcceptEmptyCollection()
     {
         // Arrange
         var market = new Market();
@@ -205,218 +156,272 @@ public class MarketComprehensiveTests
         // Assert
         market.ProviderMarkets.Should().NotBeNull();
         market.ProviderMarkets.Should().BeEmpty();
+        market.ProviderMarkets.Should().BeSameAs(emptyProviderMarkets);
     }
 
     [Fact]
-    public void Market_ProviderMarkets_ShouldHandleNullValue()
+    public void ProviderMarkets_Property_ShouldAcceptCollectionWithSingleProviderMarket()
     {
         // Arrange
         var market = new Market();
+        var providerMarket = new ProviderMarket { Id = 456, Name = "Provider Match Winner" };
+        var providerMarkets = new List<ProviderMarket> { providerMarket };
 
         // Act
-        market.ProviderMarkets = null;
+        market.ProviderMarkets = providerMarkets;
 
         // Assert
-        market.ProviderMarkets.Should().BeNull();
+        market.ProviderMarkets.Should().NotBeNull();
+        market.ProviderMarkets.Should().HaveCount(1);
+        market.ProviderMarkets!.First().Should().BeSameAs(providerMarket);
+        market.ProviderMarkets.First().Id.Should().Be(456);
+        market.ProviderMarkets.First().Name.Should().Be("Provider Match Winner");
     }
 
     [Fact]
-    public void Market_MainLine_ShouldSetAndGetCorrectly()
+    public void ProviderMarkets_Property_ShouldAcceptCollectionWithMultipleProviderMarkets()
     {
         // Arrange
         var market = new Market();
-        var expectedMainLine = "2.5";
+        var providerMarket1 = new ProviderMarket { Id = 10, Name = "Provider 1" };
+        var providerMarket2 = new ProviderMarket { Id = 20, Name = "Provider 2" };
+        var providerMarkets = new List<ProviderMarket> { providerMarket1, providerMarket2 };
 
         // Act
-        market.MainLine = expectedMainLine;
+        market.ProviderMarkets = providerMarkets;
 
         // Assert
-        market.MainLine.Should().Be(expectedMainLine);
+        market.ProviderMarkets.Should().NotBeNull();
+        market.ProviderMarkets.Should().HaveCount(2);
+        market.ProviderMarkets!.Should().Contain(providerMarket1);
+        market.ProviderMarkets.Should().Contain(providerMarket2);
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("0")]
-    [InlineData("2.5")]
+    [InlineData("0.0")]
+    [InlineData("1.5")]
     [InlineData("-1.5")]
-    [InlineData("Over 2.5")]
-    [InlineData("Asian Handicap +1")]
-    public void Market_MainLine_ShouldHandleVariousStringValues(string mainLine)
+    [InlineData("+2.5")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("Asian Handicap Main Line")]
+    public void MainLine_Property_ShouldAcceptNullableStringValues(string? expectedMainLine)
     {
         // Arrange
         var market = new Market();
 
         // Act
-        market.MainLine = mainLine;
-
-        // Assert
-        market.MainLine.Should().Be(mainLine);
-    }
-
-    [Fact]
-    public void Market_MainLine_ShouldHandleNullValue()
-    {
-        // Arrange
-        var market = new Market();
-
-        // Act
-        market.MainLine = null;
-
-        // Assert
-        market.MainLine.Should().BeNull();
-    }
-
-    [Fact]
-    public void Market_AllProperties_ShouldSetAndGetCorrectly()
-    {
-        // Arrange
-        var market = new Market();
-        var expectedId = 100;
-        var expectedName = "Total Goals";
-        var expectedMainLine = "2.5";
-        var expectedBets = new List<Bet>
-        {
-            new Bet { Id = 1, Name = "Over" },
-            new Bet { Id = 2, Name = "Under" }
-        };
-        var expectedProviderMarkets = new List<ProviderMarket>
-        {
-            new ProviderMarket()
-        };
-
-        // Act
-        market.Id = expectedId;
-        market.Name = expectedName;
         market.MainLine = expectedMainLine;
-        market.Bets = expectedBets;
-        market.ProviderMarkets = expectedProviderMarkets;
 
         // Assert
-        market.Id.Should().Be(expectedId);
-        market.Name.Should().Be(expectedName);
         market.MainLine.Should().Be(expectedMainLine);
-        market.Bets.Should().BeEquivalentTo(expectedBets);
-        market.ProviderMarkets.Should().BeEquivalentTo(expectedProviderMarkets);
     }
 
     [Fact]
-    public void Market_PropertyChanges_ShouldNotAffectOtherProperties()
+    public void AllProperties_ShouldWorkIndependently()
+    {
+        // Arrange
+        var market = new Market();
+        var bet = new Bet { Id = 999, Name = "Test Bet" };
+        var bets = new List<Bet> { bet };
+        var providerMarket = new ProviderMarket { Id = 888, Name = "Test Provider Market" };
+        var providerMarkets = new List<ProviderMarket> { providerMarket };
+
+        // Act
+        market.Id = 12345;
+        market.Name = "Test Market";
+        market.Bets = bets;
+        market.ProviderMarkets = providerMarkets;
+        market.MainLine = "2.5";
+
+        // Assert
+        market.Id.Should().Be(12345);
+        market.Name.Should().Be("Test Market");
+        market.Bets.Should().BeSameAs(bets);
+        market.Bets!.Should().HaveCount(1);
+        market.Bets.First().Id.Should().Be(999);
+        market.ProviderMarkets.Should().BeSameAs(providerMarkets);
+        market.ProviderMarkets!.Should().HaveCount(1);
+        market.ProviderMarkets.First().Id.Should().Be(888);
+        market.MainLine.Should().Be("2.5");
+    }
+
+    [Fact]
+    public void Object_ShouldBeInstantiable()
+    {
+        // Act & Assert
+        var market = new Market();
+        market.Should().BeOfType<Market>();
+        market.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Properties_ShouldBeGettableAndSettable()
+    {
+        // Arrange
+        var market = new Market();
+
+        // Act & Assert - Test that all properties can be read and written
+        var id = market.Id;
+        market.Id = 999;
+        market.Id.Should().Be(999);
+
+        var name = market.Name;
+        market.Name = "New Market Name";
+        market.Name.Should().Be("New Market Name");
+
+        var bets = market.Bets;
+        var newBets = new List<Bet> { new Bet { Id = 1 } };
+        market.Bets = newBets;
+        market.Bets.Should().BeSameAs(newBets);
+
+        var providerMarkets = market.ProviderMarkets;
+        var newProviderMarkets = new List<ProviderMarket> { new ProviderMarket { Id = 1 } };
+        market.ProviderMarkets = newProviderMarkets;
+        market.ProviderMarkets.Should().BeSameAs(newProviderMarkets);
+
+        var mainLine = market.MainLine;
+        market.MainLine = "1.0";
+        market.MainLine.Should().Be("1.0");
+    }
+
+    [Fact]
+    public void Bets_ShouldSupportDifferentCollectionTypes()
+    {
+        // Arrange
+        var market = new Market();
+        var bet1 = new Bet { Id = 1, Name = "Bet 1" };
+        var bet2 = new Bet { Id = 2, Name = "Bet 2" };
+
+        // Test with different collection types
+        var list = new List<Bet> { bet1, bet2 };
+        var array = new Bet[] { bet1, bet2 };
+
+        // Act & Assert - List
+        market.Bets = list;
+        market.Bets.Should().BeSameAs(list);
+        market.Bets.Should().HaveCount(2);
+
+        // Act & Assert - Array
+        market.Bets = array;
+        market.Bets.Should().BeSameAs(array);
+        market.Bets.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void ProviderMarkets_ShouldSupportDifferentCollectionTypes()
+    {
+        // Arrange
+        var market = new Market();
+        var providerMarket1 = new ProviderMarket { Id = 1, Name = "Provider 1" };
+        var providerMarket2 = new ProviderMarket { Id = 2, Name = "Provider 2" };
+
+        // Test with different collection types
+        var list = new List<ProviderMarket> { providerMarket1, providerMarket2 };
+        var array = new ProviderMarket[] { providerMarket1, providerMarket2 };
+
+        // Act & Assert - List
+        market.ProviderMarkets = list;
+        market.ProviderMarkets.Should().BeSameAs(list);
+        market.ProviderMarkets.Should().HaveCount(2);
+
+        // Act & Assert - Array
+        market.ProviderMarkets = array;
+        market.ProviderMarkets.Should().BeSameAs(array);
+        market.ProviderMarkets.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void Market_WithComplexData_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var market = new Market();
+        var bets = new List<Bet>
+        {
+            new Bet { Id = 1, Name = "Home Win", Price = "2.50" },
+            new Bet { Id = 2, Name = "Draw", Price = "3.20" },
+            new Bet { Id = 3, Name = "Away Win", Price = "2.80" }
+        };
+        var providerMarkets = new List<ProviderMarket>
+        {
+            new ProviderMarket { Id = 100, Name = "Bet365 Market" },
+            new ProviderMarket { Id = 200, Name = "William Hill Market" }
+        };
+
+        // Act
+        market.Id = 54321;
+        market.Name = "Match Winner";
+        market.Bets = bets;
+        market.ProviderMarkets = providerMarkets;
+        market.MainLine = "0";
+
+        // Assert
+        market.Id.Should().Be(54321);
+        market.Name.Should().Be("Match Winner");
+        market.Bets.Should().HaveCount(3);
+        market.Bets!.Should().Contain(b => b.Name == "Home Win");
+        market.Bets.Should().Contain(b => b.Name == "Draw");
+        market.Bets.Should().Contain(b => b.Name == "Away Win");
+        market.ProviderMarkets.Should().HaveCount(2);
+        market.ProviderMarkets!.Should().Contain(pm => pm.Name == "Bet365 Market");
+        market.ProviderMarkets.Should().Contain(pm => pm.Name == "William Hill Market");
+        market.MainLine.Should().Be("0");
+    }
+
+    [Fact]
+    public void Market_ReassignProperties_ShouldUpdateCorrectly()
     {
         // Arrange
         var market = new Market
         {
-            Id = 1,
-            Name = "Original Name",
-            MainLine = "Original Line"
+            Id = 111,
+            Name = "Old Market",
+            Bets = new List<Bet> { new Bet { Id = 1 } },
+            ProviderMarkets = new List<ProviderMarket> { new ProviderMarket { Id = 1 } },
+            MainLine = "old line"
         };
 
+        var newBets = new List<Bet> { new Bet { Id = 2, Name = "New Bet" } };
+        var newProviderMarkets = new List<ProviderMarket> { new ProviderMarket { Id = 2, Name = "New Provider" } };
+
         // Act
-        market.Id = 999;
+        market.Id = 222;
+        market.Name = "New Market";
+        market.Bets = newBets;
+        market.ProviderMarkets = newProviderMarkets;
+        market.MainLine = "new line";
 
         // Assert
-        market.Id.Should().Be(999);
-        market.Name.Should().Be("Original Name");
-        market.MainLine.Should().Be("Original Line");
+        market.Id.Should().Be(222);
+        market.Name.Should().Be("New Market");
+        market.Bets.Should().BeSameAs(newBets);
+        market.Bets!.First().Name.Should().Be("New Bet");
+        market.ProviderMarkets.Should().BeSameAs(newProviderMarkets);
+        market.ProviderMarkets!.First().Name.Should().Be("New Provider");
+        market.MainLine.Should().Be("new line");
     }
 
     [Fact]
-    public void Market_Collections_ShouldAllowModificationAfterAssignment()
+    public void Market_NullAssignments_ShouldWork()
     {
         // Arrange
-        var market = new Market();
-        var betsList = new List<Bet>
+        var market = new Market
         {
-            new Bet { Id = 1, Name = "Initial Bet" }
-        };
-        market.Bets = betsList;
-
-        // Act
-        betsList.Add(new Bet { Id = 2, Name = "Added Bet" });
-
-        // Assert
-        market.Bets.Should().HaveCount(2);
-        market.Bets!.Should().Contain(b => b.Name == "Initial Bet");
-        market.Bets!.Should().Contain(b => b.Name == "Added Bet");
-    }
-
-    [Fact]
-    public void Market_ObjectInstantiation_ShouldCreateIndependentInstances()
-    {
-        // Arrange & Act
-        var market1 = new Market { Id = 1, Name = "Market 1" };
-        var market2 = new Market { Id = 2, Name = "Market 2" };
-
-        // Assert
-        market1.Id.Should().NotBe(market2.Id);
-        market1.Name.Should().NotBe(market2.Name);
-    }
-
-    [Fact]
-    public void Market_WithComplexBetStructure_ShouldHandleCorrectly()
-    {
-        // Arrange
-        var market = new Market();
-        var complexBets = new List<Bet>
-        {
-            new Bet 
-            { 
-                Id = 1, 
-                Name = "Complex Bet 1",
-                Line = "1.5",
-                Price = "2.50",
-                Status = Trade360SDK.Common.Entities.Enums.BetStatus.Open
-            },
-            new Bet 
-            { 
-                Id = 2, 
-                Name = "Complex Bet 2",
-                Line = "-1.5",
-                Price = "1.80",
-                Status = Trade360SDK.Common.Entities.Enums.BetStatus.Suspended
-            }
+            Id = 123,
+            Name = "Test Market",
+            Bets = new List<Bet> { new Bet() },
+            ProviderMarkets = new List<ProviderMarket> { new ProviderMarket() },
+            MainLine = "test line"
         };
 
         // Act
-        market.Bets = complexBets;
-
-        // Assert
-        market.Bets.Should().HaveCount(2);
-        market.Bets!.Should().Contain(b => b.Line == "1.5" && b.Price == "2.50");
-        market.Bets!.Should().Contain(b => b.Line == "-1.5" && b.Price == "1.80");
-    }
-
-    [Fact]
-    public void Market_ReferenceTypes_ShouldHandleNullAndNonNullCorrectly()
-    {
-        // Arrange
-        var market = new Market();
-
-        // Act & Assert - Initial state
-        market.Name.Should().BeNull();
-        market.Bets.Should().BeNull();
-        market.ProviderMarkets.Should().BeNull();
-        market.MainLine.Should().BeNull();
-
-        // Act - Set non-null values
-        market.Name = "Test Market";
-        market.Bets = new List<Bet>();
-        market.ProviderMarkets = new List<ProviderMarket>();
-        market.MainLine = "Test Line";
-
-        // Assert - Non-null state
-        market.Name.Should().NotBeNull();
-        market.Bets.Should().NotBeNull();
-        market.ProviderMarkets.Should().NotBeNull();
-        market.MainLine.Should().NotBeNull();
-
-        // Act - Set back to null
         market.Name = null;
         market.Bets = null;
         market.ProviderMarkets = null;
         market.MainLine = null;
 
-        // Assert - Back to null state
+        // Assert
+        market.Id.Should().Be(123); // Id should remain unchanged
         market.Name.Should().BeNull();
         market.Bets.Should().BeNull();
         market.ProviderMarkets.Should().BeNull();

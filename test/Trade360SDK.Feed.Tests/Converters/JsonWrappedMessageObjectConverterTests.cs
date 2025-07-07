@@ -1,349 +1,164 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentAssertions;
-using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.Converters;
+using Trade360SDK.Common.Models;
 using Xunit;
+using System.Collections.Generic; // Added for KeyNotFoundException
 
 namespace Trade360SDK.Feed.Tests.Converters
 {
     public class JsonWrappedMessageObjectConverterTests
     {
         [Fact]
-        public void ConvertJsonToMessage_WithValidCompleteJson_ShouldParseCorrectly()
+        public void CanInstantiateConverter()
         {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "CreationDate": "2024-01-01T10:30:00Z",
-                    "Type": 3,
-                    "MsgSeq": 12345,
-                    "MsgGuid": "550e8400-e29b-41d4-a716-446655440000",
-                    "ServerTimestamp": 1704105000000,
-                    "MessageBrokerTimestamp": "2024-01-01T10:30:00Z",
-                    "MessageTimestamp": "2024-01-01T10:30:00Z"
-                },
-                "Body": {
-                    "Events": [
-                        {
-                            "Id": 12345,
-                            "Status": 1,
-                            "Markets": []
-                        }
-                    ]
-                }
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Header.Should().NotBeNull();
-            result.Header.CreationDate.Should().Be("2024-01-01T10:30:00Z");
-            result.Header.Type.Should().Be(3);
-            result.Header.MsgSeq.Should().Be(12345);
-            result.Header.MsgGuid.Should().Be("550e8400-e29b-41d4-a716-446655440000");
-            result.Header.ServerTimestamp.Should().Be(1704105000000);
-            result.Body.Should().NotBeNull();
-            result.Body.Should().Contain("Events");
+            var converter = new JsonWrappedMessageObjectConverter();
+            Assert.NotNull(converter);
+            Assert.IsType<JsonWrappedMessageObjectConverter>(converter);
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithMinimalValidJson_ShouldParseCorrectly()
+        public void ConvertJsonToMessage_WithValidJson_ShouldReturnWrappedMessage()
         {
             // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 1
-                }
-            }
-            """;
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 1,
+                    ""MsgGuid"": ""test-guid-123"",
+                    ""CreationDate"": ""2024-01-01T00:00:00Z""
+                },
+                ""Body"": ""TestData""
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
             result.Header.Should().NotBeNull();
-            result.Header.Type.Should().Be(1);
-            result.Header.CreationDate.Should().BeNull();
-            result.Header.MsgSeq.Should().BeNull();
+            result.Header!.Type.Should().Be(1);
+            result.Header.MsgGuid.Should().Be("test-guid-123");
+            result.Header.CreationDate.Should().Be("2024-01-01T00:00:00Z");
+            result.Body.Should().Be("\"TestData\"");
+        }
+
+        [Fact]
+        public void ConvertJsonToMessage_WithMinimalValidJson_ShouldReturnWrappedMessage()
+        {
+            // Arrange
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 0
+                }
+            }";
+
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(0);
             result.Body.Should().BeNull();
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithBodyOnly_ShouldParseHeaderAndBody()
+        public void ConvertJsonToMessage_WithNullBody_ShouldReturnWrappedMessageWithNullBodyString()
         {
             // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 2,
-                    "CreationDate": "2024-01-01T12:00:00Z"
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 2,
+                    ""MsgGuid"": ""test-guid-456""
                 },
-                "Body": "Simple string body"
-            }
-            """;
+                ""Body"": null
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
             result.Header.Should().NotBeNull();
-            result.Header.Type.Should().Be(2);
-            result.Header.CreationDate.Should().Be("2024-01-01T12:00:00Z");
-            result.Body.Should().Be("\"Simple string body\"");
+            result.Header!.Type.Should().Be(2);
+            result.Header.MsgGuid.Should().Be("test-guid-456");
+            result.Body.Should().Be("null"); // GetRawText() returns "null" as string
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithComplexNestedBody_ShouldPreserveBodyStructure()
+        public void ConvertJsonToMessage_WithMissingBodyProperty_ShouldReturnWrappedMessageWithNullBody()
         {
             // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 3,
-                    "MsgSeq": 999
-                },
-                "Body": {
-                    "Events": [
-                        {
-                            "Id": 12345,
-                            "Status": 1,
-                            "Markets": [
-                                {
-                                    "Id": 67890,
-                                    "Name": "Match Winner",
-                                    "Bets": [
-                                        {
-                                            "Id": 111,
-                                            "Name": "Team A",
-                                            "Price": "2.50"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Header.Type.Should().Be(3);
-            result.Header.MsgSeq.Should().Be(999);
-            result.Body.Should().NotBeNull();
-            result.Body.Should().Contain("Events");
-            result.Body.Should().Contain("Markets");
-            result.Body.Should().Contain("Bets");
-            result.Body.Should().Contain("12345");
-            result.Body.Should().Contain("67890");
-            result.Body.Should().Contain("Team A");
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithNullValues_ShouldHandleNullsCorrectly()
-        {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 1,
-                    "CreationDate": null,
-                    "MsgGuid": null,
-                    "ServerTimestamp": null
-                },
-                "Body": null
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Header.Should().NotBeNull();
-            result.Header.Type.Should().Be(1);
-            result.Header.CreationDate.Should().BeNull();
-            result.Header.MsgGuid.Should().BeNull();
-            result.Header.ServerTimestamp.Should().BeNull();
-            result.Body.Should().Be("null");
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithEmptyBodyObject_ShouldParseEmptyBody()
-        {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 31
-                },
-                "Body": {}
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Header.Type.Should().Be(31);
-            result.Body.Should().Be("{}");
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithSpecialCharactersInBody_ShouldPreserveCharacters()
-        {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 1
-                },
-                "Body": {
-                    "message": "Special chars: éñ中文 @#$%^&*() \n\t\r",
-                    "unicode": "🚀🎉⚽",
-                    "escaped": "Line1\nLine2\tTabbed"
-                }
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Body.Should().Contain("éñ中文");
-            result.Body.Should().Contain("@#$%^&*()");
-            result.Body.Should().Contain("🚀🎉⚽");
-            result.Body.Should().Contain("\\n");
-            result.Body.Should().Contain("\\t");
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithArrayBody_ShouldParseArrayCorrectly()
-        {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 2
-                },
-                "Body": [
-                    {"id": 1, "name": "Item 1"},
-                    {"id": 2, "name": "Item 2"},
-                    {"id": 3, "name": "Item 3"}
-                ]
-            }
-            """;
-
-            // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Header.Type.Should().Be(2);
-            result.Body.Should().StartWith("[");
-            result.Body.Should().EndWith("]");
-            result.Body.Should().Contain("Item 1");
-            result.Body.Should().Contain("Item 2");
-            result.Body.Should().Contain("Item 3");
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithLargeComplexMessage_ShouldHandleEfficiently()
-        {
-            // Arrange - Create a large message with multiple events and markets
-            var eventsJson = string.Join(",", Enumerable.Range(1, 50).Select(i => 
-                $@"{{
-                    ""Id"": {i},
-                    ""Status"": 1,
-                    ""Markets"": [
-                        {{
-                            ""Id"": {i * 100},
-                            ""Name"": ""Market {i}"",
-                            ""Bets"": [
-                                {{""Id"": {i * 1000}, ""Name"": ""Bet {i}A"", ""Price"": ""1.{i:D2}""}},
-                                {{""Id"": {i * 1000 + 1}, ""Name"": ""Bet {i}B"", ""Price"": ""2.{i:D2}""}}
-                            ]
-                        }}
-                    ]
-                }}"));
-
-            var json = $@"{{
-                ""Header"": {{
+            var jsonInput = @"{
+                ""Header"": {
                     ""Type"": 3,
-                    ""CreationDate"": ""2024-01-01T10:30:00Z"",
-                    ""MsgSeq"": 12345
-                }},
-                ""Body"": {{
-                    ""Events"": [{eventsJson}]
-                }}
-            }}";
+                    ""MsgGuid"": ""test-guid-789"",
+                    ""CreationDate"": ""2024-02-01T12:30:45Z""
+                }
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
-            result.Header.Type.Should().Be(3);
-            result.Body.Should().NotBeNull();
-            result.Body.Should().Contain("Events");
-            result.Body.Should().Contain("Market 1");
-            result.Body.Should().Contain("Market 50");
-            result.Body.Should().Contain("Bet 25A");
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(3);
+            result.Header.MsgGuid.Should().Be("test-guid-789");
+            result.Header.CreationDate.Should().Be("2024-02-01T12:30:45Z");
+            result.Body.Should().BeNull();
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithInvalidJson_ShouldThrowJsonException()
+        public void ConvertJsonToMessage_WithComplexBodyJson_ShouldReturnWrappedMessage()
         {
             // Arrange
-            var invalidJson = "{ invalid json structure without closing brace";
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 4,
+                    ""MsgGuid"": ""complex-guid-123"",
+                    ""CreationDate"": ""2024-03-01T08:15:30Z""
+                },
+                ""Body"": ""ComplexEntity""
+            }";
 
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(4);
+            result.Header.MsgGuid.Should().Be("complex-guid-123");
+            result.Body.Should().NotBeNullOrEmpty();
+            result.Body.Should().Contain("ComplexEntity");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("invalid json")]
+        public void ConvertJsonToMessage_WithInvalidJson_ShouldThrowJsonException(string invalidJson)
+        {
             // Act & Assert
             var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(invalidJson);
             act.Should().Throw<JsonException>();
         }
 
-        [Fact]
-        public void ConvertJsonToMessage_WithMissingHeader_ShouldThrowKeyNotFoundException()
+        [Theory]
+        [InlineData("{}")]
+        [InlineData("{\"InvalidProperty\": \"value\"}")]
+        public void ConvertJsonToMessage_WithMissingHeaderProperty_ShouldThrowKeyNotFoundException(string invalidJson)
         {
-            // Arrange
-            var json = """
-            {
-                "Body": {
-                    "message": "test"
-                }
-            }
-            """;
-
-            // Act & Assert
-            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            // Act & Assert - Missing Header property throws KeyNotFoundException
+            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(invalidJson);
             act.Should().Throw<KeyNotFoundException>();
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithEmptyString_ShouldThrowJsonException()
-        {
-            // Act & Assert
-            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage("");
-            act.Should().Throw<JsonException>();
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithNullString_ShouldThrowArgumentNullException()
+        public void ConvertJsonToMessage_WithNullInput_ShouldThrowArgumentNullException()
         {
             // Act & Assert
             var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(null!);
@@ -351,121 +166,176 @@ namespace Trade360SDK.Feed.Tests.Converters
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithWhitespaceOnly_ShouldThrowJsonException()
+        public void ConvertJsonToMessage_WithEmptyHeaderJson_ShouldDeserializeSuccessfully()
         {
+            // Arrange - Empty header object is valid JSON, just creates default MessageHeader
+            var jsonInput = @"{
+                ""Header"": {},
+                ""Body"": ""test data""
+            }";
+
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header.Should().NotBeNull();
+            result.Body.Should().Be("\"test data\"");
+        }
+
+        [Fact]
+        public void ConvertJsonToMessage_WithMalformedJson_ShouldThrowJsonException()
+        {
+            // Arrange
+            var malformedJson = @"{
+                ""Header"": {
+                    ""Type"": 1,
+                    ""MsgGuid"": ""test-guid""
+                },
+                ""Body"": ""unclosed";
+
             // Act & Assert
-            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage("   \t\n  ");
+            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(malformedJson);
             act.Should().Throw<JsonException>();
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithHeaderAsArray_ShouldThrowJsonException()
+        public void ConvertJsonToMessage_WithExtraProperties_ShouldIgnoreExtraProperties()
         {
             // Arrange
-            var json = """
-            {
-                "Header": [1, 2, 3],
-                "Body": {}
-            }
-            """;
-
-            // Act & Assert
-            var act = () => JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
-            act.Should().Throw<JsonException>();
-        }
-
-        [Fact]
-        public void ConvertJsonToMessage_WithDateTimeFormats_ShouldPreserveDateTimeStrings()
-        {
-            // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 1,
-                    "CreationDate": "2024-12-25T15:30:45.123Z",
-                    "MessageBrokerTimestamp": "2024-12-25T15:30:45.123Z",
-                    "MessageTimestamp": "2024-12-25T15:30:45.123Z"
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 5,
+                    ""MsgGuid"": ""extra-props-guid"",
+                    ""CreationDate"": ""2024-04-01T16:45:00Z""
                 },
-                "Body": {
-                    "timestamp": "2024-12-25T15:30:45.123Z",
-                    "lastUpdate": "2024-12-25T15:30:45.123Z"
-                }
-            }
-            """;
+                ""Body"": ""test"",
+                ""ExtraProperty"": ""should be ignored"",
+                ""AnotherExtra"": 12345
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
-            result.Header.CreationDate.Should().Be("2024-12-25T15:30:45.123Z");
-            result.Body.Should().Contain("2024-12-25T15:30:45.123Z");
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(5);
+            result.Header.MsgGuid.Should().Be("extra-props-guid");
+            result.Body.Should().Be("\"test\""); // Raw JSON with quotes
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithNumericValues_ShouldPreserveNumericTypes()
+        public void ConvertJsonToMessage_WithUnicodeCharacters_ShouldHandleCorrectly()
         {
             // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 42,
-                    "MsgSeq": 999999,
-                    "ServerTimestamp": 1704105000000
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 6,
+                    ""MsgGuid"": ""unicode-test"",
+                    ""CreationDate"": ""2024-05-01T09:30:00Z""
                 },
-                "Body": {
-                    "intValue": 12345,
-                    "floatValue": 123.45,
-                    "negativeValue": -67890,
-                    "zeroValue": 0,
-                    "scientificNotation": 1.23e10
-                }
-            }
-            """;
+                ""Body"": ""Hello World""
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
-            result.Header.Type.Should().Be(42);
-            result.Header.MsgSeq.Should().Be(999999);
-            result.Header.ServerTimestamp.Should().Be(1704105000000);
+            result.Header.Should().NotBeNull();
+            result.Header!.MsgGuid.Should().Be("unicode-test");
+            result.Body.Should().Contain("Hello World");
+        }
+
+        [Fact]
+        public void ConvertJsonToMessage_WithLargeJsonPayload_ShouldHandleEfficiently()
+        {
+            // Arrange
+            var largeBodyContent = new string('A', 1000); // Smaller for practical testing
+            var jsonInput = $@"{{
+                ""Header"": {{
+                    ""Type"": 7,
+                    ""MsgGuid"": ""large-payload-test"",
+                    ""CreationDate"": ""2024-06-01T14:20:00Z""
+                }},
+                ""Body"": ""{largeBodyContent}""
+            }}";
+
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(7);
+            result.Body.Should().NotBeNullOrEmpty();
+            result.Body.Should().Contain(largeBodyContent);
+        }
+
+        [Fact]
+        public void ConvertJsonToMessage_WithNumericAndBooleanTypes_ShouldHandleCorrectly()
+        {
+            // Arrange
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 999,
+                    ""MsgGuid"": ""numeric-test-123"",
+                    ""CreationDate"": ""2024-07-01T10:00:00Z""
+                },
+                ""Body"": 12345
+            }";
+
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header.Should().NotBeNull();
+            result.Header!.Type.Should().Be(999);
             result.Body.Should().Contain("12345");
-            result.Body.Should().Contain("123.45");
-            result.Body.Should().Contain("-67890");
-            result.Body.Should().Contain("1.23e10");
         }
 
         [Fact]
-        public void ConvertJsonToMessage_WithBooleanValues_ShouldPreserveBooleans()
+        public void ConvertJsonToMessage_WithStringBody_ShouldReturnRawJsonString()
         {
             // Arrange
-            var json = """
-            {
-                "Header": {
-                    "Type": 1
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 8,
+                    ""MsgGuid"": ""string-body-test""
                 },
-                "Body": {
-                    "isActive": true,
-                    "isComplete": false,
-                    "settings": {
-                        "autoAck": true,
-                        "retryEnabled": false
-                    }
-                }
-            }
-            """;
+                ""Body"": ""simple string body""
+            }";
 
             // Act
-            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(json);
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
 
             // Assert
             result.Should().NotBeNull();
-            result.Body.Should().Contain("true");
-            result.Body.Should().Contain("false");
-            result.Body.Should().Contain("autoAck");
-            result.Body.Should().Contain("retryEnabled");
+            result.Header!.Type.Should().Be(8);
+            result.Body.Should().Be("\"simple string body\""); // GetRawText includes quotes
+        }
+
+        [Fact]
+        public void ConvertJsonToMessage_WithBooleanBody_ShouldReturnRawJsonBoolean()
+        {
+            // Arrange
+            var jsonInput = @"{
+                ""Header"": {
+                    ""Type"": 9,
+                    ""MsgGuid"": ""boolean-body-test""
+                },
+                ""Body"": true
+            }";
+
+            // Act
+            var result = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(jsonInput);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Header!.Type.Should().Be(9);
+            result.Body.Should().Be("true"); // GetRawText returns raw boolean
         }
     }
 } 

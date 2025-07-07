@@ -10,6 +10,8 @@ namespace Trade360SDK.Common.Entities.Livescore
         public IEnumerable<Period>? Periods { get; set; }
 
         public IEnumerable<Statistic>? Statistics { get; set; }
+        
+        public List<PlayerStatistic>? PlayerStatistics { get; set; }
 
         public IEnumerable<NameValuePair>? LivescoreExtraData { get; set; }
         

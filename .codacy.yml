@@ -10,3 +10,6 @@ exclude_paths:
   - "README.md"
   - "nuget/**"
   - "coverage/**"
+  - "coverage-merged/**"
+  - "coverage-results/**"
+  - "coverage-final/**"

@@ -23,10 +23,17 @@ public class IEntityHandlerTests
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
         var entity = new TestEntity { Name = "Test", Id = 1 };
+        var rabbitProperties = new RabbitMessageProperties
+        {
+            FixtureId = "123456789-test-id",
+            MessageGuid = header.MsgGuid,
+            MessageSequence = "123456789-test-seq",
+            MessageType = entity.Id.ToString() 
+        };
+        
+        await mockHandler.Object.ProcessAsync(rabbitProperties, header, entity);
 
-        await mockHandler.Object.ProcessAsync(header, entity);
-
-        mockHandler.Verify(h => h.ProcessAsync(header, entity), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(rabbitProperties, header, entity), Times.Once);
     }
 
     [Fact]
@@ -34,10 +41,16 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var entity = new TestEntity { Name = "Test", Id = 1 };
+        var rabbitProperties = new RabbitMessageProperties
+        {
+            FixtureId = "123456789-test-id",
+            MessageSequence = "123456789-test-seq",
+            MessageType = entity.Id.ToString() 
+        };
 
-        await mockHandler.Object.ProcessAsync(null, entity);
+        await mockHandler.Object.ProcessAsync(rabbitProperties, null, entity);
 
-        mockHandler.Verify(h => h.ProcessAsync(null, entity), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(rabbitProperties, null, entity), Times.Once);
     }
 
     [Fact]
@@ -45,9 +58,15 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
+        var rabbitProperties = new RabbitMessageProperties
+        {
+            FixtureId = "123456789-test-id",
+            MessageGuid = header.MsgGuid,
+            MessageSequence = "123456789-test-seq",
+        };
 
-        await mockHandler.Object.ProcessAsync(header, null);
+        await mockHandler.Object.ProcessAsync(rabbitProperties, header, null);
 
-        mockHandler.Verify(h => h.ProcessAsync(header, null), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(rabbitProperties, header, null), Times.Once);
     }
 }

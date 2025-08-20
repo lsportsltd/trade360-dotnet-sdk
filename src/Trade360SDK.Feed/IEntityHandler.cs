@@ -8,6 +8,6 @@ namespace Trade360SDK.Feed
 {
     public interface IEntityHandler<in TType, TFlow> where TFlow : IFlow where TType : class
     {
-        Task ProcessAsync(MessageHeader? header, TType? entity);
+        Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header, TType? entity);
     }
 }

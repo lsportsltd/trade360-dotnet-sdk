@@ -24,10 +24,8 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
             _logger = loggerFactory.CreateLogger<MessageProcessor<TType, TFlow>>();
             _serviceProvider = serviceProvider;
         }
-        
-        
 
-        public async Task ProcessAsync(Type type, MessageHeader? header, string? body)
+        public async Task ProcessAsync(Type type, RabbitMessageProperties? rabbitHeaders, MessageHeader? header, string? body)
         {
             var handler = _serviceProvider.GetRequiredService<IEntityHandler<TType, TFlow>>();
             
@@ -51,9 +49,9 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
                 message = null;
             }
             
-            await handler.ProcessAsync(header, message);
+            await handler.ProcessAsync(rabbitHeaders, header, message);
         }
-        
+
         public Type GetTypeOfTType()
         {
             return typeof(TType);

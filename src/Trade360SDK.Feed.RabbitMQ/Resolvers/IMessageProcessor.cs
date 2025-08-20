@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
 {
     public interface IMessageProcessor
     {
-        Task ProcessAsync(Type type, MessageHeader? header, string? body);
+        Task ProcessAsync(Type type, RabbitMessageProperties? rabbitHeaders, MessageHeader? header, string? body);
         Type GetTypeOfTType();
         Type GetTypeOfTFlow();
     }

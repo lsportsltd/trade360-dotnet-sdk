@@ -7,7 +7,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
     internal class KeepAliveUpdateHandlerPrematch : IEntityHandler<KeepAliveUpdate, PreMatch>
     {
-        public Task ProcessAsync(MessageHeader? header, KeepAliveUpdate? entity)
+        public Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header, KeepAliveUpdate? entity)
         {
             Console.WriteLine("KeepAliveUpdate received");
             return Task.CompletedTask;

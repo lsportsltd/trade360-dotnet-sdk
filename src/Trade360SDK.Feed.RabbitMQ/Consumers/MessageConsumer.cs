@@ -11,6 +11,7 @@ using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Helpers;
+using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.Converters;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
@@ -49,14 +50,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                     return;
                 }
 
-                if (properties.Headers.TryGetValue("timestamp_in_ms", out var timestampObj) && timestampObj != null)
-                {
-                    // Directly cast to long since you know it's always a long
-                    var rmqTimestampInMs = (long)timestampObj;
-                    var platformTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(rmqTimestampInMs).UtcDateTime;
-                    wrappedMessage.Header.MessageBrokerTimestamp = platformTimestamp;
-                }
-
+                wrappedMessage.RabbitMessageProperties = RabbitMessageProperties.CreateFromProperties(properties.Headers);
                 wrappedMessage.Header.MessageTimestamp = DateTime.UtcNow;
                 
                 var id = wrappedMessage.Header.Type;
@@ -66,7 +60,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 if (type != null)
                 {
                     var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);
-                    await messageProcessor.ProcessAsync(type, wrappedMessage?.Header, wrappedMessage?.Body);
+                    await messageProcessor.ProcessAsync(type, wrappedMessage?.RabbitMessageProperties, wrappedMessage?.Header, wrappedMessage?.Body);
                 }
                 
                 if (_settings.AutoAck == false)

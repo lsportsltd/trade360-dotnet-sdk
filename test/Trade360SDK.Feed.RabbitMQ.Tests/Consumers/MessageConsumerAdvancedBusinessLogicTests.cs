@@ -6,6 +6,7 @@ using System.Text;
 using Trade360SDK.Feed.Configuration;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
 using Trade360SDK.Common.Entities.MessageTypes;
+using Trade360SDK.Common.Models;
 
 namespace Trade360SDK.Feed.RabbitMQ.Tests;
 
@@ -138,7 +139,7 @@ public class MessageConsumerAdvancedBusinessLogicTests
     [Fact]
     public void MessageConsumer_BusinessLogic_ShouldHandleProcessingExceptions()
     {
-        _mockProcessor.Setup(p => p.ProcessAsync(It.IsAny<Type>(), It.IsAny<Trade360SDK.Common.Models.MessageHeader>(), It.IsAny<string>()))
+        _mockProcessor.Setup(p => p.ProcessAsync(It.IsAny<Type>(), It.IsAny<RabbitMessageProperties>(), It.IsAny<Trade360SDK.Common.Models.MessageHeader>(), It.IsAny<string>()))
                      .ThrowsAsync(new InvalidOperationException("Processing failed"));
 
         var exception = new InvalidOperationException("Processing failed");

@@ -7,7 +7,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Inplay
 {
     internal class KeepAliveUpdateHandlerInplay : IEntityHandler<KeepAliveUpdate, InPlay>
     {
-        public Task ProcessAsync(MessageHeader? header, KeepAliveUpdate? entity)
+        public Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header, KeepAliveUpdate? entity)
         {
             Console.WriteLine("KeepAliveUpdate received");
             return Task.CompletedTask;

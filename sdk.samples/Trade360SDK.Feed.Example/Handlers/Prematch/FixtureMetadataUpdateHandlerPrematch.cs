@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch;
 
 internal class FixtureMetadataUpdateHandlerPrematch : IEntityHandler<FixtureMetadataUpdate, PreMatch>
 {
-    public Task ProcessAsync(MessageHeader? header, FixtureMetadataUpdate? entity)
+    public Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header, FixtureMetadataUpdate? entity)
     {
         Console.WriteLine("FixtureMetadataUpdate received");
         return Task.CompletedTask;

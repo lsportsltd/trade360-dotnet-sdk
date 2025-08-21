@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Trade360SDK.Common.Attributes;
-using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Helpers;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.Converters;
@@ -43,14 +41,13 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
             {
                 var rawMessage = Encoding.UTF8.GetString(body.Span);
                 var wrappedMessage = JsonWrappedMessageObjectConverter.ConvertJsonToMessage(rawMessage);
+                var transportHeaders = TransportMessageHeaders.CreateFromProperties(properties.Headers);
 
                 if (wrappedMessage.Header == null)
                 {
                     _logger.LogError("Invalid message format");
                     return;
                 }
-
-                wrappedMessage.RabbitMessageProperties = RabbitMessageProperties.CreateFromProperties(properties.Headers);
                 wrappedMessage.Header.MessageTimestamp = DateTime.UtcNow;
                 
                 var id = wrappedMessage.Header.Type;
@@ -60,7 +57,7 @@ namespace Trade360SDK.Feed.RabbitMQ.Consumers
                 if (type != null)
                 {
                     var messageProcessor = _messageProcessorContainer.GetMessageProcessor(id);
-                    await messageProcessor.ProcessAsync(type, wrappedMessage?.RabbitMessageProperties, wrappedMessage?.Header, wrappedMessage?.Body);
+                    await messageProcessor.ProcessAsync(type, transportHeaders, wrappedMessage?.Header, wrappedMessage?.Body);
                 }
                 
                 if (_settings.AutoAck == false)

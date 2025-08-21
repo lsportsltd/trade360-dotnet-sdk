@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Trade360SDK.Common.Models
 {
-    public class RabbitMessageProperties
+    public class TransportMessageHeaders
     {
         private const string MessageGuidKey = "MessageGuid";
         private const string MessageTypeKey = "MessageType";
@@ -20,16 +19,16 @@ namespace Trade360SDK.Common.Models
         public string TimestampInMs { get; internal set; }
         
 
-        internal RabbitMessageProperties() { }
+        internal TransportMessageHeaders() { }
         
-        public static RabbitMessageProperties CreateFromProperties(IDictionary<string, object> properties)
+        public static TransportMessageHeaders CreateFromProperties(IDictionary<string, object> properties)
         {
             if (properties == null)
             {
                 throw new ArgumentNullException(nameof(properties));
             }
             
-            return new RabbitMessageProperties()
+            return new TransportMessageHeaders()
             {
                 MessageGuid = GetRequiredProperty(properties, MessageGuidKey),
                 MessageType = GetRequiredProperty(properties, MessageTypeKey),

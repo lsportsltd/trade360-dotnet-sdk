@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Inplay;
 
 internal class LivescoreUpdateHandlerInplay : IEntityHandler<LivescoreUpdate, InPlay>
 {
-    public Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header, LivescoreUpdate? entity)
+    public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, LivescoreUpdate? entity)
     {
         Console.WriteLine("LivescoreUpdate received");
         return Task.CompletedTask;

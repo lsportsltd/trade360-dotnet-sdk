@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
     internal class OutrightSettlementsUpdateHandlerPrematch : IEntityHandler<OutrightSettlementsUpdate, PreMatch>
     {
-        public Task ProcessAsync(RabbitMessageProperties? rabbitHeaders, MessageHeader? header,
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header,
             OutrightSettlementsUpdate? entity)
         {
             Console.WriteLine("OutrightSettlementsUpdate received");

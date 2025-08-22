@@ -53,6 +53,27 @@ public class EntityHandlerComprehensiveTests
         act.Should().NotThrowAsync();
         _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), null, entity), Times.Once);
     }
+
+    [Fact]
+    public void Handle_WithTransportMessageHeaders_ShouldPassCorrectly()
+    {
+        var entity = new TestEntity { Id = 1, Name = "Test Entity" };
+        var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString() };
+        var transportMessageHeaders = TransportMessageHeaders.CreateFromProperties(new Dictionary<string, object>
+        {
+            { "MessageType", "TestType" },
+            { "MessageSequence", "123456789" },
+            { "MessageGuid", "abc-def-123" },
+            { "FixtureId", "fixture-456" },
+            { "timestamp_in_ms", DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()}
+        });
+
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), It.IsAny<MessageHeader>(), It.IsAny<TestEntity>())).Returns(Task.CompletedTask);
+
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(transportMessageHeaders, messageHeader, entity);
+
+        act.Should().NotThrowAsync();
+        _mockEntityHandler.Verify(x => x.ProcessAsync(transportMessageHeaders, messageHeader, entity), Times.Once);
     }
 
     [Fact]

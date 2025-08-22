@@ -1,12 +1,11 @@
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Text.Json;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
 using Trade360SDK.Feed.RabbitMQ.Resolvers;
 using Trade360SDK.Common.Entities.MessageTypes;
+using FluentAssertions;
+using System.Text.Json;
 
 namespace Trade360SDK.Feed.RabbitMQ.Tests;
 
@@ -66,9 +65,9 @@ public class MessageProcessorAdvancedBusinessLogicTests
         }
         """;
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, marketUpdateJson);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, marketUpdateJson);
 
-        _mockHandler.Verify(h => h.ProcessAsync(
+        _mockHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(),
             It.Is<MessageHeader>(mh => mh.Type == 3),
             It.Is<MarketUpdate>(mu => mu.Events != null && mu.Events.Any())), Times.Once);
     }
@@ -85,7 +84,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
 
         var invalidJson = "{ invalid json structure }";
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, invalidJson);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, invalidJson);
 
         mockLogger.Verify(
             x => x.Log(
@@ -93,10 +92,10 @@ public class MessageProcessorAdvancedBusinessLogicTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed to deserialize message body")),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
 
-        _mockHandler.Verify(h => h.ProcessAsync(
+        _mockHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), 
             It.IsAny<MessageHeader>(),
             It.Is<MarketUpdate>(mu => mu == null)), Times.Once);
     }
@@ -110,11 +109,11 @@ public class MessageProcessorAdvancedBusinessLogicTests
             MessageTimestamp = DateTime.UtcNow
         };
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, "");
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, "");
 
         // Devin: Test verifies no warning logging for empty body - expected behavior
 
-        _mockHandler.Verify(h => h.ProcessAsync(
+        _mockHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(),
             It.IsAny<MessageHeader>(),
             It.Is<MarketUpdate>(mu => mu == null)), Times.Once);
     }
@@ -128,11 +127,12 @@ public class MessageProcessorAdvancedBusinessLogicTests
             MessageTimestamp = DateTime.UtcNow
         };
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, null);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, null);
 
         // Devin: Test verifies no warning logging for null body - expected behavior
 
         _mockHandler.Verify(h => h.ProcessAsync(
+            It.IsAny<TransportMessageHeaders>(),
             It.IsAny<MessageHeader>(),
             It.Is<MarketUpdate>(mu => mu == null)), Times.Once);
     }
@@ -187,7 +187,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
         }
         """;
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, complexMarketJson);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, complexMarketJson);
 
         _mockHandler.Verify(h => h.ProcessAsync(
             It.Is<MessageHeader>(mh => mh.Type == 3 && mh.MessageBrokerTimestamp.HasValue),
@@ -209,18 +209,18 @@ public class MessageProcessorAdvancedBusinessLogicTests
             "Events": [
                 {
                     "Id": "not_a_number",
-                    "Status": "invalid_status",
                     "Markets": "should_be_array"
                 }
             ]
         }
         """;
 
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, malformedJson);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, malformedJson);
 
         // Devin: Test verifies malformed JSON handling - logging behavior varies by implementation
 
         _mockHandler.Verify(h => h.ProcessAsync(
+            It.IsAny<TransportMessageHeaders>(),
             It.IsAny<MessageHeader>(),
             It.Is<MarketUpdate>(mu => mu == null)), Times.Once);
     }
@@ -231,28 +231,28 @@ public class MessageProcessorAdvancedBusinessLogicTests
         var header = new MessageHeader { Type = 3 };
         var validJson = """{"Events": []}""";
 
-        _mockHandler.Setup(h => h.ProcessAsync(It.IsAny<MessageHeader>(), It.IsAny<MarketUpdate>()))
+        _mockHandler.Setup(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), It.IsAny<MessageHeader>(), It.IsAny<MarketUpdate>()))
                    .ThrowsAsync(new InvalidOperationException("Handler processing failed"));
 
-        var act = async () => await _processor.ProcessAsync(typeof(MarketUpdate), header, validJson);
+        var act = async () => await _processor.ProcessAsync(typeof(MarketUpdate), null, header, validJson);
 
         await act.Should().ThrowAsync<InvalidOperationException>()
                  .WithMessage("Handler processing failed");
     }
 
     [Fact]
-    public void GetTypeOfTType_ShouldReturnCorrectType()
+    public void GetTypeOfTType_ShouldReturnMarketUpdateType()
     {
         var result = _processor.GetTypeOfTType();
-        
+
         result.Should().Be(typeof(MarketUpdate));
     }
 
     [Fact]
-    public void GetTypeOfTFlow_ShouldReturnCorrectFlowType()
+    public void GetTypeOfTFlow_ShouldReturnInPlayType()
     {
         var result = _processor.GetTypeOfTFlow();
-        
+
         result.Should().Be(typeof(InPlay));
     }
 
@@ -265,7 +265,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
         var header = new MessageHeader { Type = 3 };
         var validJson = """{"Events": []}""";
 
-        var act = async () => await _processor.ProcessAsync(typeof(MarketUpdate), header, validJson);
+        var act = async () => await _processor.ProcessAsync(typeof(MarketUpdate), null, header, validJson);
 
         await act.Should().ThrowAsync<InvalidOperationException>();
     }
@@ -298,12 +298,13 @@ public class MessageProcessorAdvancedBusinessLogicTests
         var largeJson = JsonSerializer.Serialize(new { Events = largeEventsArray });
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        await _processor.ProcessAsync(typeof(MarketUpdate), header, largeJson);
+        await _processor.ProcessAsync(typeof(MarketUpdate), null, header, largeJson);
         stopwatch.Stop();
 
         stopwatch.ElapsedMilliseconds.Should().BeLessThan(5000);
 
         _mockHandler.Verify(h => h.ProcessAsync(
+            It.IsAny<TransportMessageHeaders>(),
             It.IsAny<MessageHeader>(),
             It.Is<MarketUpdate>(mu => mu.Events != null && mu.Events.Count() == 1000)), Times.Once);
     }

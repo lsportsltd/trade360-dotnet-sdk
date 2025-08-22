@@ -53,7 +53,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotPrematchApiClient, SnapshotPrematchApiClient>();
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }
@@ -71,7 +71,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotInplayApiClient, SnapshotInplayApiClient>();
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }

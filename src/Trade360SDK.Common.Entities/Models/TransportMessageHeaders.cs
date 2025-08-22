@@ -40,21 +40,25 @@ namespace Trade360SDK.Common.Models
 
         private static string GetRequiredProperty(IDictionary<string, object> properties, string key, bool required = true)
         {
-            if (properties.TryGetValue(key, out var value) && value != null)
+            if (!properties.TryGetValue(key, out var value) || value == null)
             {
-                return value switch
-                {
-                    byte[] bytes => Encoding.UTF8.GetString(bytes),
-                    _ => value.ToString()
-                };
+                return required 
+                    ? throw new ArgumentException($"Header '{key}' is missing, null, or empty in message properties object.", nameof(properties))
+                    : string.Empty;
             }
-            
-            if (required)
+
+            var stringValue = value switch
             {
-                throw new ArgumentException($"Header '{key}' is missing or null in message properties object.",
-                    nameof(properties));
+                byte[] bytes => Encoding.UTF8.GetString(bytes),
+                _ => value.ToString() ?? string.Empty
+            };
+
+            if (required && string.IsNullOrEmpty(stringValue))
+            {
+                throw new ArgumentException($"Header '{key}' is missing, null, or empty in message properties object.", nameof(properties));
             }
-            return string.Empty;
+
+            return stringValue;
         }
     }
 }

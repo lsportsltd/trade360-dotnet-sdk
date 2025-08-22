@@ -47,11 +47,7 @@ namespace Trade360SDK.Common.Models
                     : string.Empty;
             }
 
-            var stringValue = value switch
-            {
-                byte[] bytes => Encoding.UTF8.GetString(bytes),
-                _ => value.ToString() ?? string.Empty
-            };
+            var stringValue = value is byte[] ? Encoding.UTF8.GetString(value as byte[]) : value.ToString();
 
             if (required && string.IsNullOrEmpty(stringValue))
             {

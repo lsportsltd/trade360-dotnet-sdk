@@ -28,7 +28,7 @@ namespace Trade360SDK.Common.Models
                 throw new ArgumentNullException(nameof(properties));
             }
             
-            return new TransportMessageHeaders()
+            return new TransportMessageHeaders
             {
                 MessageGuid = GetRequiredProperty(properties, MessageGuidKey),
                 MessageType = GetRequiredProperty(properties, MessageTypeKey),

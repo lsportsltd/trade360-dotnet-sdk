@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
@@ -23,7 +22,7 @@ public class IEntityHandlerTests
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
         var entity = new TestEntity { Name = "Test", Id = 1 };
-        var rabbitProperties = new RabbitMessageProperties
+        var rabbitProperties = new TransportMessageHeaders
         {
             FixtureId = "123456789-test-id",
             MessageGuid = header.MsgGuid,
@@ -41,7 +40,7 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var entity = new TestEntity { Name = "Test", Id = 1 };
-        var rabbitProperties = new RabbitMessageProperties
+        var rabbitProperties = new TransportMessageHeaders
         {
             FixtureId = "123456789-test-id",
             MessageSequence = "123456789-test-seq",
@@ -58,7 +57,7 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
-        var rabbitProperties = new RabbitMessageProperties
+        var rabbitProperties = new TransportMessageHeaders
         {
             FixtureId = "123456789-test-id",
             MessageGuid = header.MsgGuid,

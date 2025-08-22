@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Moq;
-using Trade360SDK.Feed;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
 
@@ -21,12 +20,12 @@ public class EntityHandlerComprehensiveTests
         var entity = new TestEntity { Id = 1, Name = "Test Entity" };
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, entity)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity)).Returns(Task.CompletedTask);
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, entity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, entity);
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, entity), Times.Once);
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity), Times.Once);
     }
 
     [Fact]
@@ -34,12 +33,12 @@ public class EntityHandlerComprehensiveTests
     {
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, null)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, null)).Returns(Task.CompletedTask);
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, null);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, null);
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, null), Times.Once);
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, null), Times.Once);
     }
 
     [Fact]
@@ -47,12 +46,13 @@ public class EntityHandlerComprehensiveTests
     {
         var entity = new TestEntity { Id = 1, Name = "Test Entity" };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(null, entity)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), null, entity)).Returns(Task.CompletedTask);
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, entity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, null, entity);
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(null, entity), Times.Once);
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), null, entity), Times.Once);
+    }
     }
 
     [Fact]
@@ -66,18 +66,18 @@ public class EntityHandlerComprehensiveTests
         };
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, It.IsAny<TestEntity>())).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, It.IsAny<TestEntity>())).Returns(Task.CompletedTask);
 
         var act = async () =>
         {
             foreach (var entity in entities)
             {
-                await _mockEntityHandler.Object.ProcessAsync(messageHeader, entity);
+                await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, entity);
             }
         };
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, It.IsAny<TestEntity>()), Times.Exactly(3));
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, It.IsAny<TestEntity>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -86,10 +86,10 @@ public class EntityHandlerComprehensiveTests
         var entity = new TestEntity { Id = 1, Name = "Test Entity" };
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, entity))
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity))
             .ThrowsAsync(new InvalidOperationException("Handler error"));
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, entity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, entity);
 
         act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Handler error");
     }
@@ -105,18 +105,18 @@ public class EntityHandlerComprehensiveTests
             new MessageHeader { Type = 3, CreationDate = DateTime.UtcNow.ToString() }
         };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<MessageHeader>(), entity)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), It.IsAny<MessageHeader>(), entity)).Returns(Task.CompletedTask);
 
         var act = async () =>
         {
             foreach (var header in messageHeaders)
             {
-                await _mockEntityHandler.Object.ProcessAsync(header, entity);
+                await _mockEntityHandler.Object.ProcessAsync(null, header, entity);
             }
         };
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<MessageHeader>(), entity), Times.Exactly(3));
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), It.IsAny<MessageHeader>(), entity), Times.Exactly(3));
     }
 
     [Fact]
@@ -130,12 +130,12 @@ public class EntityHandlerComprehensiveTests
         };
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, largeEntity)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, largeEntity)).Returns(Task.CompletedTask);
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, largeEntity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, largeEntity);
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, largeEntity), Times.Once);
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, largeEntity), Times.Once);
     }
 
     [Fact]
@@ -144,18 +144,18 @@ public class EntityHandlerComprehensiveTests
         var entity = new TestEntity { Id = 1, Name = "Test Entity" };
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, entity))
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity))
             .Returns(Task.Delay(100));
 
         var act = async () =>
         {
             var tasks = Enumerable.Range(1, 10)
-                .Select(_ => _mockEntityHandler.Object.ProcessAsync(messageHeader, entity));
+                .Select(_ => _mockEntityHandler.Object.ProcessAsync(null, messageHeader, entity));
             await Task.WhenAll(tasks);
         };
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, entity), Times.Exactly(10));
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity), Times.Exactly(10));
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class EntityHandlerComprehensiveTests
         var messageHeader = new MessageHeader { Type = 1, CreationDate = DateTime.UtcNow.ToString() };
         var cancellationTokenSource = new CancellationTokenSource();
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, entity))
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, entity))
             .Returns(async () =>
             {
                 await Task.Delay(1000, cancellationTokenSource.Token);
@@ -173,7 +173,7 @@ public class EntityHandlerComprehensiveTests
 
         cancellationTokenSource.Cancel();
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, entity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, entity);
 
         act.Should().ThrowAsync<OperationCanceledException>();
     }
@@ -197,12 +197,12 @@ public class EntityHandlerComprehensiveTests
         };
         var messageHeader = new MessageHeader { Type = 4, CreationDate = DateTime.UtcNow.ToString() };
 
-        _mockEntityHandler.Setup(x => x.ProcessAsync(messageHeader, complexEntity)).Returns(Task.CompletedTask);
+        _mockEntityHandler.Setup(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, complexEntity)).Returns(Task.CompletedTask);
 
-        var act = async () => await _mockEntityHandler.Object.ProcessAsync(messageHeader, complexEntity);
+        var act = async () => await _mockEntityHandler.Object.ProcessAsync(null, messageHeader, complexEntity);
 
         act.Should().NotThrowAsync();
-        _mockEntityHandler.Verify(x => x.ProcessAsync(messageHeader, complexEntity), Times.Once);
+        _mockEntityHandler.Verify(x => x.ProcessAsync(It.IsAny<TransportMessageHeaders>(), messageHeader, complexEntity), Times.Once);
     }
 }
 

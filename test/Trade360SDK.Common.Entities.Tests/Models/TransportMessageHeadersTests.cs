@@ -135,7 +135,7 @@ public class TransportMessageHeadersTests
         // Act
         var result = TransportMessageHeaders.CreateFromProperties(properties);
 
-        // Assert - Properties should be readable but not settable from outside
+        // Assert
         var type = typeof(TransportMessageHeaders);
         
         var messageTypeProperty = type.GetProperty(nameof(TransportMessageHeaders.MessageType));
@@ -144,7 +144,7 @@ public class TransportMessageHeadersTests
         var fixtureIdProperty = type.GetProperty(nameof(TransportMessageHeaders.FixtureId));
 
         messageTypeProperty!.CanRead.Should().BeTrue();
-        messageTypeProperty.SetMethod!.IsAssembly.Should().BeTrue(); // internal setter
+        messageTypeProperty.SetMethod!.IsAssembly.Should().BeTrue();
 
         messageSequenceProperty!.CanRead.Should().BeTrue();
         messageSequenceProperty.SetMethod!.IsAssembly.Should().BeTrue();
@@ -190,7 +190,7 @@ public class TransportMessageHeadersTests
             { "MessageGuid", messageGuidBytes },
             { "MessageSequence", messageSequenceBytes },
             { "FixtureId", fixtureIdBytes },
-            { "timestamp_in_ms", "1755778318057" } // This one as string to ensure mixed types work
+            { "timestamp_in_ms", "1755778318057" }
         };
 
         // Act
@@ -215,7 +215,7 @@ public class TransportMessageHeadersTests
             { "MessageSequence", "123456789" },
             { "MessageGuid", "abc-def-123" },
             { "FixtureId", "fixture-456" },
-            { "timestamp_in_ms", 1640995200000L } // Long number
+            { "timestamp_in_ms", 1640995200000L }
         };
 
         // Act
@@ -229,7 +229,7 @@ public class TransportMessageHeadersTests
     [Theory]
     [InlineData("1640995200000")]
     [InlineData("0")]
-    [InlineData("9223372036854775807")] // Max long value
+    [InlineData("9223372036854775807")]
     public void CreateFromProperties_WithVariousTimestampFormats_ShouldStoreCorrectly(string timestamp)
     {
         // Arrange

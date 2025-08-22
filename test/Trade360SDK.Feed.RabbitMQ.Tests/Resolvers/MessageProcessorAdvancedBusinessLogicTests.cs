@@ -190,6 +190,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
         await _processor.ProcessAsync(typeof(MarketUpdate), null, header, complexMarketJson);
 
         _mockHandler.Verify(h => h.ProcessAsync(
+            It.IsAny<TransportMessageHeaders>(),
             It.Is<MessageHeader>(mh => mh.Type == 3 && mh.MessageBrokerTimestamp.HasValue),
             It.Is<MarketUpdate>(mu => 
                 mu.Events != null && 

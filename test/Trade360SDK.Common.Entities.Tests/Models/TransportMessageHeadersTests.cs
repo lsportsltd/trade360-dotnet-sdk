@@ -122,19 +122,6 @@ public class TransportMessageHeadersTests
     [Fact]
     public void Properties_ShouldHaveInternalSetters()
     {
-        // Arrange
-        var properties = new Dictionary<string, object>
-        {
-            { "MessageType", "TestType" },
-            { "MessageSequence", "123456789" },
-            { "MessageGuid", "abc-def-123" },
-            { "FixtureId", "fixture-456" },
-            { "timestamp_in_ms", "1640995200000" }
-        };
-
-        // Act
-        var result = TransportMessageHeaders.CreateFromProperties(properties);
-
         // Assert
         var type = typeof(TransportMessageHeaders);
         

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Release Version 2.0.0]
 
 ### Added
+
 - **New `TransportMessageHeaders` class** - Extracts and provides access to RabbitMQ message headers including:
   - `MessageGuid` - Unique identifier for the message
   - `MessageType` - Type of the message being processed  
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for both string and byte array header values with UTF-8 encoding
 
 ### Changed
+
 - **BREAKING CHANGE**: `IEntityHandler<TType, TFlow>.ProcessAsync()` method signature
   - **Before**: `Task ProcessAsync(MessageHeader? header, TType? entity)`
   - **After**: `Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, TType? entity)`
@@ -31,11 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `MessageProcessor` implementation to handle the new `TransportMessageHeaders` parameter
 
 ### Fixed
+
 - Improved message processing pipeline to preserve transport-level metadata from RabbitMQ
 
 ### Migration Guide
 
 #### For Custom Entity Handlers
+
 If you have implemented custom `IEntityHandler<TType, TFlow>` classes, you need to update the `ProcessAsync` method signature:
 
 ```csharp
@@ -69,6 +73,7 @@ public class MyHandler : IEntityHandler<MyEntity, InPlay>
 ```
 
 #### For Custom Message Processors
+
 If you have implemented custom `IMessageProcessor` classes, update the `ProcessAsync` method signature:
 
 ```csharp
@@ -96,6 +101,7 @@ public Task ProcessAsync(Type type, TransportMessageHeaders? transportMessageHea
 ```
 
 #### MessageBrokerTimestamp Migration
+
 If you were previously using `MessageHeader.MessageBrokerTimestamp`, replace it with `TransportMessageHeaders.TimestampInMs`:
 
 ```csharp
@@ -121,6 +127,7 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
 ```
 
 #### Benefits of This Change
+
 - **Enhanced Observability**: Access to message-level metadata for logging, debugging, and monitoring
 - **Message Ordering**: Support for message sequence tracking
 - **Correlation**: Message GUID for end-to-end request correlation
@@ -130,6 +137,7 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
 ## [v1.0.0] - Initial Release
 
 ### Added
+
 - Initial SDK implementation with support for:
   - Feed consumption via RabbitMQ
   - Snapshot API client
@@ -138,5 +146,4 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
   - Dependency injection extensions
   - Sample applications and handlers
 
-[Unreleased]: https://github.com/trade360/trade360-dotnet-sdk/compare/v1.0.0...HEAD
 [v1.0.0]: https://github.com/trade360/trade360-dotnet-sdk/releases/tag/v1.0.0

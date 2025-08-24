@@ -20,7 +20,6 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             header.MsgSeq.Should().BeNull();
             header.MsgGuid.Should().BeNull();
             header.ServerTimestamp.Should().BeNull();
-            header.MessageBrokerTimestamp.Should().BeNull();
             header.MessageTimestamp.Should().BeNull();
         }
 
@@ -94,19 +93,7 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             header.ServerTimestamp.Should().Be(timestamp);
         }
 
-        [Fact]
-        public void MessageHeader_SetMessageBrokerTimestamp_ShouldSetValue()
-        {
-            // Arrange
-            var header = new MessageHeader();
-            var timestamp = new DateTime(2023, 12, 1, 10, 30, 0, DateTimeKind.Utc);
 
-            // Act
-            header.MessageBrokerTimestamp = timestamp;
-
-            // Assert
-            header.MessageBrokerTimestamp.Should().Be(timestamp);
-        }
 
         [Fact]
         public void MessageHeader_SetMessageTimestamp_ShouldSetValue()
@@ -132,7 +119,7 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             var msgSeq = 123;
             var msgGuid = "550e8400-e29b-41d4-a716-446655440000";
             var serverTimestamp = 1638360600000L;
-            var messageBrokerTimestamp = new DateTime(2023, 12, 1, 10, 30, 0, DateTimeKind.Utc);
+
             var messageTimestamp = new DateTime(2023, 12, 1, 10, 35, 0, DateTimeKind.Utc);
 
             // Act
@@ -141,7 +128,7 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             header.MsgSeq = msgSeq;
             header.MsgGuid = msgGuid;
             header.ServerTimestamp = serverTimestamp;
-            header.MessageBrokerTimestamp = messageBrokerTimestamp;
+
             header.MessageTimestamp = messageTimestamp;
 
             // Assert
@@ -150,7 +137,7 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             header.MsgSeq.Should().Be(msgSeq);
             header.MsgGuid.Should().Be(msgGuid);
             header.ServerTimestamp.Should().Be(serverTimestamp);
-            header.MessageBrokerTimestamp.Should().Be(messageBrokerTimestamp);
+
             header.MessageTimestamp.Should().Be(messageTimestamp);
         }
 
@@ -267,11 +254,11 @@ namespace Trade360SDK.Common.Entities.Tests.Models
             var header = new MessageHeader();
 
             // Act
-            header.MessageBrokerTimestamp = DateTime.MinValue;
+
             header.MessageTimestamp = DateTime.MaxValue;
 
             // Assert
-            header.MessageBrokerTimestamp.Should().Be(DateTime.MinValue);
+
             header.MessageTimestamp.Should().Be(DateTime.MaxValue);
         }
 

@@ -143,8 +143,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
         var header = new MessageHeader
         {
             Type = 3,
-            MessageTimestamp = DateTime.UtcNow,
-            MessageBrokerTimestamp = DateTime.UtcNow.AddMilliseconds(-100)
+            MessageTimestamp = DateTime.UtcNow
         };
 
         var complexMarketJson = """
@@ -191,7 +190,7 @@ public class MessageProcessorAdvancedBusinessLogicTests
 
         _mockHandler.Verify(h => h.ProcessAsync(
             It.IsAny<TransportMessageHeaders>(),
-            It.Is<MessageHeader>(mh => mh.Type == 3 && mh.MessageBrokerTimestamp.HasValue),
+            It.Is<MessageHeader>(mh => mh.Type == 3 && mh.MessageTimestamp.HasValue),
             It.Is<MarketUpdate>(mu => 
                 mu.Events != null && 
                 mu.Events.Any() && 

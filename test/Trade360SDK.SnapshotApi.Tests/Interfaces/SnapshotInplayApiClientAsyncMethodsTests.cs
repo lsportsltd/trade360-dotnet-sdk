@@ -197,7 +197,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
                 MsgSeq = 1,
                 MsgGuid = Guid.NewGuid().ToString(),
                 ServerTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                MessageBrokerTimestamp = DateTime.UtcNow,
                 MessageTimestamp = DateTime.UtcNow
             },
             Body = responseObject

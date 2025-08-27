@@ -239,7 +239,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
                 MsgSeq = 1,
                 MsgGuid = Guid.NewGuid().ToString(),
                 ServerTimestamp = DateTime.UtcNow.Ticks,
-                MessageBrokerTimestamp = DateTime.UtcNow,
                 MessageTimestamp = DateTime.UtcNow
             },
             Body = responseObject

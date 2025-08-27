@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Trade360SDK.Common.Attributes;
-using Trade360SDK.Common.Helpers;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
 
@@ -24,10 +19,8 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
             _logger = loggerFactory.CreateLogger<MessageProcessor<TType, TFlow>>();
             _serviceProvider = serviceProvider;
         }
-        
-        
 
-        public async Task ProcessAsync(Type type, MessageHeader? header, string? body)
+        public async Task ProcessAsync(Type type, TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, string? body)
         {
             var handler = _serviceProvider.GetRequiredService<IEntityHandler<TType, TFlow>>();
             
@@ -51,9 +44,9 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
                 message = null;
             }
             
-            await handler.ProcessAsync(header, message);
+            await handler.ProcessAsync(transportMessageHeaders, header, message);
         }
-        
+
         public Type GetTypeOfTType()
         {
             return typeof(TType);

@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch;
 
 internal class LivescoreUpdateHandlerPrematch : IEntityHandler<LivescoreUpdate, PreMatch>
 {
-    public Task ProcessAsync(MessageHeader? header, LivescoreUpdate? entity)
+            public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, LivescoreUpdate? entity)
     {
         Console.WriteLine("LivescoreUpdate received");
         return Task.CompletedTask;

@@ -20,7 +20,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq.Should().BeNull();
         messageHeader.MsgGuid.Should().BeNull();
         messageHeader.ServerTimestamp.Should().BeNull();
-        messageHeader.MessageBrokerTimestamp.Should().BeNull();
         messageHeader.MessageTimestamp.Should().BeNull();
     }
 
@@ -125,49 +124,11 @@ public class MessageHeaderComprehensiveTests
         messageHeader.ServerTimestamp.Should().Be(expectedServerTimestamp);
     }
 
-    [Fact]
-    public void MessageBrokerTimestamp_Property_ShouldAcceptNullValue()
-    {
-        // Arrange
-        var messageHeader = new MessageHeader();
 
-        // Act
-        messageHeader.MessageBrokerTimestamp = null;
 
-        // Assert
-        messageHeader.MessageBrokerTimestamp.Should().BeNull();
-    }
 
-    [Fact]
-    public void MessageBrokerTimestamp_Property_ShouldAcceptDateTimeValues()
-    {
-        // Arrange
-        var messageHeader = new MessageHeader();
-        var expectedDateTime = new DateTime(2023, 12, 25, 10, 30, 45, DateTimeKind.Utc);
 
-        // Act
-        messageHeader.MessageBrokerTimestamp = expectedDateTime;
 
-        // Assert
-        messageHeader.MessageBrokerTimestamp.Should().Be(expectedDateTime);
-    }
-
-    [Theory]
-    [InlineData("2023-01-01T00:00:00Z")]
-    [InlineData("2023-12-31T23:59:59.999Z")]
-    [InlineData("2024-06-15T12:30:45Z")]
-    public void MessageBrokerTimestamp_Property_ShouldAcceptVariousDateTimeValues(string dateTimeString)
-    {
-        // Arrange
-        var messageHeader = new MessageHeader();
-        var expectedDateTime = DateTime.Parse(dateTimeString);
-
-        // Act
-        messageHeader.MessageBrokerTimestamp = expectedDateTime;
-
-        // Assert
-        messageHeader.MessageBrokerTimestamp.Should().Be(expectedDateTime);
-    }
 
     [Fact]
     public void MessageTimestamp_Property_ShouldAcceptNullValue()
@@ -223,7 +184,6 @@ public class MessageHeaderComprehensiveTests
         var msgSeq = 12345;
         var msgGuid = "550e8400-e29b-41d4-a716-446655440000";
         var serverTimestamp = 1703515845000L;
-        var messageBrokerTimestamp = new DateTime(2023, 12, 25, 10, 30, 45, DateTimeKind.Utc);
         var messageTimestamp = new DateTime(2023, 12, 25, 10, 30, 46, DateTimeKind.Local);
 
         // Act
@@ -232,7 +192,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq = msgSeq;
         messageHeader.MsgGuid = msgGuid;
         messageHeader.ServerTimestamp = serverTimestamp;
-        messageHeader.MessageBrokerTimestamp = messageBrokerTimestamp;
         messageHeader.MessageTimestamp = messageTimestamp;
 
         // Assert
@@ -241,7 +200,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq.Should().Be(msgSeq);
         messageHeader.MsgGuid.Should().Be(msgGuid);
         messageHeader.ServerTimestamp.Should().Be(serverTimestamp);
-        messageHeader.MessageBrokerTimestamp.Should().Be(messageBrokerTimestamp);
         messageHeader.MessageTimestamp.Should().Be(messageTimestamp);
     }
 
@@ -281,11 +239,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.ServerTimestamp = 123456789L;
         messageHeader.ServerTimestamp.Should().Be(123456789L);
 
-        var messageBrokerTimestamp = messageHeader.MessageBrokerTimestamp;
-        var newBrokerTimestamp = DateTime.UtcNow;
-        messageHeader.MessageBrokerTimestamp = newBrokerTimestamp;
-        messageHeader.MessageBrokerTimestamp.Should().Be(newBrokerTimestamp);
-
         var messageTimestamp = messageHeader.MessageTimestamp;
         var newMessageTimestamp = DateTime.Now;
         messageHeader.MessageTimestamp = newMessageTimestamp;
@@ -303,7 +256,6 @@ public class MessageHeaderComprehensiveTests
             MsgSeq = 98765,
             MsgGuid = "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             ServerTimestamp = 1703515845123L,
-            MessageBrokerTimestamp = new DateTime(2023, 12, 25, 10, 30, 45, 123, DateTimeKind.Utc),
             MessageTimestamp = new DateTime(2023, 12, 25, 10, 30, 45, 456, DateTimeKind.Local)
         };
 
@@ -313,7 +265,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq.Should().Be(98765);
         messageHeader.MsgGuid.Should().Be("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
         messageHeader.ServerTimestamp.Should().Be(1703515845123L);
-        messageHeader.MessageBrokerTimestamp.Should().Be(new DateTime(2023, 12, 25, 10, 30, 45, 123, DateTimeKind.Utc));
         messageHeader.MessageTimestamp.Should().Be(new DateTime(2023, 12, 25, 10, 30, 45, 456, DateTimeKind.Local));
     }
 
@@ -328,11 +279,9 @@ public class MessageHeaderComprehensiveTests
             MsgSeq = 111,
             MsgGuid = "old-guid",
             ServerTimestamp = 111111L,
-            MessageBrokerTimestamp = new DateTime(2023, 1, 1),
             MessageTimestamp = new DateTime(2023, 1, 2)
         };
 
-        var newBrokerTimestamp = new DateTime(2023, 12, 25);
         var newMessageTimestamp = new DateTime(2023, 12, 26);
 
         // Act
@@ -341,7 +290,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq = 222;
         messageHeader.MsgGuid = "new-guid";
         messageHeader.ServerTimestamp = 222222L;
-        messageHeader.MessageBrokerTimestamp = newBrokerTimestamp;
         messageHeader.MessageTimestamp = newMessageTimestamp;
 
         // Assert
@@ -350,7 +298,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq.Should().Be(222);
         messageHeader.MsgGuid.Should().Be("new-guid");
         messageHeader.ServerTimestamp.Should().Be(222222L);
-        messageHeader.MessageBrokerTimestamp.Should().Be(newBrokerTimestamp);
         messageHeader.MessageTimestamp.Should().Be(newMessageTimestamp);
     }
 
@@ -365,7 +312,6 @@ public class MessageHeaderComprehensiveTests
             MsgSeq = 333,
             MsgGuid = "test-guid",
             ServerTimestamp = 333333L,
-            MessageBrokerTimestamp = DateTime.UtcNow,
             MessageTimestamp = DateTime.Now
         };
 
@@ -374,7 +320,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq = null;
         messageHeader.MsgGuid = null;
         messageHeader.ServerTimestamp = null;
-        messageHeader.MessageBrokerTimestamp = null;
         messageHeader.MessageTimestamp = null;
 
         // Assert
@@ -383,7 +328,6 @@ public class MessageHeaderComprehensiveTests
         messageHeader.MsgSeq.Should().BeNull();
         messageHeader.MsgGuid.Should().BeNull();
         messageHeader.ServerTimestamp.Should().BeNull();
-        messageHeader.MessageBrokerTimestamp.Should().BeNull();
         messageHeader.MessageTimestamp.Should().BeNull();
     }
 
@@ -396,9 +340,6 @@ public class MessageHeaderComprehensiveTests
         var minDateTime = DateTime.MinValue;
 
         // Act & Assert - Extreme DateTime values
-        messageHeader.MessageBrokerTimestamp = extremeDateTime;
-        messageHeader.MessageBrokerTimestamp.Should().Be(extremeDateTime);
-
         messageHeader.MessageTimestamp = minDateTime;
         messageHeader.MessageTimestamp.Should().Be(minDateTime);
 

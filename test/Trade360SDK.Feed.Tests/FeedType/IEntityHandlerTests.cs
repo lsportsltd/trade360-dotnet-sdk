@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using Trade360SDK.Common.Models;
 using Trade360SDK.Feed.FeedType;
@@ -23,10 +22,17 @@ public class IEntityHandlerTests
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
         var entity = new TestEntity { Name = "Test", Id = 1 };
+        var transportMessageHeaders = new TransportMessageHeaders
+        {
+            FixtureId = "123456789-test-id",
+            MessageGuid = header.MsgGuid,
+            MessageSequence = "123456789-test-seq",
+            MessageType = entity.Id.ToString() 
+        };
+        
+        await mockHandler.Object.ProcessAsync(transportMessageHeaders, header, entity);
 
-        await mockHandler.Object.ProcessAsync(header, entity);
-
-        mockHandler.Verify(h => h.ProcessAsync(header, entity), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(transportMessageHeaders, header, entity), Times.Once);
     }
 
     [Fact]
@@ -34,10 +40,16 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var entity = new TestEntity { Name = "Test", Id = 1 };
+        var transportMessageHeaders = new TransportMessageHeaders
+        {
+            FixtureId = "123456789-test-id",
+            MessageSequence = "123456789-test-seq",
+            MessageType = entity.Id.ToString() 
+        };
 
-        await mockHandler.Object.ProcessAsync(null, entity);
+        await mockHandler.Object.ProcessAsync(transportMessageHeaders, null, entity);
 
-        mockHandler.Verify(h => h.ProcessAsync(null, entity), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(transportMessageHeaders, null, entity), Times.Once);
     }
 
     [Fact]
@@ -45,9 +57,15 @@ public class IEntityHandlerTests
     {
         var mockHandler = new Mock<IEntityHandler<TestEntity, TestFlow>>();
         var header = new MessageHeader { MsgGuid = "test-id" };
+        var transportMessageHeaders = new TransportMessageHeaders
+        {
+            FixtureId = "123456789-test-id",
+            MessageGuid = header.MsgGuid,
+            MessageSequence = "123456789-test-seq",
+        };
 
-        await mockHandler.Object.ProcessAsync(header, null);
+        await mockHandler.Object.ProcessAsync(transportMessageHeaders, header, null);
 
-        mockHandler.Verify(h => h.ProcessAsync(header, null), Times.Once);
+        mockHandler.Verify(h => h.ProcessAsync(transportMessageHeaders, header, null), Times.Once);
     }
 }

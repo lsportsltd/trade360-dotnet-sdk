@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
     internal class HeartbeatHandlerPrematch : IEntityHandler<HeartbeatUpdate, PreMatch>
     {
-        public Task ProcessAsync(MessageHeader? header, HeartbeatUpdate? entity)
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, HeartbeatUpdate? entity)
         {
             Console.WriteLine("Heartbeat received");
             return Task.CompletedTask;

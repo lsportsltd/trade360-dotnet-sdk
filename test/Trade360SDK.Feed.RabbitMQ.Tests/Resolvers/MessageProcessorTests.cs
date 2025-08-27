@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text.Json;
@@ -79,9 +78,9 @@ public class MessageProcessorTests
         var entity = new TestEntity { Name = "Test", Id = 1 };
         var json = JsonSerializer.Serialize(entity);
 
-        await processor.ProcessAsync(typeof(TestEntity), header, json);
+        await processor.ProcessAsync(typeof(TestEntity), null, header, json);
 
-        _mockEntityHandler.Verify(h => h.ProcessAsync(header, It.Is<TestEntity>(e => e.Name == "Test" && e.Id == 1)), Times.Once);
+        _mockEntityHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), header, It.Is<TestEntity>(e => e.Name == "Test" && e.Id == 1)), Times.Once);
     }
 
     [Fact]
@@ -98,9 +97,9 @@ public class MessageProcessorTests
         var header = new MessageHeader { MsgGuid = "test-id" };
         var invalidJson = "{ invalid json }";
 
-        await processor.ProcessAsync(typeof(TestEntity), header, invalidJson);
+        await processor.ProcessAsync(typeof(TestEntity), null, header, invalidJson);
 
-        _mockEntityHandler.Verify(h => h.ProcessAsync(header, null), Times.Once);
+        _mockEntityHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), header, null), Times.Once);
     }
 
     [Fact]
@@ -110,9 +109,9 @@ public class MessageProcessorTests
         var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
-        await processor.ProcessAsync(typeof(TestEntity), header, null);
+        await processor.ProcessAsync(typeof(TestEntity), null, header, null);
 
-        _mockEntityHandler.Verify(h => h.ProcessAsync(header, null), Times.Once);
+        _mockEntityHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), header, null), Times.Once);
     }
 
     [Fact]
@@ -122,9 +121,9 @@ public class MessageProcessorTests
         var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
-        await processor.ProcessAsync(typeof(TestEntity), header, string.Empty);
+        await processor.ProcessAsync(typeof(TestEntity), null, header, string.Empty);
 
-        _mockEntityHandler.Verify(h => h.ProcessAsync(header, null), Times.Once);
+        _mockEntityHandler.Verify(h => h.ProcessAsync(It.IsAny<TransportMessageHeaders>(), header, null), Times.Once);
     }
 
     [Fact]
@@ -137,7 +136,7 @@ public class MessageProcessorTests
         var processor = new MessageProcessor<TestEntity, TestFlow>(_mockServiceProvider.Object, mockLoggerFactory.Object);
         var header = new MessageHeader { MsgGuid = "test-id" };
 
-        Func<Task> act = async () => await processor.ProcessAsync(typeof(TestEntity), header, "{}");
+        Func<Task> act = async () => await processor.ProcessAsync(typeof(TestEntity), null, header, "{}");
 
         await act.Should().ThrowAsync<InvalidOperationException>()
                  .WithMessage("No service for type*");

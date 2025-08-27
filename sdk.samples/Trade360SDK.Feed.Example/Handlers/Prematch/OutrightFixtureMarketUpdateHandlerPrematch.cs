@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
     internal class OutrightFixtureMarketUpdateHandlerPrematch : IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>
     {
-        public Task ProcessAsync(MessageHeader? header, OutrightFixtureMarketUpdate? entity)
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, OutrightFixtureMarketUpdate? entity)
         {
             Console.WriteLine("LivescoreUpdate received");
             return Task.CompletedTask;

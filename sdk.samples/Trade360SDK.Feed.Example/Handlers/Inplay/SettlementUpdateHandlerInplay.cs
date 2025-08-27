@@ -6,7 +6,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Inplay
 {
     internal class SettlementUpdateHandlerInplay : IEntityHandler<SettlementUpdate, InPlay>
     {
-        public Task ProcessAsync(MessageHeader? header, SettlementUpdate? entity)
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, SettlementUpdate? entity)
         {
             Console.WriteLine("SettlementUpdate received");
             return Task.CompletedTask;

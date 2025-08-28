@@ -30,13 +30,19 @@ namespace Trade360SDK.Feed.RabbitMQ.Extensions
                 .AddSingleton<IMessageProcessor, MessageProcessor<HeartbeatUpdate, PreMatch>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<LivescoreUpdate, PreMatch>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<SettlementUpdate, PreMatch>>()
-                .AddSingleton<IMessageProcessor, MessageProcessor<MarketUpdate, PreMatch>>()
+                .AddSingleton<IMessageProcessor, MessageProcessor<MarketUpdate, PreMatch>>();
+
+            services
                 .AddSingleton<IMessageProcessor, MessageProcessor<OutrightFixtureUpdate, PreMatch>>()
-                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueUpdate, PreMatch>>()
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightFixtureMarketUpdate, PreMatch>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<OutrightScoreUpdate, PreMatch>>()
-                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightSettlementsUpdate, PreMatch>>()
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightSettlementsUpdate, PreMatch>>();
+                    
+            services
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueUpdate, PreMatch>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueMarketUpdate, PreMatch>>()
-                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightFixtureMarketUpdate, PreMatch>>();
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueSettlementUpdate, PreMatch>>();
+            
             // Add CustomersApi client
             services.AddTrade360CustomerApiClient(configuration);
             return services;

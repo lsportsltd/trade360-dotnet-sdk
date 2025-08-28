@@ -17,19 +17,25 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityHandler<KeepAliveUpdate, InPlay>, KeepAliveUpdateHandlerInplay>()
             .AddScoped<IEntityHandler<SettlementUpdate, InPlay>, SettlementUpdateHandlerInplay>()
             .AddScoped<IEntityHandler<MarketUpdate, InPlay>, FixtureMarketUpdateHandlerInplay>();
-        
+
         services
             .AddScoped<IEntityHandler<FixtureMetadataUpdate, PreMatch>, FixtureMetadataUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<HeartbeatUpdate, PreMatch>, HeartbeatHandlerPrematch>()
             .AddScoped<IEntityHandler<LivescoreUpdate, PreMatch>, LivescoreUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<SettlementUpdate, PreMatch>, SettlementUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<MarketUpdate, PreMatch>, FixtureMarketUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<MarketUpdate, PreMatch>, FixtureMarketUpdateHandlerPrematch>();
+        
+        services
             .AddScoped<IEntityHandler<OutrightFixtureUpdate, PreMatch>, OutrightFixtureUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightLeagueUpdate, PreMatch>, OutrightLeagueUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<OutrightScoreUpdate, PreMatch>, OutrightScoreUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<OutrightSettlementsUpdate, PreMatch>, OutrightSettlementsUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>,
+                OutrightFixtureMarketUpdateHandlerPrematch>();
+        
+        services
             .AddScoped<IEntityHandler<OutrightLeagueMarketUpdate, PreMatch>, OutrightLeagueMarketsUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>, OutrightFixtureMarketUpdateHandlerPrematch>();
+            .AddScoped<IEntityHandler<OutrightLeagueUpdate, PreMatch>, OutrightLeagueUpdateHandlerPrematch>()
+            .AddScoped<IEntityHandler<OutrightLeagueSettlementUpdate, PreMatch>, OutrightLeagueSettlementsUpdateHandler>();
         
         return services;
     }

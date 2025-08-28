@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Release Version 2.0.0]
 
+
 ### Added (v2.0.0)
 
 - **New `TransportMessageHeaders` class** - Extracts and provides access to RabbitMQ message headers including:
@@ -135,6 +136,7 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
 - **Fixture Context**: Direct access to fixture IDs where applicable
 
 ## [v1.0.0] - Initial Release
+
 
 ### Added (v1.0.0)
 

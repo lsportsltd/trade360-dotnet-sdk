@@ -54,6 +54,7 @@ namespace Trade360SDK.SnapshotApi.Example
             Console.WriteLine("8. Customer API - Get Outright Events");
             Console.WriteLine("9. Customer API - Get Outright Leagues Fixtures");
             Console.WriteLine("10. Customer API - Get Outright Leagues Markets");
+            Console.WriteLine("11. Customer API - Get Outright Leagues Events");
         }
 
         private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
@@ -94,14 +95,16 @@ namespace Trade360SDK.SnapshotApi.Example
                 case "10":
                     await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
                     break;
+                case "11":
+                    await GetOutrightLeaguesEvents(_snapshotPrematchApiClient, cancellationToken);
+                    break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
                     break;
             }
         }
-        
-        
-           private async Task GetFixtures(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+
+        private async Task GetFixtures(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetFixtures...");
 
@@ -328,6 +331,22 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var response = await snapshotPrematchApiClient.GetOutrightLeaguesMarkets(request, cancellationToken);
             _logger.LogInformation("GetOutrightLeaguesMarkets ended with response count: {Count}", response.Count());
+        }
+        
+        private async Task GetOutrightLeaguesEvents(ISnapshotPrematchApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting GetOutrightLeaguesEvents...");
+
+            var request = new GetOutrightFixturesRequestDto()
+            {
+                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
+                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+            };
+
+            var response = await snapshotPrematchApiClient.GetOutrightLeagueEvents(request, cancellationToken);
+            _logger.LogInformation("GetOutrightLeaguesEvents ended with response count: {Count}", response.Count());
         }
 
 

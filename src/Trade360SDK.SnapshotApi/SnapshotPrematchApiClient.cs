@@ -136,5 +136,17 @@ namespace Trade360SDK.SnapshotApi
                 cancellationToken);
             return response;
         }
+
+        public async Task<IEnumerable<GetOutrightLeagueEventsResponse>> GetOutrightLeagueEvents(
+            GetOutrightFixturesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeagueEventsResponse>>(
+                "Prematch/GetOutrightLeagueEvents",
+                request,
+                cancellationToken);
+            return response;
+        }
     }
 }

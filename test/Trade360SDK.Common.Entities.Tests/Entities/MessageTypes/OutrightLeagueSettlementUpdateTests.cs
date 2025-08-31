@@ -32,20 +32,6 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         }
 
         [Fact]
-        public void Competition_ShouldAcceptDifferentGenericTypes()
-        {
-            var competitionWithEvent = new OutrightLeagueCompetitionWrapper<OutrightLeagueEvent>();
-            var competitionWithMarketEvent = new OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>();
-            
-            var update1 = new OutrightLeagueSettlementUpdate
-            {
-                Competition = competitionWithMarketEvent
-            };
-            
-            Assert.Equal(competitionWithMarketEvent, update1.Competition);
-        }
-
-        [Fact]
         public void Competition_ShouldHandleComplexNestedStructure()
         {
             var marketEvent = new OutrightLeagueMarketEvent

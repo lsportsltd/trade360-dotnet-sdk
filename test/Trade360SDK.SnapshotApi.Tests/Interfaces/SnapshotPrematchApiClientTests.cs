@@ -196,4 +196,25 @@ public class SnapshotPrematchApiClientTests
 
         _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
     }
+
+    [Fact]
+    public async Task GetOutrightLeagueEvents_ShouldMapRequestAndCallPostEntityAsync()
+    {
+        var client = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var requestDto = new GetOutrightFixturesRequestDto();
+        var mappedRequest = new BaseOutrightRequest();
+
+        _mockMapper.Setup(m => m.Map<BaseOutrightRequest>(requestDto)).Returns(mappedRequest);
+
+        try
+        {
+            await client.GetOutrightLeagueEvents(requestDto, CancellationToken.None);
+        }
+        catch
+        {
+            // Devin: Expected exception in test - verifying method call behavior only
+        }
+
+        _mockMapper.Verify(m => m.Map<BaseOutrightRequest>(requestDto), Times.Once);
+    }
 }

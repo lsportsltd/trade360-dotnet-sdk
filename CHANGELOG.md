@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Release Version 2.0.0]
 
-### Added
+
+### Added (v2.0.0)
 
 - **New `TransportMessageHeaders` class** - Extracts and provides access to RabbitMQ message headers including:
   - `MessageGuid` - Unique identifier for the message
@@ -136,7 +137,8 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
 
 ## [v1.0.0] - Initial Release
 
-### Added
+
+### Added (v1.0.0)
 
 - Initial SDK implementation with support for:
   - Feed consumption via RabbitMQ

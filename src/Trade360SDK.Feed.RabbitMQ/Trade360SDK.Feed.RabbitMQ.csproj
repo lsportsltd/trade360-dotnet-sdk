@@ -3,11 +3,11 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.0.1</PackageVersion>
+		<PackageVersion>2.1.0</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.1 version includes a bug fix for the RabbitMQFeed related to the initial connection with RabbitMQ.
             - 2.0.0 Added handling for TransportMessageHeaders as part of the RabbitMQFeed message handling.
-            - 2.0.1 Added message processor registration for OutrightLeagueSettlementUpdate to support new outright league settlement messages
+            - 2.1.0 Added message processor registration for OutrightLeagueSettlementUpdate to support new outright league settlement messages
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

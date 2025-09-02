@@ -5,12 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Release Version 2.0.0]
+## Package Version Summary
 
+| Package | Version | Changes |
+|---------|---------|---------|
+| Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
+| Trade360SDK.Feed.RabbitMQ | 2.1.0 | Breaking changes (2.0.0) + OutrightLeagueSettlementUpdate support (2.1.0) |
+| Trade360SDK.Common.Entities | 1.2.0 | New outright league entities and message types |
+| Trade360SDK.SnapshotApi | 1.1.0 | New GetOutrightLeagueEvents API method |
+| Trade360SDK.CustomersApi | 1.0.1 | No changes in this release |
 
-### Added (v2.0.0)
+---
 
-- **New `TransportMessageHeaders` class** - Extracts and provides access to RabbitMQ message headers including:
+## [Release Version 2.1.0]
+
+### [Trade360SDK.Feed.RabbitMQ - v2.1.0]
+
+#### Added
+- Added message processor registration for `OutrightLeagueSettlementUpdate` to support new outright league settlement messages
+
+### [Trade360SDK.Common.Entities - v1.2.0]
+
+#### Added
+- Enhanced outright league support with new entities and message types:
+  - `OutrightLeagueSettlementUpdate` message type `[Trade360Entity(43)]` for settlement updates
+  - `OutrightLeagueMarket` entity with Id, Name, and Bets properties
+  - Added `Markets` property to `OutrightLeagueEvent` entity to support market data
+
+### [Trade360SDK.SnapshotApi - v1.1.0]
+
+#### Added
+- New API method for outright league events:
+  - `GetOutrightLeagueEvents` method in `ISnapshotPrematchApiClient` interface
+  - `GetOutrightLeagueEventsResponse` entity for API responses
+  - Support for retrieving outright league events with competition wrapper structure
+
+### [Trade360SDK.Feed - v2.0.0]
+
+#### Added
+- New `TransportMessageHeaders` class - Extracts and provides access to RabbitMQ message headers including:
   - `MessageGuid` - Unique identifier for the message
   - `MessageType` - Type of the message being processed  
   - `TimestampInMs` - Message timestamp in milliseconds
@@ -20,22 +53,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive validation for required message header properties
 - Support for both string and byte array header values with UTF-8 encoding
 
-### Changed
-
+#### Changed
 - **BREAKING CHANGE**: `IEntityHandler<TType, TFlow>.ProcessAsync()` method signature
   - **Before**: `Task ProcessAsync(MessageHeader? header, TType? entity)`
   - **After**: `Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, TType? entity)`
+
+### [Trade360SDK.Feed.RabbitMQ - v2.0.0]
+
+#### Changed
 - **BREAKING CHANGE**: `IMessageProcessor.ProcessAsync()` method signature  
   - **Before**: `Task ProcessAsync(Type type, MessageHeader? header, string? body)`
   - **After**: `Task ProcessAsync(Type type, TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, string? body)`
-- **BREAKING CHANGE**: Removed `MessageBrokerTimestamp` property from `MessageHeader` class
-  - This timestamp information is now available via `TransportMessageHeaders.TimestampInMs`
 - Updated `MessageConsumer` to extract RabbitMQ message headers and pass them through the processing pipeline
 - Updated `MessageProcessor` implementation to handle the new `TransportMessageHeaders` parameter
 
-### Fixed
+### [Trade360SDK.Common.Entities - v1.1.0]
 
+#### Changed
+- **BREAKING CHANGE**: Removed `MessageBrokerTimestamp` property from `MessageHeader` class
+  - This timestamp information is now available via `TransportMessageHeaders.TimestampInMs`
+
+#### Fixed
 - Improved message processing pipeline to preserve transport-level metadata from RabbitMQ
+
+
 
 ### Migration Guide
 
@@ -134,6 +175,8 @@ public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, Messa
 - **Correlation**: Message GUID for end-to-end request correlation
 - **Temporal Analysis**: Precise message timestamps for performance analysis
 - **Fixture Context**: Direct access to fixture IDs where applicable
+
+---
 
 ## [v1.0.0] - Initial Release
 

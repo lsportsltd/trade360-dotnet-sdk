@@ -228,6 +228,47 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         result.First().Id.Should().Be(1);
     }
 
+    [Fact]
+    public async Task GetOutrightLeagueEvents_WithValidRequest_ShouldReturnEvents()
+    {
+        var eventsWrapper = new Trade360SDK.Common.Entities.OutrightLeague.OutrightLeagueEventsWrapper<Trade360SDK.Common.Entities.OutrightLeague.OutrightLeagueEvent>
+        {
+            Id = 1,
+            Name = "Test Events Wrapper",
+            Events = new[] { new Trade360SDK.Common.Entities.OutrightLeague.OutrightLeagueEvent { FixtureId = 1 } }
+        };
+        
+        var expectedEvents = new[]
+        {
+            new GetOutrightLeagueEventsResponse 
+            { 
+                Competition = new[] 
+                { 
+                    new Trade360SDK.Common.Entities.OutrightLeague.OutrightLeagueCompetitionWrapper<Trade360SDK.Common.Entities.OutrightLeague.OutrightLeagueEvent>
+                    {
+                        Id = 100,
+                        Name = "Test Competition",
+                        Competitions = new[] { eventsWrapper }
+                    }
+                }
+            }
+        };
+
+        var baseRequest = new BaseOutrightRequest();
+        _mockMapper.Setup(m => m.Map<BaseOutrightRequest>(It.IsAny<GetOutrightFixturesRequestDto>())).Returns(baseRequest);
+
+        SetupHttpResponse(expectedEvents);
+
+        var result = await _client.GetOutrightLeagueEvents(new GetOutrightFixturesRequestDto(), CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
+        result.First().Competition.Should().HaveCount(1);
+        result.First().Competition.First().Competitions.Should().HaveCount(1);
+        result.First().Competition.First().Competitions.First().Events.Should().HaveCount(1);
+        result.First().Competition.First().Competitions.First().Events.First().FixtureId.Should().Be(1);
+    }
+
     private void SetupHttpResponse<T>(T responseObject, HttpStatusCode statusCode = HttpStatusCode.OK) where T : class
     {
         var baseResponse = new Trade360SDK.SnapshotApi.Http.BaseResponse<T>

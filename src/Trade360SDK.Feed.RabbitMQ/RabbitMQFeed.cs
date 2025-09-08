@@ -229,53 +229,6 @@ namespace Trade360SDK.Feed.RabbitMQ
             }
 
             _logger.LogWarning($"Connection shutdown. ReplyCode: {e.ReplyCode}, ReplyText: {e.ReplyText}");
-            _ = RetryConnectionAsync();
-        }
-
-        private async Task RetryConnectionAsync()
-        {
-            lock (_reconnectionLock)
-            {
-                if (_isReconnecting) return; // Already reconnecting, exit to prevent multiple attempts
-                _isReconnecting = true;
-            }
-
-            const int maxRetries = 12; // Retry for 2 minutes (12 * 10 seconds)
-            const int delayMilliseconds = 10000; // 10-second delay between retries
-
-            for (var attempt = 0; attempt < maxRetries; attempt++)
-            {
-                if (_cts.Token.IsCancellationRequested)
-                {
-                    _logger.LogInformation("RabbitMQ feed recovery operation was canceled.");
-                    _isReconnecting = false;
-                    return;
-                }
-
-                try
-                {
-                    CreateAndSetupConnection();
-
-                    _consumerTag = _channel.BasicConsume(
-                        queue: $"_{_settings.PackageId}_",
-                        autoAck: _settings.AutoAck,
-                        consumer: _consumer);
-
-                    _logger.LogInformation("Reconnected to RabbitMQ and resumed consuming.");
-                    _isReconnecting = false;
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Attempt {attempt + 1} to reconnect to RabbitMQ failed. Retrying in {delayMilliseconds / 1000} seconds...");
-                }
-
-                await Task.Delay(delayMilliseconds, _cts.Token);
-            }
-
-            _logger.LogError("Failed to reconnect to RabbitMQ after multiple attempts.");
-            _isReconnecting = false;
-            throw new RabbitMqFeedException("Failed to reconnect to RabbitMQ after multiple attempts.");
         }
     }
 }

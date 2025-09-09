@@ -1,20 +1,11 @@
 ﻿using System.Collections.Generic;
+using Trade360SDK.Common.Entities.OutrightLeague;
 
 namespace Trade360SDK.SnapshotApi.Entities.Responses
 {
     public class GetOutrightLeaguesMarketsResponse
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public int Type { get; set; }
-        public IEnumerable<SnapshotOutrightEventsResponse>? Competitions { get; set; }
+        public IEnumerable<OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>> Competition { get; set; }
     }
-
-    public class SnapshotOutrightEventsResponse
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public int Type { get; set; }
-        public IEnumerable<OutrightMarketsResponse>? Events { get; set; }
-    }
+    
 }

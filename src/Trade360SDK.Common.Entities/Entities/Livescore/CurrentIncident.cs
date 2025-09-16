@@ -11,6 +11,6 @@ namespace Trade360SDK.Common.Entities.Livescore
         
         public DateTime LastUpdate { get; set; }
         
-        public IncidentConfirmation Confirmation { get; set; }
+        public IncidentConfirmation? Confirmation { get; set; }
     }
 }

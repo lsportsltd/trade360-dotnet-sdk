@@ -1,4 +1,5 @@
 using System;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Livescore;
 using Xunit;
 
@@ -14,11 +15,13 @@ namespace Trade360SDK.Common.Tests
             {
                 Id = 42,
                 Name = "IncidentName",
-                LastUpdate = now
+                LastUpdate = now,
+                Confirmation = IncidentConfirmation.Cancelled
             };
             Assert.Equal(42, incident.Id);
             Assert.Equal("IncidentName", incident.Name);
             Assert.Equal(now, incident.LastUpdate);
+            Assert.Equal(IncidentConfirmation.Cancelled, incident.Confirmation);
         }
 
         [Fact]

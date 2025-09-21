@@ -12,6 +12,12 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using AutoMapper;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.Common.Entities.Incidents;
+using Trade360SDK.Common.Entities.Fixtures;
+using Trade360SDK.Common.Entities.Enums;
+using Trade360SDK.Common.Entities.Shared;
+using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
+using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
+using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -228,6 +234,76 @@ public class MetadataHttpClientAsyncMethodsTests
         result.First().IncidentId.Should().Be(1);
     }
 
+    [Fact]
+    public async Task GetCitiesAsync_WithValidRequest_ShouldReturnCities()
+    {
+        var expectedResponse = new GetCitiesResponse
+        {
+            Data = new[]
+            {
+                new City { CityId = 1, Name = "New York", State = new IdNamePair { Id = 10, Name = "New York State" } },
+                new City { CityId = 2, Name = "Los Angeles", State = new IdNamePair { Id = 20, Name = "California" } }
+            }
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetCitiesAsync(new GetCitiesRequestDto(), CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("New York");
+        result.First().CityId.Should().Be(1);
+        result.First().State?.Id.Should().Be(10);
+    }
+
+    [Fact]
+    public async Task GetStatesAsync_WithValidRequest_ShouldReturnStates()
+    {
+        var expectedResponse = new GetStatesResponse
+        {
+            Data = new[]
+            {
+                new State { StateId = 1, Name = "California", Country = new IdNamePair { Id = 100, Name = "USA" } },
+                new State { StateId = 2, Name = "Texas", Country = new IdNamePair { Id = 100, Name = "USA" } }
+            }
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetStatesAsync(new GetStatesRequestDto(), CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("California");
+        result.First().StateId.Should().Be(1);
+        result.First().Country?.Id.Should().Be(100);
+    }
+
+    [Fact]
+    public async Task GetVenuesAsync_WithValidRequest_ShouldReturnVenues()
+    {
+        var expectedResponse = new GetVenuesResponse
+        {
+            Data = new[]
+            {
+                new Venue { VenueId = 1, Name = "Wembley Stadium", City = new IdNamePair { Id = 10, Name = "London" } },
+                new Venue { VenueId = 2, Name = "Madison Square Garden", City = new IdNamePair { Id = 20, Name = "New York" } }
+            }
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetVenuesAsync(new GetVenuesRequestDto(), CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("Wembley Stadium");
+        result.First().VenueId.Should().Be(1);
+        result.First().City?.Id.Should().Be(10);
+        result.First().City?.Name.Should().Be("London");
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.BadRequest)]
     [InlineData(HttpStatusCode.Unauthorized)]
@@ -341,5 +417,14 @@ public class MetadataHttpClientAsyncMethodsTests
 
         mockMapper.Setup(x => x.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
             .Returns(new GetIncidentsRequest());
+
+        mockMapper.Setup(x => x.Map<GetCitiesRequest>(It.IsAny<GetCitiesRequestDto>()))
+            .Returns(new GetCitiesRequest());
+
+        mockMapper.Setup(x => x.Map<GetStatesRequest>(It.IsAny<GetStatesRequestDto>()))
+            .Returns(new GetStatesRequest());
+
+        mockMapper.Setup(x => x.Map<GetVenuesRequest>(It.IsAny<GetVenuesRequestDto>()))
+            .Returns(new GetVenuesRequest());
     }
 }

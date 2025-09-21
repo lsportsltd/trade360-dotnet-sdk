@@ -358,6 +358,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Enums
             typeof(SubscriptionState).IsValueType.Should().BeTrue();
             typeof(DangerIndicatorStatus).IsValueType.Should().BeTrue();
             typeof(DangerIndicatorType).IsValueType.Should().BeTrue();
+            typeof(CourtSurface).IsValueType.Should().BeTrue();
+            typeof(VenueAssignment).IsValueType.Should().BeTrue();
+            typeof(VenueEnvironment).IsValueType.Should().BeTrue();
         }
 
         [Fact]
@@ -369,6 +372,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Enums
             typeof(SubscriptionState).IsEnum.Should().BeTrue();
             typeof(DangerIndicatorStatus).IsEnum.Should().BeTrue();
             typeof(DangerIndicatorType).IsEnum.Should().BeTrue();
+            typeof(CourtSurface).IsEnum.Should().BeTrue();
+            typeof(VenueAssignment).IsEnum.Should().BeTrue();
+            typeof(VenueEnvironment).IsEnum.Should().BeTrue();
         }
 
         [Fact]
@@ -380,6 +386,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Enums
             typeof(SubscriptionState).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
             typeof(DangerIndicatorStatus).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
             typeof(DangerIndicatorType).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
+            typeof(CourtSurface).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
+            typeof(VenueAssignment).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
+            typeof(VenueEnvironment).Namespace.Should().Be("Trade360SDK.Common.Entities.Enums");
         }
     }
 } 

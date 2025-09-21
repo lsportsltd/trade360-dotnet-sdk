@@ -20,6 +20,12 @@ namespace Trade360SDK.Common.Tests
             var participants = new List<OutrightFixtureParticipant> { new OutrightFixtureParticipant { Id = 1 } };
             var extraData = new List<NameValuePair> { new NameValuePair { Name = "key", Value = "val" } };
             var subscription = new Subscription();
+            var venue = new FixtureVenue
+            {
+                Id = 1,
+                Name = "Test Venue",
+                Assignment = VenueAssignment.Home
+            };
             var fixture = new OutrightFixture
             {
                 Sport = sport,
@@ -29,7 +35,8 @@ namespace Trade360SDK.Common.Tests
                 Status = FixtureStatus.Finished,
                 Participants = participants,
                 ExtraData = extraData,
-                Subscription = subscription
+                Subscription = subscription,
+                Venue = venue
             };
             Assert.Equal(sport, fixture.Sport);
             Assert.Equal(location, fixture.Location);
@@ -39,6 +46,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal(participants, fixture.Participants);
             Assert.Equal(extraData, fixture.ExtraData);
             Assert.Equal(subscription, fixture.Subscription);
+            Assert.Equal(venue, fixture.Venue);
         }
 
         [Fact]
@@ -53,6 +61,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(fixture.Participants);
             Assert.Null(fixture.ExtraData);
             Assert.Null(fixture.Subscription);
+            Assert.Null(fixture.Venue);
         }
     }
 } 

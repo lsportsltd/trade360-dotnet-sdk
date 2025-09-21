@@ -29,6 +29,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.FixtureExtraData.Should().BeNull();
             fixture.ExternalFixtureId.Should().BeNull();
             fixture.Subscription.Should().BeNull();
+            fixture.Venue.Should().BeNull();
+            fixture.Stage.Should().BeNull();
+            fixture.Round.Should().BeNull();
         }
 
         [Fact]
@@ -190,6 +193,60 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
         }
 
         [Fact]
+        public void Fixture_SetVenue_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var venue = new FixtureVenue
+            {
+                Id = 1,
+                Name = "Wembley Stadium",
+                Assignment = VenueAssignment.Home
+            };
+
+            // Act
+            fixture.Venue = venue;
+
+            // Assert
+            fixture.Venue.Should().Be(venue);
+            fixture.Venue.Id.Should().Be(1);
+            fixture.Venue.Name.Should().Be("Wembley Stadium");
+            fixture.Venue.Assignment.Should().Be(VenueAssignment.Home);
+        }
+
+        [Fact]
+        public void Fixture_SetStage_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var stage = new IdNamePair { Id = 1, Name = "Group Stage" };
+
+            // Act
+            fixture.Stage = stage;
+
+            // Assert
+            fixture.Stage.Should().Be(stage);
+            fixture.Stage.Id.Should().Be(1);
+            fixture.Stage.Name.Should().Be("Group Stage");
+        }
+
+        [Fact]
+        public void Fixture_SetRound_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var round = new IdNamePair { Id = 2, Name = "Round of 16" };
+
+            // Act
+            fixture.Round = round;
+
+            // Assert
+            fixture.Round.Should().Be(round);
+            fixture.Round.Id.Should().Be(2);
+            fixture.Round.Name.Should().Be("Round of 16");
+        }
+
+        [Fact]
         public void Fixture_SetAllProperties_ShouldSetAllValues()
         {
             // Arrange
@@ -204,6 +261,14 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             var extraData = new List<NameValuePair> { new NameValuePair { Name = "Weather", Value = "Sunny" } };
             var externalId = "EXT-12345";
             var subscription = new Subscription();
+            var venue = new FixtureVenue
+            {
+                Id = 1,
+                Name = "Old Trafford",
+                Assignment = VenueAssignment.Home
+            };
+            var stage = new IdNamePair { Id = 1, Name = "Knockout Stage" };
+            var round = new IdNamePair { Id = 2, Name = "Final" };
 
             // Act
             fixture.Sport = sport;
@@ -216,6 +281,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.FixtureExtraData = extraData;
             fixture.ExternalFixtureId = externalId;
             fixture.Subscription = subscription;
+            fixture.Venue = venue;
+            fixture.Stage = stage;
+            fixture.Round = round;
 
             // Assert
             fixture.Sport.Should().Be(sport);
@@ -228,6 +296,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.FixtureExtraData.Should().BeEquivalentTo(extraData);
             fixture.ExternalFixtureId.Should().Be(externalId);
             fixture.Subscription.Should().Be(subscription);
+            fixture.Venue.Should().Be(venue);
+            fixture.Stage.Should().Be(stage);
+            fixture.Round.Should().Be(round);
         }
 
         [Fact]
@@ -262,6 +333,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.FixtureExtraData = null;
             fixture.ExternalFixtureId = null;
             fixture.Subscription = null;
+            fixture.Venue = null;
+            fixture.Stage = null;
+            fixture.Round = null;
 
             // Assert
             fixture.Sport.Should().BeNull();
@@ -272,6 +346,9 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.FixtureExtraData.Should().BeNull();
             fixture.ExternalFixtureId.Should().BeNull();
             fixture.Subscription.Should().BeNull();
+            fixture.Venue.Should().BeNull();
+            fixture.Stage.Should().BeNull();
+            fixture.Round.Should().BeNull();
         }
 
         [Theory]

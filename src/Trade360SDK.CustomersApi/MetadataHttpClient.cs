@@ -6,12 +6,16 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
+using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Incidents;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Http;
 using Trade360SDK.CustomersApi.Interfaces;
 using Trade360SDK.CustomersApi.Validators;
+using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
+using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
+using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 
 namespace Trade360SDK.CustomersApi
 {
@@ -88,6 +92,27 @@ namespace Trade360SDK.CustomersApi
             var request = _mapper.Map<GetIncidentsRequest>(requestDto);
             var response = await PostEntityAsync<GetIncidentsResponse>("Incidents/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<Incident>();
+        }
+
+        public async Task<IEnumerable<Venue>> GetVenuesAsync(GetVenuesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetVenuesRequest>(requestDto);
+            var response = await PostEntityAsync<GetVenuesResponse>("Venues/Get", request, cancellationToken);
+            return response.Data ?? Enumerable.Empty<Venue>();
+        }
+
+        public async Task<IEnumerable<City>> GetCitiesAsync(GetCitiesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetCitiesRequest>(requestDto);
+            var response = await PostEntityAsync<GetCitiesResponse>("Cities/Get", request, cancellationToken);
+            return response.Data ?? Enumerable.Empty<City>();
+        }
+
+        public async Task<IEnumerable<State>> GetStatesAsync(GetStatesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetStatesRequest>(requestDto);
+            var response = await PostEntityAsync<GetStatesResponse>("States/Get", request, cancellationToken);
+            return response.Data ?? Enumerable.Empty<State>();
         }
     }
 }

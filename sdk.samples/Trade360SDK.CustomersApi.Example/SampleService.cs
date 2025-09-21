@@ -8,6 +8,7 @@ using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 using Trade360SDK.CustomersApi.Interfaces;
 using Suspension = Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests.Suspension;
 using System.ComponentModel;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -58,7 +59,10 @@ namespace Trade360SDK.CustomersApi.Example
                 { MenuOption.GetPackageQuota, async ct => await GetPackageQuota(_inplaySubscriptionHttpClient, ct) },
                 { MenuOption.GetDistributionStatus, async ct => await GetDistributionStatus(_prematchPackageDistributionHttpClient, ct) },
                 { MenuOption.StartDistribution, async ct => await StartDistribution(_prematchPackageDistributionHttpClient, ct) },
-                { MenuOption.GetIncidents, async ct => await GetIncidentsAsync(_prematchMetadataHttpClient, ct)}
+                { MenuOption.GetIncidents, async ct => await GetIncidentsAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetVenues, async ct => await GetVenuesAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetCities, async ct => await GetCitiesAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetStates, async ct => await GetStatesAsync(_prematchMetadataHttpClient, ct)},
             };
         }
 
@@ -403,6 +407,72 @@ namespace Trade360SDK.CustomersApi.Example
             });
             Console.WriteLine($"Response returned: \n{jsonResponse}\n");
         }
+        
+        private async Task GetVenuesAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetVenuesRequestDto()
+            {
+                Filter = new VenueFilterDto
+                {
+                    VenueIds = null,
+                    CountryIds = null,
+                    StateIds = null,
+                    CityIds = null
+                }
+            };
+            
+            var response = await metadataApiClient.GetVenuesAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
+        
+        private async Task GetCitiesAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetCitiesRequestDto()
+            {
+                Filter = new CityFilterDto()
+                {
+                    CountryIds = null,
+                    StateIds = null,
+                    CityIds = null
+                }
+            };
+            
+            var response = await metadataApiClient.GetCitiesAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
+        
+        private async Task GetStatesAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetStatesRequestDto()
+            {
+                Filter = new StateFilterDto()
+                {
+                    CountryIds = null,
+                    StateIds = null
+                }
+            };
+            
+            var response = await metadataApiClient.GetStatesAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
@@ -446,6 +516,15 @@ namespace Trade360SDK.CustomersApi.Example
             
             [Description("Metadata API - Get Incidents")]
             GetIncidents,
+            
+            [Description("Metadata API - Get Venues")]
+            GetVenues,
+            
+            [Description("Metadata API - Get Cities")]
+            GetCities,
+            
+            [Description("Metadata API - Get States")]
+            GetStates,
 
             [Description("Subscription API - Subscribe to Fixture")]
             SubscribeToFixture,

@@ -1,23 +1,21 @@
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Linq;
 using Trade360SDK.Common.Configuration;
-using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using AutoMapper;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.Common.Entities.Incidents;
-using Trade360SDK.Common.Entities.Fixtures;
-using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Shared;
+using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
+using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
+using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
 
 namespace Trade360SDK.CustomersApi.Tests;
 

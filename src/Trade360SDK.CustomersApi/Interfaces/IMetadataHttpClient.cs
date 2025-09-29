@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Incidents;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
+using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
+using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
+using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
 
 namespace Trade360SDK.CustomersApi.Interfaces
 {

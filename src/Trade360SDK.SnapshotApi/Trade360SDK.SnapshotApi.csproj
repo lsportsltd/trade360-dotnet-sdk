@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <PackageReleaseNotes>
       - 1.1.0 Added GetOutrightLeagueEvents API method and GetOutrightLeagueEventsResponse entity to support outright league events retrieval
+	  - 1.2.0 Added endDate property to OutrightFixture entity
     </PackageReleaseNotes>
   </PropertyGroup>
 

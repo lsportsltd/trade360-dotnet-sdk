@@ -40,6 +40,8 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
         public FixtureStatus Status { get; set; }
 
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
+        
+        public DateTime EndDate { get; set; }
     }
 
 }

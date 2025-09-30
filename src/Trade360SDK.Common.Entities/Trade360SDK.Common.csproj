@@ -3,13 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.2.1</PackageVersion>
+		<PackageVersion>1.3.0</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).
             - 1.1.0 Introduced `TransportMessageHeaders`. Removed `MessageBrokerTimestamp` from MessageHeader
             - 1.2.0 Enhanced outright league support: Added OutrightLeagueSettlementUpdate message type, OutrightLeagueMarket entity, and Markets property to OutrightLeagueEvent
 			- 1.2.1 Fixed an issue with the OutrightLeagueMarket entity where the `Selections` property was incorrectly defined as a single `OutrightLeagueSelection` instead of a collection of `OutrightLeagueSelection` objects.
+			- 1.3.0 Added `Confirmation` property to `Current incdient` entity and `end date` property to `outright fixture` entity 
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

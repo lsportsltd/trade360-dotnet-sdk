@@ -19,8 +19,10 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Sport = new Sport { Id = 2, Name = "Basketball" },
                 Location = new Location { Id = 20, Name = "Arena" },
                 LastUpdate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddHours(2),
                 Status = FixtureStatus.Finished,
-                ExtraData = new List<NameValuePair> { new NameValuePair { Name = "LeagueKey", Value = "LeagueValue" } }
+                ExtraData = new List<NameValuePair> { new NameValuePair { Name = "LeagueKey", Value = "LeagueValue" } },
+                EndDate = DateTime.UtcNow.AddDays(30)
             };
             var competition = new CompetitionResponse
             {
@@ -58,6 +60,7 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.Equal("Arena", evt.OutrightLeague.Location.Name);
             Assert.NotNull(evt.OutrightLeague.ExtraData);
             Assert.Equal("LeagueKey", Assert.Single(evt.OutrightLeague.ExtraData).Name);
+            Assert.NotNull(evt.OutrightLeague.EndDate);
         }
     }
 } 

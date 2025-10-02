@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [Trade360SDK.Common.Entities - v1.4.0]
 
 #### Added
+
 - **Venue-Related Enums**
   - `CourtSurface` enum with values: Grass, Hard, Clay, ArtificialGrass
   - `VenueAssignment` enum with values: Home, Away, Neutral  
@@ -52,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [Trade360SDK.CustomersApi - v1.1.0]
 
 #### Added
+
 - **New Metadata API Endpoints**
   - `GetVenuesAsync()` - Retrieve venue information with filtering capabilities
   - `GetCitiesAsync()` - Retrieve city information with filtering capabilities
@@ -72,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Sample implementations demonstrating new API endpoints with JSON serialization
 
 #### API Routes
+
 - Added `/Venues/Get` endpoint to metadata API
 - Added `/Cities/Get` endpoint to metadata API  
 - Added `/States/Get` endpoint to metadata API
@@ -85,6 +88,7 @@ All changes are backward compatible. Existing code will continue to work without
 ### [Trade360SDK.Common.Entities - v1.3.0]
 
 #### Added
+
 - **Incident Confirmation Support**
   - `IncidentConfirmation` enum with values: Confirmed, TBD, Cancelled
   - Added `Confirmation` property to `CurrentIncident` entity for incident status tracking
@@ -95,6 +99,7 @@ All changes are backward compatible. Existing code will continue to work without
 ### [Trade360SDK.SnapshotApi - v1.2.0]
 
 #### Added
+
 - Enhanced outright fixture entities to support new `EndDate` property for tournament end date tracking
 
 ### Backward Compatibility
@@ -106,6 +111,7 @@ All changes are backward compatible. The new `Confirmation` and `EndDate` proper
 ### [Trade360SDK.Feed.RabbitMQ - v2.1.1]
 
 #### Fixed
+
 - Fixed an issue with the RabbitMQFeed where it did not properly handle message acknowledgments, leading to potential message loss in high-throughput scenarios
 
 ## [Release Version 2.1.0]

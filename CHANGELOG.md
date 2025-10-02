@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
 | Trade360SDK.Feed.RabbitMQ | 2.1.1 | Breaking changes (2.0.0) + OutrightLeagueSettlementUpdate support (2.1.0) + Bug fixes (2.1.1) |
 | Trade360SDK.Common.Entities | 1.4.0 | New venue-related entities and enums + outright league entities + incident confirmation |
-| Trade360SDK.SnapshotApi | 1.1.0 | New GetOutrightLeagueEvents API method |
+| Trade360SDK.SnapshotApi | 1.2.0 | New GetOutrightLeagueEvents API method + EndDate support |
 | Trade360SDK.CustomersApi | 1.1.0 | New venue, city, and state metadata APIs |
 
 ---
@@ -72,6 +72,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Backward Compatibility
 
 All changes are backward compatible. Existing code will continue to work without modification. The new venue, stage, and round properties are optional additions to existing entities.
+
+## [Release Version 2.2.0]
+
+### [Trade360SDK.Common.Entities - v1.3.0]
+
+#### Added
+- **Incident Confirmation Support**
+  - `IncidentConfirmation` enum with values: Confirmed, TBD, Cancelled
+  - Added `Confirmation` property to `CurrentIncident` entity for incident status tracking
+
+- **Outright League Enhancements**
+  - Added `EndDate` property to `OutrightLeagueFixture` entity for tournament end date tracking
+
+### [Trade360SDK.SnapshotApi - v1.2.0]
+
+#### Added
+- Enhanced outright fixture entities to support new `EndDate` property for tournament end date tracking
+
+### Backward Compatibility
+
+All changes are backward compatible. The new `Confirmation` and `EndDate` properties are optional additions to existing entities.
 
 ## [Release Version 2.1.1] - Patch Release
 

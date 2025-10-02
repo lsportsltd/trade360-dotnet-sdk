@@ -17,6 +17,12 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             var location = new Location { Id = 10, Name = "Stadium" };
             var participant = new Participant { Id = 100, Name = "Team A", Position = "1", RotationId = 5, IsActive = 1 };
             var extraData = new NameValuePair { Name = "Key", Value = "Value" };
+            var venue = new FixtureVenue
+            {
+                Id = 1,
+                Name = "Test Stadium",
+                Assignment = VenueAssignment.Home
+            };
             var outrightFixture = new OutrightFixtureSnapshotResponse
             {
                 Sport = sport,
@@ -26,7 +32,8 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Status = FixtureStatus.InProgress,
                 Participants = new List<Participant> { participant },
                 ExtraData = new List<NameValuePair> { extraData },
-                Subscription = null
+                Subscription = null,
+                Venue = venue
             };
             var eventItem = new SnapshotOutrightFixtureEvent
             {
@@ -57,6 +64,10 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.Equal(participant.Name, Assert.Single(evt.OutrightFixture.Participants).Name);
             Assert.NotNull(evt.OutrightFixture.ExtraData);
             Assert.Equal("Key", Assert.Single(evt.OutrightFixture.ExtraData).Name);
+            Assert.Equal(venue, evt.OutrightFixture.Venue);
+            Assert.Equal(1, evt.OutrightFixture.Venue.Id);
+            Assert.Equal("Test Stadium", evt.OutrightFixture.Venue.Name);
+            Assert.Equal(VenueAssignment.Home, evt.OutrightFixture.Venue.Assignment);
         }
     }
 } 

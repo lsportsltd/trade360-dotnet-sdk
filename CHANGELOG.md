@@ -11,15 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |---------|---------|---------|
 | Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
 | Trade360SDK.Feed.RabbitMQ | 2.1.1 | Breaking changes (2.0.0) + OutrightLeagueSettlementUpdate support (2.1.0) + Bug fixes (2.1.1) |
-| Trade360SDK.Common.Entities | 1.3.0 | New venue-related entities and enums + outright league entities |
+| Trade360SDK.Common.Entities | 1.4.0 | New venue-related entities and enums + outright league entities + incident confirmation |
 | Trade360SDK.SnapshotApi | 1.1.0 | New GetOutrightLeagueEvents API method |
 | Trade360SDK.CustomersApi | 1.1.0 | New venue, city, and state metadata APIs |
 
 ---
 
-## [Release Version 2.2.0]
+## [Release Version 2.3.0]
 
-### [Trade360SDK.Common.Entities - v1.3.0]
+### [Trade360SDK.Common.Entities - v1.4.0]
 
 #### Added
 - **Venue-Related Enums**

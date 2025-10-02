@@ -121,8 +121,11 @@ public class FixtureVenueTests
         Assert.Equal(expectedEnvironment, fixtureVenue.Environment);
         Assert.Equal(expectedAssignment, fixtureVenue.Assignment);
         Assert.Equal(expectedCountry, fixtureVenue.Country);
+        Assert.NotNull(fixtureVenue.Country);
         Assert.Equal(expectedState, fixtureVenue.State);
+        Assert.NotNull(fixtureVenue.State);
         Assert.Equal(expectedCity, fixtureVenue.City);
+        Assert.NotNull(fixtureVenue.City);
     }
 
     [Fact]
@@ -171,5 +174,123 @@ public class FixtureVenueTests
 
         // Assert
         Assert.Equal(attendance, fixtureVenue.Attendance);
+    }
+
+    [Fact]
+    public void Country_ShouldAcceptNullValue()
+    {
+        // Arrange & Act
+        var fixtureVenue = new FixtureVenue { Country = null };
+
+        // Assert
+        Assert.Null(fixtureVenue.Country);
+    }
+
+    [Fact]
+    public void State_ShouldAcceptNullValue()
+    {
+        // Arrange & Act
+        var fixtureVenue = new FixtureVenue { State = null };
+
+        // Assert
+        Assert.Null(fixtureVenue.State);
+    }
+
+    [Fact]
+    public void City_ShouldAcceptNullValue()
+    {
+        // Arrange & Act
+        var fixtureVenue = new FixtureVenue { City = null };
+
+        // Assert
+        Assert.Null(fixtureVenue.City);
+    }
+
+    [Fact]
+    public void Country_ShouldAcceptValidValue()
+    {
+        // Arrange
+        var expectedCountry = new IdNamePair { Id = 1, Name = "UK" };
+
+        // Act
+        var fixtureVenue = new FixtureVenue { Country = expectedCountry };
+
+        // Assert
+        Assert.Equal(expectedCountry, fixtureVenue.Country);
+        Assert.NotNull(fixtureVenue.Country);
+        Assert.Equal(1, fixtureVenue.Country.Id);
+        Assert.Equal("UK", fixtureVenue.Country.Name);
+    }
+
+    [Fact]
+    public void State_ShouldAcceptValidValue()
+    {
+        // Arrange
+        var expectedState = new IdNamePair { Id = 2, Name = "England" };
+
+        // Act
+        var fixtureVenue = new FixtureVenue { State = expectedState };
+
+        // Assert
+        Assert.Equal(expectedState, fixtureVenue.State);
+        Assert.NotNull(fixtureVenue.State);
+        Assert.Equal(2, fixtureVenue.State.Id);
+        Assert.Equal("England", fixtureVenue.State.Name);
+    }
+
+    [Fact]
+    public void City_ShouldAcceptValidValue()
+    {
+        // Arrange
+        var expectedCity = new IdNamePair { Id = 3, Name = "London" };
+
+        // Act
+        var fixtureVenue = new FixtureVenue { City = expectedCity };
+
+        // Assert
+        Assert.Equal(expectedCity, fixtureVenue.City);
+        Assert.NotNull(fixtureVenue.City);
+        Assert.Equal(3, fixtureVenue.City.Id);
+        Assert.Equal("London", fixtureVenue.City.Name);
+    }
+
+    [Fact]
+    public void SetAllProperties_WithNullLocationProperties_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var expectedId = 789;
+        var expectedName = "Complete Stadium";
+        var expectedCapacity = 50000;
+        var expectedAttendance = 45000;
+        var expectedCourtSurface = CourtSurface.Grass;
+        var expectedEnvironment = VenueEnvironment.Indoors;
+        var expectedAssignment = VenueAssignment.Away;
+
+        // Act
+        var fixtureVenue = new FixtureVenue
+        {
+            Id = expectedId,
+            Name = expectedName,
+            Capacity = expectedCapacity,
+            Attendance = expectedAttendance,
+            CourtSurfaceType = expectedCourtSurface,
+            Environment = expectedEnvironment,
+            Assignment = expectedAssignment,
+            Country = null,
+            State = null,
+            City = null
+        };
+
+        // Assert
+        Assert.Equal(expectedId, fixtureVenue.Id);
+        Assert.Equal(expectedName, fixtureVenue.Name);
+        Assert.Equal(expectedCapacity, fixtureVenue.Capacity);
+        Assert.Equal(expectedAttendance, fixtureVenue.Attendance);
+        Assert.Equal(expectedCourtSurface, fixtureVenue.CourtSurfaceType);
+        Assert.Equal(expectedEnvironment, fixtureVenue.Environment);
+        Assert.Equal(expectedAssignment, fixtureVenue.Assignment);
+        Assert.Null(fixtureVenue.Country);
+        Assert.Null(fixtureVenue.State);
+        Assert.Null(fixtureVenue.City);
     }
 }

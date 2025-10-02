@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [Trade360SDK.SnapshotApi - v1.3.0]
 
 #### Added
+
 - **Venue Support for Outright Fixtures**
   - Added `Venue` property of type `FixtureVenue` to `OutrightFixtureSnapshotResponse` entity
   - Enhanced outright fixture responses to include comprehensive venue information
@@ -79,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `/Cities/Get` endpoint to metadata API  
 - Added `/States/Get` endpoint to metadata API
 
-### Backward Compatibility
+### Backward Compatibility (v2.3.0)
 
 All changes are backward compatible. Existing code will continue to work without modification. The new venue, stage, and round properties are optional additions to existing entities.
 
@@ -102,7 +103,7 @@ All changes are backward compatible. Existing code will continue to work without
 
 - Enhanced outright fixture entities to support new `EndDate` property for tournament end date tracking
 
-### Backward Compatibility
+### Backward Compatibility (v2.2.0)
 
 All changes are backward compatible. The new `Confirmation` and `EndDate` properties are optional additions to existing entities.
 

@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Package | Version | Changes |
 |---------|---------|---------|
 | Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
-| Trade360SDK.Feed.RabbitMQ | 2.1.1 | Breaking changes (2.0.0) + OutrightLeagueSettlementUpdate support (2.1.0) + Bug fixes (2.1.1) |
-| Trade360SDK.Common.Entities | 1.4.0 | New venue-related entities and enums + outright league entities + incident confirmation |
-| Trade360SDK.SnapshotApi | 1.2.0 | New GetOutrightLeagueEvents API method + EndDate support |
-| Trade360SDK.CustomersApi | 1.1.0 | New venue, city, and state metadata APIs |
+| Trade360SDK.Feed.RabbitMQ | 2.1.1 | Bug fixes for message acknowledgments in high-throughput scenarios |
+| Trade360SDK.Common.Entities | 1.4.0 | Extended messaging models with venue, stage, and round support |
+| Trade360SDK.SnapshotApi | 1.3.0 | Added venue support to OutrightFixtureSnapshotResponse |
+| Trade360SDK.CustomersApi | 1.1.0 | Added venue management API endpoints (GetVenues, GetCities, GetStates) |
 
 ---
 
@@ -41,6 +41,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Shared Entities**
   - `IdNamePair` class for consistent ID/Name pair representation across venue-related entities
+
+### [Trade360SDK.SnapshotApi - v1.3.0]
+
+#### Added
+- **Venue Support for Outright Fixtures**
+  - Added `Venue` property of type `FixtureVenue` to `OutrightFixtureSnapshotResponse` entity
+  - Enhanced outright fixture responses to include comprehensive venue information
 
 ### [Trade360SDK.CustomersApi - v1.1.0]
 

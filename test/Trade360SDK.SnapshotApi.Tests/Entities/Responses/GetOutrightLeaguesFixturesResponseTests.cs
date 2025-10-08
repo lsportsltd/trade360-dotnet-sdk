@@ -60,6 +60,7 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.NotNull(evt.OutrightLeague.ExtraData);
             Assert.Equal("LeagueKey", Assert.Single(evt.OutrightLeague.ExtraData).Name);
             Assert.NotNull(evt.OutrightLeague.EndDate);
+            Assert.Equal(outrightLeague.EndDate, evt.OutrightLeague.EndDate);
         }
     }
 } 

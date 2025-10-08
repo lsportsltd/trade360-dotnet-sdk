@@ -23,6 +23,14 @@ namespace Trade360SDK.CustomersApi.Mapper
                   .ForMember(dest => dest.ToDate, opt => opt.MapFrom(src => src.ToDate.ToString("MM/dd/yyyy")));
             CreateMap<IncidentFilterDto, IncidentFilter>();
             CreateMap<GetIncidentsRequestDto, GetIncidentsRequest>();
+            
+            CreateMap<GetVenuesRequestDto, GetVenuesRequest>();
+            CreateMap<VenueFilterDto, VenueFilter>();
+            CreateMap<GetCitiesRequestDto, GetCitiesRequest>();
+            CreateMap<CityFilterDto, CityFilter>();
+            CreateMap<GetStatesRequestDto, GetStatesRequest>();
+            CreateMap<StateFilterDto, StateFilter>();
         }
     }
 }
+//2916,

@@ -26,5 +26,11 @@ namespace Trade360SDK.Common.Entities.Fixtures
         public string? ExternalFixtureId { get; set; }
 
         public Subscription? Subscription { get; set; }
+
+        public FixtureVenue Venue { get; set; }
+
+        public IdNamePair Stage { get; set; }
+
+        public IdNamePair Round { get; set; }
     }
 }

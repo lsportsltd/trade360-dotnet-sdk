@@ -13,6 +13,7 @@ using Trade360SDK.Common.Entities.Shared;
 using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
+using ParticipantInfo = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.ParticipantInfo;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
 using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
@@ -302,6 +303,63 @@ public class MetadataHttpClientAsyncMethodsTests
         result.First().City?.Name.Should().Be("London");
     }
 
+    [Fact]
+    public async Task GetParticipantsAsync_WithValidRequest_ShouldReturnParticipants()
+    {
+        var expectedResponse = new GetParticipantsResponse
+        {
+            Data = new[]
+            {
+                new ParticipantInfo 
+                { 
+                    Id = 1, 
+                    SportId = 6046, 
+                    LocationId = 142, 
+                    Name = "Manchester United",
+                    Gender = Trade360SDK.Common.Entities.Enums.Gender.Men,
+                    AgeCategory = Trade360SDK.Common.Entities.Enums.AgeCategory.Regular,
+                    Type = Trade360SDK.Common.Entities.Enums.ParticipantType.Club
+                },
+                new ParticipantInfo 
+                { 
+                    Id = 2, 
+                    SportId = 6046, 
+                    LocationId = 142, 
+                    Name = "Chelsea FC",
+                    Gender = Trade360SDK.Common.Entities.Enums.Gender.Men,
+                    AgeCategory = Trade360SDK.Common.Entities.Enums.AgeCategory.Regular,
+                    Type = Trade360SDK.Common.Entities.Enums.ParticipantType.Club
+                }
+            },
+            TotalItems = 150
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetParticipantsAsync(new GetParticipantsRequestDto
+        {
+            Filter = new ParticipantFilterDto
+            {
+                SportIds = new[] { 6046 },
+                LocationIds = new[] { 142 },
+                Gender = 1,
+                Type = 1
+            },
+            Page = 1,
+            PageSize = 50
+        }, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("Manchester United");
+        result.First().Id.Should().Be(1);
+        result.First().SportId.Should().Be(6046);
+        result.First().LocationId.Should().Be(142);
+        result.First().Gender.Should().Be(Trade360SDK.Common.Entities.Enums.Gender.Men);
+        result.First().AgeCategory.Should().Be(Trade360SDK.Common.Entities.Enums.AgeCategory.Regular);
+        result.First().Type.Should().Be(Trade360SDK.Common.Entities.Enums.ParticipantType.Club);
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.BadRequest)]
     [InlineData(HttpStatusCode.Unauthorized)]
@@ -424,5 +482,8 @@ public class MetadataHttpClientAsyncMethodsTests
 
         mockMapper.Setup(x => x.Map<GetVenuesRequest>(It.IsAny<GetVenuesRequestDto>()))
             .Returns(new GetVenuesRequest());
+
+        mockMapper.Setup(x => x.Map<GetParticipantsRequest>(It.IsAny<GetParticipantsRequestDto>()))
+            .Returns(new GetParticipantsRequest());
     }
 }

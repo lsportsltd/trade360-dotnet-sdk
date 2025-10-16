@@ -63,6 +63,7 @@ namespace Trade360SDK.CustomersApi.Example
                 { MenuOption.GetVenues, async ct => await GetVenuesAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetCities, async ct => await GetCitiesAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetStates, async ct => await GetStatesAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetParticipants, async ct => await GetParticipantsAsync(_prematchMetadataHttpClient, ct)},
             };
         }
 
@@ -473,6 +474,34 @@ namespace Trade360SDK.CustomersApi.Example
             });
             Console.WriteLine($"Response returned: \n{jsonResponse}\n");
         }
+        
+        private async Task GetParticipantsAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetParticipantsRequestDto()
+            {
+                Filter = new ParticipantFilterDto()
+                {
+                    // Ids = new[] { 1, 2, 3 },
+                    // SportIds = new[] { 6046 },
+                    // LocationIds = new[] { 142 },
+                    // Name = "Team",
+                    // Gender = 1, // Men
+                    // AgeCategory = 0, // Regular
+                    // Type = 1 // Club
+                },
+                Page = 1,
+                PageSize = 50
+            };
+            
+            var response = await metadataApiClient.GetParticipantsAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
@@ -525,6 +554,9 @@ namespace Trade360SDK.CustomersApi.Example
             
             [Description("Metadata API - Get States")]
             GetStates,
+            
+            [Description("Metadata API - Get Participants")]
+            GetParticipants,
 
             [Description("Subscription API - Subscribe to Fixture")]
             SubscribeToFixture,

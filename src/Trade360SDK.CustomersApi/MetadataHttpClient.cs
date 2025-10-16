@@ -15,6 +15,7 @@ using Trade360SDK.CustomersApi.Validators;
 using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
+using ParticipantInfo = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.ParticipantInfo;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
 using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
@@ -115,6 +116,13 @@ namespace Trade360SDK.CustomersApi
             var request = _mapper.Map<GetStatesRequest>(requestDto);
             var response = await PostEntityAsync<GetStatesResponse>("States/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<State>();
+        }
+
+        public async Task<IEnumerable<ParticipantInfo>> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetParticipantsRequest>(requestDto);
+            var response = await PostEntityAsync<GetParticipantsResponse>("Participants/Get", request, cancellationToken);
+            return response.Data ?? Enumerable.Empty<ParticipantInfo>();
         }
     }
 }

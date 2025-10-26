@@ -11,9 +11,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |---------|---------|---------|
 | Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
 | Trade360SDK.Feed.RabbitMQ | 2.1.1 | Bug fixes for message acknowledgments in high-throughput scenarios |
-| Trade360SDK.Common.Entities | 1.4.0 | Extended messaging models with venue, stage, and round support |
+| Trade360SDK.Common.Entities | 1.5.0 | Added participant classification enums (Gender, AgeCategory, ParticipantType) |
 | Trade360SDK.SnapshotApi | 1.3.0 | Added venue support to OutrightFixtureSnapshotResponse |
-| Trade360SDK.CustomersApi | 1.1.0 | Added venue management API endpoints (GetVenues, GetCities, GetStates) |
+| Trade360SDK.CustomersApi | 1.2.0 | Added Participants metadata API endpoint with filtering and pagination |
+
+---
+
+## [Release Version 2.4.0]
+
+### [Trade360SDK.Common.Entities - v1.5.0]
+
+#### Added
+
+- **Participant Classification Enums**
+  - `Gender` enum with values: Men (1), Women (2), Mix (3)
+  - `AgeCategory` enum with values: Regular (0), Youth (1), Reserves (2)
+  - `ParticipantType` enum with values: Club (1), National (2), Individual (3), Virtual (4), Esports (5), VirtuReal (6), Doubles (7)
+
+### [Trade360SDK.CustomersApi - v1.2.0]
+
+#### Added
+
+- **Participants Metadata API**
+  - `GetParticipantsAsync()` - New endpoint to fetch participant information with advanced filtering and pagination
+  - `GetParticipantsRequestDto` / `ParticipantFilterDto` - Request DTOs for participant filtering by:
+    - Participant IDs (`Ids`)
+    - Sport IDs (`SportIds`)
+    - Location IDs (`LocationIds`)
+    - Participant name (`Name`) - partial match support
+    - Gender (`Gender`) - Men, Women, or Mix
+    - Age category (`AgeCategory`) - Regular, Youth, or Reserves
+    - Participant type (`Type`) - Club, National, Individual, Virtual, Esports, VirtuReal, or Doubles
+  - Pagination support with `Page` and `PageSize` parameters
+  - `ParticipantInfo` - Response structure for participant data including:
+    - Basic information (Id, SportId, LocationId, Name)
+    - Classification properties (Gender, AgeCategory, Type) - all nullable
+  - `GetParticipantsResponse` - Collection response wrapper with `Data` array and `TotalItems` count
+
+- **Enhanced Sample Application**
+  - Added interactive demo for `GetParticipantsAsync()` in customer-api-sample
+  - Example usage with multiple filter options
+  - Demonstrates pagination parameters
+
+#### API Routes
+
+- Added `/Participants/Get` endpoint to metadata API
+
+### Backward Compatibility (v2.4.0)
+
+All changes are backward compatible. Existing code will continue to work without modification. The new participants endpoint is an additive feature that does not affect existing functionality.
 
 ---
 

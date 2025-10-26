@@ -27,6 +27,6 @@ namespace Trade360SDK.CustomersApi.Interfaces
         Task<IEnumerable<Venue>> GetVenuesAsync(GetVenuesRequestDto requestDto, CancellationToken cancellationToken);
         Task<IEnumerable<City>> GetCitiesAsync(GetCitiesRequestDto requestDto, CancellationToken cancellationToken);
         Task<IEnumerable<State>> GetStatesAsync(GetStatesRequestDto requestDto, CancellationToken cancellationToken);
-        Task<IEnumerable<ParticipantInfo>> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken);
+        Task<GetParticipantsResponse> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken);
     }
 }

@@ -118,11 +118,11 @@ namespace Trade360SDK.CustomersApi
             return response.Data ?? Enumerable.Empty<State>();
         }
 
-        public async Task<IEnumerable<ParticipantInfo>> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken)
+        public async Task<GetParticipantsResponse> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<GetParticipantsRequest>(requestDto);
             var response = await PostEntityAsync<GetParticipantsResponse>("Participants/Get", request, cancellationToken);
-            return response.Data ?? Enumerable.Empty<ParticipantInfo>();
+            return response;
         }
     }
 }

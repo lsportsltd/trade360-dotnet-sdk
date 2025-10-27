@@ -200,4 +200,114 @@ public class MapperProfileTests
         deserialized.Should().NotBeNull();
         deserialized!.Filter?.CityIds.Should().Contain(789);
     }
+
+    [Fact]
+    public void Map_GetParticipantsRequestDto_To_GetParticipantsRequest_MapsAllFields()
+    {
+        var dto = new GetParticipantsRequestDto
+        {
+            Filter = new ParticipantFilterDto
+            {
+                Ids = new[] { 1, 2, 3 },
+                SportIds = new[] { 6046 },
+                LocationIds = new[] { 142 },
+                Name = "Manchester",
+                Gender = 1,
+                AgeCategory = 0,
+                Type = 1
+            },
+            Page = 2,
+            PageSize = 100
+        };
+
+        var result = _mapper.Map<GetParticipantsRequest>(dto);
+        
+        result.Filter.Should().NotBeNull();
+        result.Filter!.Ids.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        result.Filter.SportIds.Should().BeEquivalentTo(new[] { 6046 });
+        result.Filter.LocationIds.Should().BeEquivalentTo(new[] { 142 });
+        result.Filter.Name.Should().Be("Manchester");
+        result.Filter.Gender.Should().Be(1);
+        result.Filter.AgeCategory.Should().Be(0);
+        result.Filter.Type.Should().Be(1);
+        result.Page.Should().Be(2);
+        result.PageSize.Should().Be(100);
+    }
+
+    [Fact]
+    public void Map_GetParticipantsRequestDto_WithNullFilter_To_GetParticipantsRequest_MapsNull()
+    {
+        var dto = new GetParticipantsRequestDto
+        {
+            Filter = null,
+            Page = 1,
+            PageSize = 50
+        };
+
+        var result = _mapper.Map<GetParticipantsRequest>(dto);
+        
+        result.Filter.Should().BeNull();
+        result.Page.Should().Be(1);
+        result.PageSize.Should().Be(50);
+    }
+
+    [Fact]
+    public void Map_ParticipantFilterDto_To_ParticipantFilter_MapsAllProperties()
+    {
+        var dto = new ParticipantFilterDto
+        {
+            Ids = new[] { 10, 20 },
+            SportIds = new[] { 6046, 6047 },
+            LocationIds = new[] { 142, 143 },
+            Name = "Team Name",
+            Gender = 2, // Women
+            AgeCategory = 1, // Youth
+            Type = 3 // Individual
+        };
+
+        var result = _mapper.Map<ParticipantFilter>(dto);
+        
+        result.Ids.Should().BeEquivalentTo(new[] { 10, 20 });
+        result.SportIds.Should().BeEquivalentTo(new[] { 6046, 6047 });
+        result.LocationIds.Should().BeEquivalentTo(new[] { 142, 143 });
+        result.Name.Should().Be("Team Name");
+        result.Gender.Should().Be(2);
+        result.AgeCategory.Should().Be(1);
+        result.Type.Should().Be(3);
+    }
+
+    [Fact]
+    public void SerializeDeserialize_GetParticipantsRequestDto_ShouldPreserveData()
+    {
+        var dto = new GetParticipantsRequestDto
+        {
+            Filter = new ParticipantFilterDto
+            {
+                Ids = new[] { 1, 2 },
+                SportIds = new[] { 6046 },
+                LocationIds = new[] { 142 },
+                Name = "Test Team",
+                Gender = 3, // Mix
+                AgeCategory = 2, // Reserves
+                Type = 7 // Doubles
+            },
+            Page = 3,
+            PageSize = 25
+        };
+
+        var json = JsonSerializer.Serialize(dto);
+        var deserialized = JsonSerializer.Deserialize<GetParticipantsRequestDto>(json);
+        
+        deserialized.Should().NotBeNull();
+        deserialized!.Filter.Should().NotBeNull();
+        deserialized.Filter!.Ids.Should().BeEquivalentTo(new[] { 1, 2 });
+        deserialized.Filter.SportIds.Should().BeEquivalentTo(new[] { 6046 });
+        deserialized.Filter.LocationIds.Should().BeEquivalentTo(new[] { 142 });
+        deserialized.Filter.Name.Should().Be("Test Team");
+        deserialized.Filter.Gender.Should().Be(3);
+        deserialized.Filter.AgeCategory.Should().Be(2);
+        deserialized.Filter.Type.Should().Be(7);
+        deserialized.Page.Should().Be(3);
+        deserialized.PageSize.Should().Be(25);
+    }
 } 

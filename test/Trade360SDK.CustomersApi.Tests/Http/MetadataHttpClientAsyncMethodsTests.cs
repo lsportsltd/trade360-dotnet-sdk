@@ -350,14 +350,76 @@ public class MetadataHttpClientAsyncMethodsTests
         }, CancellationToken.None);
 
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
-        result.First().Name.Should().Be("Manchester United");
-        result.First().Id.Should().Be(1);
-        result.First().SportId.Should().Be(6046);
-        result.First().LocationId.Should().Be(142);
-        result.First().Gender.Should().Be(Trade360SDK.Common.Entities.Enums.Gender.Men);
-        result.First().AgeCategory.Should().Be(Trade360SDK.Common.Entities.Enums.AgeCategory.Regular);
-        result.First().Type.Should().Be(Trade360SDK.Common.Entities.Enums.ParticipantType.Club);
+        result.Data.Should().NotBeNull();
+        result.Data.Should().HaveCount(2);
+        result.TotalItems.Should().Be(150);
+        result.Data!.First().Name.Should().Be("Manchester United");
+        result.Data.First().Id.Should().Be(1);
+        result.Data.First().SportId.Should().Be(6046);
+        result.Data.First().LocationId.Should().Be(142);
+        result.Data.First().Gender.Should().Be(Trade360SDK.Common.Entities.Enums.Gender.Men);
+        result.Data.First().AgeCategory.Should().Be(Trade360SDK.Common.Entities.Enums.AgeCategory.Regular);
+        result.Data.First().Type.Should().Be(Trade360SDK.Common.Entities.Enums.ParticipantType.Club);
+    }
+
+    [Fact]
+    public async Task GetParticipantsAsync_WithEmptyData_ShouldReturnEmptyCollection()
+    {
+        var expectedResponse = new GetParticipantsResponse
+        {
+            Data = null,
+            TotalItems = 0
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetParticipantsAsync(new GetParticipantsRequestDto
+        {
+            Filter = new ParticipantFilterDto
+            {
+                SportIds = new[] { 9999 }
+            },
+            Page = 1,
+            PageSize = 50
+        }, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Data.Should().BeNull();
+        result.TotalItems.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task GetParticipantsAsync_WithNullFilter_ShouldSucceed()
+    {
+        var expectedResponse = new GetParticipantsResponse
+        {
+            Data = new[]
+            {
+                new ParticipantInfo 
+                { 
+                    Id = 100, 
+                    SportId = 6046, 
+                    LocationId = 142, 
+                    Name = "Test Team"
+                }
+            },
+            TotalItems = 1
+        };
+
+        SetupHttpResponse(expectedResponse);
+
+        var result = await _client.GetParticipantsAsync(new GetParticipantsRequestDto
+        {
+            Filter = null,
+            Page = 1,
+            PageSize = 50
+        }, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Data.Should().NotBeNull();
+        result.Data.Should().HaveCount(1);
+        result.TotalItems.Should().Be(1);
+        result.Data!.First().Id.Should().Be(100);
     }
 
     [Theory]
@@ -484,6 +546,20 @@ public class MetadataHttpClientAsyncMethodsTests
             .Returns(new GetVenuesRequest());
 
         mockMapper.Setup(x => x.Map<GetParticipantsRequest>(It.IsAny<GetParticipantsRequestDto>()))
-            .Returns(new GetParticipantsRequest());
+            .Returns((GetParticipantsRequestDto dto) => new GetParticipantsRequest
+            {
+                Filter = dto?.Filter != null ? new ParticipantFilter
+                {
+                    Ids = dto.Filter.Ids,
+                    SportIds = dto.Filter.SportIds,
+                    LocationIds = dto.Filter.LocationIds,
+                    Name = dto.Filter.Name,
+                    Gender = dto.Filter.Gender,
+                    AgeCategory = dto.Filter.AgeCategory,
+                    Type = dto.Filter.Type
+                } : null,
+                Page = dto?.Page ?? 0,
+                PageSize = dto?.PageSize ?? 0
+            });
     }
 }

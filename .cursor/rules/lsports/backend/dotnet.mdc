@@ -1,0 +1,115 @@
+---
+description: .NET Development Rules
+globs: backend
+alwaysApply: false
+---
+
+*You are a top of the notch (some might even say the Batman of) .NET backend developer and an expert in C#, ASP.NET Core, and Entity Framework Core.*
+
+---
+
+## 1. Code Style & Structure
+
+* **Write concise, idiomatic C#** with self-explanatory examples.
+* **Enable nullable reference types** (`<Nullable>enable</Nullable>`) in every project.
+* Prefer file-scoped namespaces and place `using` directives **outside** the namespace block.
+* Use the **minimal-hosting model** (`Program.cs`) and keep startup logic lean.
+* Organise solution folders by responsibility (e.g., `Controllers/`, `Domain/`, `Infrastructure/`, `Application/`).
+* Leverage both **object-oriented** and **functional** techniques; use records and pattern matching where they increase clarity.
+* Store configuration in `appsettings.json` with environment overrides (`appsettings.Development.json`, `appsettings.QA.json`).
+
+## 2. Naming Conventions
+
+| Element                     | Case            | Example            |
+| --------------------------- | --------------- | ------------------ |
+| Classes / structs           | **Pascal**      | `OrderService`     |
+| Interfaces                  | **Pascal + I**  | `IOrderRepository` |
+| Methods / properties        | **Pascal**      | `CalculateTotal()` |
+| Private fields              | **camel** + `_` | `_logger`          |
+| Local variables             | **camel**       | `totalPrice`       |
+| Constants / static readonly | **UPPER\_CASE** | `MAX_RETRY_COUNT`  |
+
+## 3. C# / ASP.NET Core Usage
+
+* Target **.NET 8 LTS** (update to the latest LTS when available).
+* Use C# 12 features (primary constructors, collection expressions, `using` directive improvements) where they simplify code.
+* Prefer **LINQ**/lambda expressions for collection queries; use method-syntax for non-trivial queries.
+* *Avoid* blocking calls inside async code—never call `.Result`/`.Wait()`.
+* Use **HttpClientFactory** or **IMemoryCache** via DI, never create `new HttpClient()` manually per request.
+* Enable Microsoft.Extensions.Logging provider for structured logs.
+* Prefer using the native **JsonSerializer** when serializing and deserializing objects to JSON.
+* Avoid mixing multiple serializers and/or formatters in the same solution to avoid logic override.
+
+## 4. Syntax & Formatting
+
+* Follow the official [C# coding conventions](mdc:https:/learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions).
+* Use Always use `var` for implicit typing.
+* For fluent method chains, place each invocation on a new line for readability, e.g.,
+
+  ```csharp
+  services.Add(x => x
+      .Cluster()
+      .WithName(name)
+      .WithConfig(config));
+  ```
+* Prefer string interpolation - `$"{name} has {orders.Count} orders"`.
+* Place expression-bodied members on a single line when short.
+* Keep line length ≤ 120 characters.
+* Prefer method overloading over optional arguments.
+
+## 5. Error Handling & Validation
+
+* Throw exceptions **only for exceptional states**, not for flow control.
+* Capture unhandled exceptions with **global exception middleware**; return a Problem Details (RFC 7807) payload.
+* Use **FluentValidation** or Data Annotations for input validation; validate at the boundary (controller or Minimal API).
+* Log errors with contextual information (correlation ID, request path, user ID).
+
+## 6. API Design
+
+* Follow **RESTful** principles; use nouns for endpoints (`/orders/{id}`) and standard verbs.
+* Use **attribute routing** and **API versioning** (`Microsoft.AspNetCore.Mvc.Versioning`).
+* Prefer **Problem Details** for error responses; include a trace ID header.
+* Expose only necessary DTOs; keep domain models internal to the service.
+* **Prefer full MVC controllers** over Minimal APIs for consistency, richer action filters, and clearer testability.
+* **Keep controllers thin** - move all business/validation logic to injectable *RequestHandler* classes (via DI) and let controllers only map HTTP details to the handler.
+* Accept a single request-DTO per action - never pass primitive or multiple scalar parameters directly (e.g., string name, int age). Define an immutable record/class such as public sealed record DetailsRequest(string Name, int Age); and bind it with [FromBody], improving validation and signature durability.
+* Annotate every action with an explicit HTTP verb and {action} route token - e.g., [HttpGet("[action]")], [HttpPost("[action]")], ensuring clear, predictable routes and avoiding ambiguous matches.
+* Decorate each controller with [ApiController] and a base [Route("[controller]")] (or similar) attribute to standardise the root path and support the {action} token in action routes.
+
+## 7. Database Handling
+* Use **EntityFramework** for supported SQL-compatible databases.
+* For databases that are not supported, use external **plugins** for EF only when they are well-maintained by credible contributors.
+* If there are no credible plugains available, use another popular ORM, like Dapper.
+* Prefer using **LINQ** over SQL syntax.
+* Always use **parameterized queries** to avoid **SQL injections**.
+
+## 8. Security
+
+* Configure **CORS** explicitly; never use `AllowAnyOrigin()` with credentials.
+* Validate and sanitize all user inputs; guard against XSS, CSRF, and injection attacks.
+* Use **environment variables** for production secrets; never commit secrets to source control.
+
+## 9. Performance Optimisation
+
+* Make I/O operations **asynchronous** (`async`/`await`).
+* Prevent **N+1** queries with eager loading (`Include`) or projection.
+* Implement pagination (limit/offset or keyset) for large sets.
+* **Use `ToArray()` over `ToList()`** when a collection is only read/iterated and not modified, to avoid unnecessary list overhead.
+* **Return `IAsyncEnumerable<T>`** for streamed server results where client back-pressure is beneficial; avoid materialising entire results in memory.
+* **Return `ValueTask<T>`** when the result may be synchronously available, reducing allocations versus `Task<T>`.
+* Cache expensive reads with **IMemoryCache** or **IDistributedCache**; set sensible expirations.
+
+## 10. Key Architectural Conventions
+
+* Rely on **Dependency Injection** (built-in container) for loose coupling.
+* Make sure to use the correct service lifetime (**Singleton**, **Transient**, **Scoped**, etc.) to avoid  race conditions or exposing your data to unauthorized access.
+* Choose between **Repository Pattern** or direct EF Core usage based on aggregate complexity; avoid redundant abstractions.
+* Use **CQRS + MediatR** if the domain complexity benefits from clear separation of commands/queries.
+* Map objects via **AutoMapper** *only* when mapping logic is trivial; otherwise write explicit mappers.
+* Schedule background work with **IHostedService**, **BackgroundService** for durable jobs.
+
+## 11. Documentation
+
+* Generate **Swagger / OpenAPI** via **Swashbuckle.AspNetCore** with XML comments.
+* Keep examples up-to-date; expose relevant response codes.
+* Maintain an **ARCHITECTURE.md** explaining project layers, conventions, and decisions.

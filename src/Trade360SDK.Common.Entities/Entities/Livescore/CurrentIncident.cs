@@ -5,7 +5,7 @@ namespace Trade360SDK.Common.Entities.Livescore
 {
     public class CurrentIncident
     {
-        public long Id { get; set; }
+        public IncidentType? Id { get; set; }
 
         public string? Name { get; set; }
         

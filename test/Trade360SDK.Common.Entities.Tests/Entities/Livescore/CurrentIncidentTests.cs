@@ -13,12 +13,12 @@ namespace Trade360SDK.Common.Tests
             var now = DateTime.UtcNow;
             var incident = new CurrentIncident
             {
-                Id = 42,
+                Id = IncidentType.MissedPenalty,
                 Name = "IncidentName",
                 LastUpdate = now,
                 Confirmation = IncidentConfirmation.Cancelled
             };
-            Assert.Equal(42, incident.Id);
+            Assert.Equal(IncidentType.MissedPenalty, incident.Id);
             Assert.Equal("IncidentName", incident.Name);
             Assert.Equal(now, incident.LastUpdate);
             Assert.Equal(IncidentConfirmation.Cancelled, incident.Confirmation);
@@ -28,9 +28,10 @@ namespace Trade360SDK.Common.Tests
         public void Properties_ShouldAllowNullsAndDefaults()
         {
             var incident = new CurrentIncident();
-            Assert.Equal(0, incident.Id);
+            Assert.Null(incident.Id);
             Assert.Null(incident.Name);
             Assert.Equal(default, incident.LastUpdate);
+            Assert.Null(incident.Confirmation);
         }
     }
 } 

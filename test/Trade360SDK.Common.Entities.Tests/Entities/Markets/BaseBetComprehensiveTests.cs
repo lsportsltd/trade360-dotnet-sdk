@@ -342,6 +342,24 @@ public class BaseBetComprehensiveTests
     }
 
     [Theory]
+    [InlineData(1)]
+    [InlineData(1000)]
+    [InlineData(null)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void PlayerId_Property_ShouldAcceptNullableIntValues(int? expectedPlayerId)
+    {
+        // Arrange
+        var baseBet = new BaseBet();
+
+        // Act
+        baseBet.PlayerId = expectedPlayerId;
+
+        // Assert
+        baseBet.PlayerId.Should().Be(expectedPlayerId);
+    }
+
+    [Theory]
     [InlineData("John Doe")]
     [InlineData("Player Name")]
     [InlineData("")]
@@ -357,6 +375,25 @@ public class BaseBetComprehensiveTests
 
         // Assert
         baseBet.PlayerName.Should().Be(expectedPlayerName);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(null)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Order_Property_ShouldAcceptNullableIntValues(int? expectedOrder)
+    {
+        // Arrange
+        var baseBet = new BaseBet();
+
+        // Act
+        baseBet.Order = expectedOrder;
+
+        // Assert
+        baseBet.Order.Should().Be(expectedOrder);
     }
 
     [Fact]
@@ -385,7 +422,9 @@ public class BaseBetComprehensiveTests
         baseBet.LastUpdate = testDateTime;
         baseBet.Probability = 0.52;
         baseBet.ParticipantId = 789;
+        baseBet.PlayerId = 456;
         baseBet.PlayerName = "John Smith";
+        baseBet.Order = 3;
 
         // Assert
         baseBet.Id.Should().Be(12345L);
@@ -406,7 +445,9 @@ public class BaseBetComprehensiveTests
         baseBet.LastUpdate.Should().Be(testDateTime);
         baseBet.Probability.Should().Be(0.52);
         baseBet.ParticipantId.Should().Be(789);
+        baseBet.PlayerId.Should().Be(456);
         baseBet.PlayerName.Should().Be("John Smith");
+        baseBet.Order.Should().Be(3);
     }
 
     [Fact]

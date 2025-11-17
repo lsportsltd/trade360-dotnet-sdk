@@ -44,17 +44,17 @@ namespace Trade360SDK.SnapshotApi.Example
          private void ShowMenu()
         {
             Console.WriteLine("Select an option:");
-            Console.WriteLine("1. Customer API - Get Fixtures");
-            Console.WriteLine("2. Customer API - Get Events");
-            Console.WriteLine("3. Customer API - Get Fixture Markets");
-            Console.WriteLine("4. Customer API - Get Livescore");
-            Console.WriteLine("5. Customer API - Get Outright Fixtures");
-            Console.WriteLine("6. Customer API - Get Outright Livescore");
-            Console.WriteLine("7. Customer API - Get Outright Markets");
-            Console.WriteLine("8. Customer API - Get Outright Events");
-            Console.WriteLine("9. Customer API - Get Outright Leagues Fixtures");
-            Console.WriteLine("10. Customer API - Get Outright Leagues Markets");
-            Console.WriteLine("11. Customer API - Get Outright Leagues Events");
+            Console.WriteLine("1. Snapshot API - Get Fixtures");
+            Console.WriteLine("2. Snapshot API - Get Events");
+            Console.WriteLine("3. Snapshot API - Get Fixture Markets");
+            Console.WriteLine("4. Snapshot API - Get Livescore");
+            Console.WriteLine("5. Snapshot API - Get Outright Fixtures");
+            Console.WriteLine("6. Snapshot API - Get Outright Livescore");
+            Console.WriteLine("7. Snapshot API - Get Outright Markets");
+            Console.WriteLine("8. Snapshot API - Get Outright Events");
+            Console.WriteLine("9. Snapshot API - Get Outright Leagues Fixtures");
+            Console.WriteLine("10. Snapshot API - Get Outright Leagues Markets");
+            Console.WriteLine("11. Snapshot API - Get Outright Leagues Events");
         }
 
         private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ namespace Trade360SDK.SnapshotApi.Example
             switch (choice)
             {
                 case "1":
-                    await GetFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    await GetFixtures(_snapshotInplayApiClient, cancellationToken);
                     //await GetFixtures(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "2":
@@ -111,7 +111,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetFixturesRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() { 24770989 },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -129,7 +129,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetMarketRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { 13384002/* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -161,7 +161,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetLivescoreRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() {  },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -178,7 +178,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetFixturesRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() { 24770989 },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -196,7 +196,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetMarketRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { 13384002/* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -244,7 +244,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetOutrightFixturesRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() { 24775553/* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -308,7 +308,7 @@ namespace Trade360SDK.SnapshotApi.Example
             var request = new GetFixturesRequestDto()
             {
                 Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Fixtures = new List<int>() {24593410 /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };

@@ -30,7 +30,9 @@ namespace Trade360SDK.Common.Tests
                 LastUpdate = DateTime.UtcNow,
                 Probability = 0.75,
                 ParticipantId = 42,
-                PlayerName = "Player"
+                PlayerId = "12345",
+                PlayerName = "Player",
+                Order = 1
             };
             Assert.Equal(1, bet.Id);
             Assert.Equal("BetName", bet.Name);
@@ -50,7 +52,9 @@ namespace Trade360SDK.Common.Tests
             Assert.NotEqual(default, bet.LastUpdate);
             Assert.Equal(0.75, bet.Probability);
             Assert.Equal(42, bet.ParticipantId);
+            Assert.Equal("12345", bet.PlayerId);
             Assert.Equal("Player", bet.PlayerName);
+            Assert.Equal(1, bet.Order);
         }
 
         [Fact]
@@ -71,7 +75,9 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(bet.Settlement);
             Assert.Null(bet.SuspensionReason);
             Assert.Null(bet.ParticipantId);
+            Assert.Null(bet.PlayerId);
             Assert.Null(bet.PlayerName);
+            Assert.Null(bet.Order);
         }
     }
 } 

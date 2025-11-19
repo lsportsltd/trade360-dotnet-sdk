@@ -6,5 +6,7 @@ namespace Trade360SDK.Common.Entities.Markets
     public class Bet : BaseBet
     {
         public string? ProviderBetId { get; set; }
+        
+        public float? CalculatedMargin { get; set; }
     }
 }

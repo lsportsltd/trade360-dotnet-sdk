@@ -12,11 +12,13 @@ namespace Trade360SDK.Common.Tests
             {
                 Id = 2,
                 Name = "Bet2",
-                ProviderBetId = "PBID123"
+                ProviderBetId = "PBID123",
+                CalculatedMargin = 1.5f
             };
             Assert.Equal(2, bet.Id);
             Assert.Equal("Bet2", bet.Name);
             Assert.Equal("PBID123", bet.ProviderBetId);
+            Assert.Equal(1.5f, bet.CalculatedMargin);
         }
 
         [Fact]
@@ -24,6 +26,7 @@ namespace Trade360SDK.Common.Tests
         {
             var bet = new Bet();
             Assert.Null(bet.ProviderBetId);
+            Assert.Null(bet.CalculatedMargin);
         }
     }
 } 

@@ -14,5 +14,8 @@ namespace Trade360SDK.SnapshotApi.Interfaces
         Task<IEnumerable<GetLiveScoreResponse>> GetLivescore(GetLivescoreRequestDto requestDto, CancellationToken cancellationToken);
         Task<IEnumerable<MarketEvent>> GetFixtureMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken);
         Task<IEnumerable<GetEventsResponse>> GetEvents(GetMarketRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<GetOutrightLeaguesFixturesResponse>> GetOutrightLeagues(GetFixturesRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<GetOutrightLeaguesMarketsResponse>> GetOutrightLeaguesMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<GetOutrightLeagueEventsResponse>> GetOutrightLeagueEvents(GetOutrightFixturesRequestDto requestDto, CancellationToken cancellationToken);
     }
 }

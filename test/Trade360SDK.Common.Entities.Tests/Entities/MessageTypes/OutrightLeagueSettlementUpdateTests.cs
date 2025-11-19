@@ -102,6 +102,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
                                                     ""Price"": ""1.44"",
                                                     ""Settlement"": 2,
                                                     ""ProviderBetId"": ""8"",
+                                                    ""CalculatedMargin"": null,
                                                     ""LastUpdate"": ""2025-07-20T09:02:59.754553Z"",
                                                     ""ParticipantId"": 52280038
                                                 },

@@ -24,6 +24,11 @@ namespace Trade360SDK.Feed.RabbitMQ.Extensions
                 .AddSingleton<IMessageProcessor, MessageProcessor<KeepAliveUpdate, InPlay>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<SettlementUpdate, InPlay>>()
                 .AddSingleton<IMessageProcessor, MessageProcessor<MarketUpdate, InPlay>>();
+            
+            services
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueUpdate, InPlay>>()
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueMarketUpdate, InPlay>>()
+                .AddSingleton<IMessageProcessor, MessageProcessor<OutrightLeagueSettlementUpdate, InPlay>>();
         
             services
                 .AddSingleton<IMessageProcessor, MessageProcessor<FixtureMetadataUpdate, PreMatch>>()

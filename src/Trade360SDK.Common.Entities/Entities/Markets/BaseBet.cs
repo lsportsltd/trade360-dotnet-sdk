@@ -37,11 +37,11 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public DateTime LastUpdate { get; set; }
 
-        public double Probability { get; set; }
+        public double? Probability { get; set; }
 
         public int? ParticipantId { get; set; }
 
-        public int? PlayerId { get; set; }
+        public string? PlayerId { get; set; }
 
         public string? PlayerName { get; set; }
 

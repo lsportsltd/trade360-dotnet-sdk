@@ -63,7 +63,7 @@ namespace Trade360SDK.SnapshotApi.Example
             {
                 case "1":
                     await GetFixtures(_snapshotInplayApiClient, cancellationToken);
-                    //await GetFixtures(_snapshotInplayApiClient, cancellationToken);
+                    //await GetFixtures(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "2":
                     //await GetEvents(_snapshotPrematchApiClient, cancellationToken);
@@ -91,12 +91,15 @@ namespace Trade360SDK.SnapshotApi.Example
                     break;
                 case "9":
                     await GetOutrightLeaguesFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesFixtures(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "10":
                     await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesMarkets(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "11":
                     await GetOutrightLeaguesEvents(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesEvents(_snapshotInplayApiClient, cancellationToken);
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
@@ -104,7 +107,7 @@ namespace Trade360SDK.SnapshotApi.Example
             }
         }
 
-        private async Task GetFixtures(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        private async Task GetFixtures(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetFixtures...");
 
@@ -116,13 +119,13 @@ namespace Trade360SDK.SnapshotApi.Example
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
 
-            var response = await snapshotPrematchApiClient.GetFixtures(request, cancellationToken);
+            var response = await snapshotInplayApiClient.GetFixtures(request, cancellationToken);
             _logger.LogInformation("GetFixtures ended with response count: {Count}", response.Count());
         }
 
         // Example of other methods to be uncommented and used as needed
         
-        private async Task GetEvents(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        private async Task GetEvents(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetEvents...");
 
@@ -134,11 +137,11 @@ namespace Trade360SDK.SnapshotApi.Example
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
 
-            var response = await snapshotPrematchApiClient.GetEvents(request, cancellationToken);
+            var response = await snapshotInplayApiClient.GetEvents(request, cancellationToken);
             _logger.LogInformation("GetEvents ended with response count: {Count}", response.Count());
         }
 
-        private async Task GetFixtureMarkets(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        private async Task GetFixtureMarkets(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetFixtureMarkets...");
 
@@ -150,11 +153,11 @@ namespace Trade360SDK.SnapshotApi.Example
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
 
-            var response = await snapshotPrematchApiClient.GetFixtureMarkets(request, cancellationToken);
+            var response = await snapshotInplayApiClient.GetFixtureMarkets(request, cancellationToken);
             _logger.LogInformation("GetFixtureMarkets ended with response count: {Count}", response.Count());
         }
 
-        private async Task GetLivescore(ISnapshotInplayApiClient snapshotPrematchApiClient, CancellationToken cancellationToken)
+        private async Task GetLivescore(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetLivescore...");
 
@@ -166,7 +169,7 @@ namespace Trade360SDK.SnapshotApi.Example
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
 
-            var response = await snapshotPrematchApiClient.GetLivescore(request, cancellationToken);
+            var response = await snapshotInplayApiClient.GetLivescore(request, cancellationToken);
             _logger.LogInformation("GetLivescore ended with response count: {Count}", response.Count());
         }
 
@@ -346,6 +349,55 @@ namespace Trade360SDK.SnapshotApi.Example
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightLeagueEvents(request, cancellationToken);
+            _logger.LogInformation("GetOutrightLeaguesEvents ended with response count: {Count}", response.Count());
+        }
+        
+        
+                private async Task GetOutrightLeaguesFixtures(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting GetOutrightLeaguesFixtures...");
+
+            var request = new GetFixturesRequestDto()
+            {
+                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
+                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+            };
+
+            var response = await snapshotInplayApiClient.GetOutrightLeagues(request, cancellationToken);
+            _logger.LogInformation("GetOutrightLeaguesFixtures ended with response count: {Count}", response.Count());
+        }
+
+        private async Task GetOutrightLeaguesMarkets(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting GetOutrightLeaguesMarkets...");
+
+            var request = new GetMarketRequestDto()
+            {
+                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
+                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+            };
+
+            var response = await snapshotInplayApiClient.GetOutrightLeaguesMarkets(request, cancellationToken);
+            _logger.LogInformation("GetOutrightLeaguesMarkets ended with response count: {Count}", response.Count());
+        }
+        
+        private async Task GetOutrightLeaguesEvents(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting GetOutrightLeaguesEvents...");
+
+            var request = new GetOutrightFixturesRequestDto()
+            {
+                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
+                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+            };
+
+            var response = await snapshotInplayApiClient.GetOutrightLeagueEvents(request, cancellationToken);
             _logger.LogInformation("GetOutrightLeaguesEvents ended with response count: {Count}", response.Count());
         }
 

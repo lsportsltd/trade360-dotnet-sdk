@@ -19,6 +19,11 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityHandler<MarketUpdate, InPlay>, FixtureMarketUpdateHandlerInplay>();
 
         services
+            .AddScoped<IEntityHandler<OutrightLeagueMarketUpdate, InPlay>, OutrightLeagueMarketsUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<OutrightLeagueUpdate, InPlay>, OutrightLeagueUpdateHandlerInplay>()
+            .AddScoped<IEntityHandler<OutrightLeagueSettlementUpdate, InPlay>, OutrightLeagueSettlementsUpdateHandlerInplay>();
+
+        services
             .AddScoped<IEntityHandler<FixtureMetadataUpdate, PreMatch>, FixtureMetadataUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<HeartbeatUpdate, PreMatch>, HeartbeatHandlerPrematch>()
             .AddScoped<IEntityHandler<LivescoreUpdate, PreMatch>, LivescoreUpdateHandlerPrematch>()
@@ -35,7 +40,7 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<IEntityHandler<OutrightLeagueMarketUpdate, PreMatch>, OutrightLeagueMarketsUpdateHandlerPrematch>()
             .AddScoped<IEntityHandler<OutrightLeagueUpdate, PreMatch>, OutrightLeagueUpdateHandlerPrematch>()
-            .AddScoped<IEntityHandler<OutrightLeagueSettlementUpdate, PreMatch>, OutrightLeagueSettlementsUpdateHandler>();
+            .AddScoped<IEntityHandler<OutrightLeagueSettlementUpdate, PreMatch>, OutrightLeagueSettlementsUpdateHandlerPrematch>();
         
         return services;
     }

@@ -4,7 +4,7 @@ using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed.Example.Handlers.Prematch;
 
-public class OutrightLeagueSettlementsUpdateHandler : IEntityHandler<OutrightLeagueSettlementUpdate, PreMatch>
+public class OutrightLeagueSettlementsUpdateHandlerPrematch : IEntityHandler<OutrightLeagueSettlementUpdate, PreMatch>
 {
     public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header,
         OutrightLeagueSettlementUpdate? entity)

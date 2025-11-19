@@ -72,5 +72,40 @@ namespace Trade360SDK.SnapshotApi
                 cancellationToken);
             return response;
         }
+        
+        public async Task<IEnumerable<GetOutrightLeaguesFixturesResponse>> GetOutrightLeagues(GetFixturesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseStandardRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeaguesFixturesResponse>>(
+                "Inplay/GetOutrightLeagues",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+
+        public async Task<IEnumerable<GetOutrightLeaguesMarketsResponse>> GetOutrightLeaguesMarkets(GetMarketRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseStandardRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeaguesMarketsResponse>>(
+                "Inplay/GetOutrightLeagueMarkets",
+                request,
+                cancellationToken);
+            return response;
+        }
+
+        public async Task<IEnumerable<GetOutrightLeagueEventsResponse>> GetOutrightLeagueEvents(
+            GetOutrightFixturesRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<BaseOutrightRequest>(requestDto);
+
+            var response = await PostEntityAsync<IEnumerable<GetOutrightLeagueEventsResponse>>(
+                "Inplay/GetOutrightLeagueEvents",
+                request,
+                cancellationToken);
+            return response;
+        }
     }
 }

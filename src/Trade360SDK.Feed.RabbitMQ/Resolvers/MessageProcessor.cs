@@ -13,6 +13,12 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
         private readonly IServiceProvider _serviceProvider;
        
         private readonly ILogger<MessageProcessor<TType, TFlow>> _logger;
+        
+        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
         public MessageProcessor(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
@@ -33,13 +39,13 @@ namespace Trade360SDK.Feed.RabbitMQ.Resolvers
 
             try
             {
-                message = JsonSerializer.Deserialize<TType>(body);
+                message = JsonSerializer.Deserialize<TType>(body, JsonOptions);
             }
             catch (Exception e)
             {
                 if (!string.IsNullOrEmpty(body))
                 {
-                    _logger.LogWarning($"Failed to deserialize message body {body}.");
+                    _logger.LogWarning(e, $"Failed to deserialize message body {body}.");
                 }
                 message = null;
             }

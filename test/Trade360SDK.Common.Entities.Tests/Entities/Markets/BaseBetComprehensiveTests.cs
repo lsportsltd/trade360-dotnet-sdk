@@ -18,7 +18,7 @@ public class BaseBetComprehensiveTests
         baseBet.Should().NotBeNull();
         baseBet.Id.Should().Be(0); // Default long value
         baseBet.Status.Should().Be(BetStatus.NotSet); // Default enum value
-        baseBet.Probability.Should().Be(0.0); // Default double value
+        baseBet.Probability.Should().BeNull(); // Default nullable double value
         baseBet.LastUpdate.Should().Be(default(DateTime)); // Default DateTime
     }
 
@@ -342,12 +342,12 @@ public class BaseBetComprehensiveTests
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(1000)]
+    [InlineData("123")]
+    [InlineData("456789")]
+    [InlineData("")]
     [InlineData(null)]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void PlayerId_Property_ShouldAcceptNullableIntValues(int? expectedPlayerId)
+    [InlineData("P12345")]
+    public void PlayerId_Property_ShouldAcceptNullableStringValues(string? expectedPlayerId)
     {
         // Arrange
         var baseBet = new BaseBet();
@@ -422,7 +422,7 @@ public class BaseBetComprehensiveTests
         baseBet.LastUpdate = testDateTime;
         baseBet.Probability = 0.52;
         baseBet.ParticipantId = 789;
-        baseBet.PlayerId = 456;
+        baseBet.PlayerId = "456";
         baseBet.PlayerName = "John Smith";
         baseBet.Order = 3;
 
@@ -445,7 +445,7 @@ public class BaseBetComprehensiveTests
         baseBet.LastUpdate.Should().Be(testDateTime);
         baseBet.Probability.Should().Be(0.52);
         baseBet.ParticipantId.Should().Be(789);
-        baseBet.PlayerId.Should().Be(456);
+        baseBet.PlayerId.Should().Be("456");
         baseBet.PlayerName.Should().Be("John Smith");
         baseBet.Order.Should().Be(3);
     }

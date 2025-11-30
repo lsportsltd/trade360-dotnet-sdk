@@ -18,6 +18,6 @@ namespace Trade360SDK.Common.Entities.Livescore
 
         public IEnumerable<Result>? Results { get; set; }
 
-        public SubstitutionPlayers? Players { get; set; }
+        public Players? Players { get; set; }
     }
 }

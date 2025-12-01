@@ -17,5 +17,7 @@ namespace Trade360SDK.Common.Entities.Livescore
         public string? PlayerName { get; set; }
 
         public IEnumerable<Result>? Results { get; set; }
+
+        public Players? Players { get; set; }
     }
 }

@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.0.0</PackageVersion>
+		<PackageVersion>2.0.1</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).
@@ -15,6 +15,7 @@
 			- 1.5.0 Added participant classification enums: Gender (Men, Women, Mix), AgeCategory (Regular, Youth, Reserves), and ParticipantType (Club, National, Individual, Virtual, Esports, VirtuReal, Doubles) for comprehensive participant metadata support.
 			- 1.6.0 Introduced `Order` and 'PlayerId' to enhance market message, adding enum for incident order types under Livescore.
 			- 2.0.0 Changed BaseBet.PlayerId type from int? to string? to support string-based player identifiers. Added support for inplay outright messages and snapshot
+			- 2.0.1 Add players to livescore incident
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

@@ -7,7 +7,7 @@ namespace Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests
     {
         public int SportId { get; set; }
         public int LocationId { get; set; }
-        public int CompetitionId { get; set; }
+        public int LeagueId { get; set; }
     }
 
     public class CompetitionSubscriptionRequest : BaseRequest

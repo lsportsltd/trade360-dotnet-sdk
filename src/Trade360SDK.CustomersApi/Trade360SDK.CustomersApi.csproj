@@ -3,6 +3,12 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
+		<PackageVersion>1.2.0</PackageVersion>
+		<PackageReleaseNotes>
+			- 1.0.1 version includes a new customer api endpoint for GetIncidents.
+			- 1.1.0 Added comprehensive venue management API endpoints: GetVenues, GetCities, and GetStates with full filtering capabilities and request/response models.
+			- 1.2.0 Added Participants metadata API endpoint with advanced filtering (by IDs, sport, location, name, gender, age category, type) and pagination support.
+		</PackageReleaseNotes>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="System.Text.Json" Version="6.0.9" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

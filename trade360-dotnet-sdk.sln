@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -24,6 +23,20 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Example", "sdk.samples\Trade360SDK.SnapshotApi.Example\Trade360SDK.SnapshotApi.Example.csproj", "{A3A7E388-2FCD-4A6F-9B81-BCBBFDD6B15A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade360SDK.Microsoft.DependencyInjection", "src\Trade360SDK.Microsoft.DependencyInjection\Trade360SDK.Microsoft.DependencyInjection.csproj", "{D0651137-2737-48AD-8E2B-F62933AC0C88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.Tests", "test\Trade360SDK.Feed.Tests\Trade360SDK.Feed.Tests.csproj", "{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Feed.RabbitMQ.Tests", "test\Trade360SDK.Feed.RabbitMQ.Tests\Trade360SDK.Feed.RabbitMQ.Tests.csproj", "{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.CustomersApi.Tests", "test\Trade360SDK.CustomersApi.Tests\Trade360SDK.CustomersApi.Tests.csproj", "{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.SnapshotApi.Tests", "test\Trade360SDK.SnapshotApi.Tests\Trade360SDK.SnapshotApi.Tests.csproj", "{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Microsoft.DependencyInjection.Tests", "test\Trade360SDK.Microsoft.DependencyInjection.Tests\Trade360SDK.Microsoft.DependencyInjection.Tests.csproj", "{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trade360SDK.Common.Entities.Tests", "test\Trade360SDK.Common.Entities.Tests\Trade360SDK.Common.Entities.Tests.csproj", "{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +80,30 @@ Global
 		{D0651137-2737-48AD-8E2B-F62933AC0C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0651137-2737-48AD-8E2B-F62933AC0C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0651137-2737-48AD-8E2B-F62933AC0C88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +118,12 @@ Global
 		{E25DA717-7BD2-4B05-BCBD-5ED6B07D8EEE} = {4B1B4A02-54D9-4A35-96DF-46D86443D3CB}
 		{A3A7E388-2FCD-4A6F-9B81-BCBBFDD6B15A} = {4B1B4A02-54D9-4A35-96DF-46D86443D3CB}
 		{D0651137-2737-48AD-8E2B-F62933AC0C88} = {2F0DCAF3-56A7-4257-ACC6-9E6AA34195BF}
+		{F1A1B1C1-D1E1-F1A1-B1C1-D1E1F1A1B1C1} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
+		{F2A2B2C2-D2E2-F2A2-B2C2-D2E2F2A2B2C2} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
+		{F3A3B3C3-D3E3-F3A3-B3C3-D3E3F3A3B3C3} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
+		{F4A4B4C4-D4E4-F4A4-B4C4-D4E4F4A4B4C4} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
+		{F5A5B5C5-D5E5-F5A5-B5C5-D5E5F5A5B5C5} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
+		{F6A6B6C6-D6E6-F6A6-B6C6-D6E6F6A6B6C6} = {AC4CD9FD-0BE5-4949-8A74-F9D8B2AD8ACE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D84D584-8C4F-472D-B04A-B537535B355E}

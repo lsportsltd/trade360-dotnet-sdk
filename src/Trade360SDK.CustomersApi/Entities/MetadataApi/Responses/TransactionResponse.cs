@@ -10,7 +10,7 @@ namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Responses
         public Dictionary<string, List<LocalizedValue>>? Markets { get; set; }
         public Dictionary<string, List<LocalizedValue>>? Participants { get; set; }
     }
-
+     
     public class LocalizedValue
     {
         public int LanguageId { get; set; }

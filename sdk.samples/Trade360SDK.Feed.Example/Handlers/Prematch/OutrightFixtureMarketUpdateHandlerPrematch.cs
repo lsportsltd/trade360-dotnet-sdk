@@ -1,11 +1,12 @@
 ﻿using Trade360SDK.Common.Entities.MessageTypes;
 using Trade360SDK.Common.Models;
+using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed.Example.Handlers.Prematch
 {
-    internal class OutrightFixtureMarketUpdateHandlerPrematch : IEntityHandler<OutrightFixtureMarketUpdate>
+    internal class OutrightFixtureMarketUpdateHandlerPrematch : IEntityHandler<OutrightFixtureMarketUpdate, PreMatch>
     {
-        public Task ProcessAsync(OutrightFixtureMarketUpdate entity, MessageHeader header)
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, OutrightFixtureMarketUpdate? entity)
         {
             Console.WriteLine("LivescoreUpdate received");
             return Task.CompletedTask;

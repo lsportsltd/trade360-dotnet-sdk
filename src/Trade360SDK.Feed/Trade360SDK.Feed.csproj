@@ -3,10 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
+        <PackageVersion>2.0.0</PackageVersion>
+        <PackageReleaseNotes>
+            - 2.0.0 Added `TransportMessageHeaders` as part of the `IEntityHandler.ProcessAsync` method signature
+        </PackageReleaseNotes>
 	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="6.0.9" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
@@ -25,9 +24,22 @@ namespace Trade360SDK.CustomersApi.Http
 
         protected BaseHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? settings)
         {
+            if (httpClientFactory == null)
+            {
+                throw new ArgumentNullException(nameof(httpClientFactory));
+            }
+            if (string.IsNullOrWhiteSpace(baseUrl))
+            {
+                throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             _httpClient = httpClientFactory.CreateClient();
-            if (baseUrl != null) _httpClient.BaseAddress = new Uri(baseUrl);
-            _packageId = settings!.PackageId;
+            _httpClient.BaseAddress = new Uri(baseUrl);
+            _packageId = settings.PackageId;
             _username = settings.Username;
             _password = settings.Password;
         }
@@ -45,7 +57,7 @@ namespace Trade360SDK.CustomersApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonSerializer.Serialize(request);
+            var requestJson = JsonSerializer.Serialize(request, request.GetType());
             var content = new StringContent(
                 requestJson,
                 Encoding.UTF8,
@@ -135,10 +147,12 @@ namespace Trade360SDK.CustomersApi.Http
 
         private string BuildQueryString(object request)
         {
-            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions
+            if (request == null)
             {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            });
+                return string.Empty;
+            }
+
+            var json = JsonSerializer.Serialize(request, request.GetType());
             var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
             var queryString = new StringBuilder();
 
@@ -146,23 +160,40 @@ namespace Trade360SDK.CustomersApi.Http
             {
                 foreach (var kvp in dictionary)
                 {
+                    if (kvp.Value == null)
+                    {
+                        continue;
+                    }
+
                     if (kvp.Value is JsonElement jsonElement)
                     {
                         if (jsonElement.ValueKind == JsonValueKind.Array)
                         {
                             foreach (var element in jsonElement.EnumerateArray())
                             {
-                                queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(element.ToString())}&");
+                                var elementValue = element.ToString();
+                                if (!string.IsNullOrEmpty(elementValue))
+                                {
+                                    queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(elementValue)}&");
+                                }
                             }
                         }
-                        else
+                        else if (jsonElement.ValueKind != JsonValueKind.Null)
                         {
-                            queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(jsonElement.ToString())}&");
+                            var elementValue = jsonElement.ToString();
+                            if (!string.IsNullOrEmpty(elementValue))
+                            {
+                                queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(elementValue)}&");
+                            }
                         }
                     }
                     else
                     {
-                        queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}&");
+                        var valueString = kvp.Value.ToString();
+                        if (!string.IsNullOrEmpty(valueString))
+                        {
+                            queryString.Append($"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(valueString)}&");
+                        }
                     }
                 }
             }

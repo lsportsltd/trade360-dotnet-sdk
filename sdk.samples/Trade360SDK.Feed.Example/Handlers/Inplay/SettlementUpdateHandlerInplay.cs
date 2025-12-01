@@ -1,11 +1,12 @@
 ﻿using Trade360SDK.Common.Entities.MessageTypes;
 using Trade360SDK.Common.Models;
+using Trade360SDK.Feed.FeedType;
 
 namespace Trade360SDK.Feed.Example.Handlers.Inplay
 {
-    public class SettlementUpdateHandlerInplay : IEntityHandler<SettlementUpdate>
+    internal class SettlementUpdateHandlerInplay : IEntityHandler<SettlementUpdate, InPlay>
     {
-        public Task ProcessAsync(SettlementUpdate entity, MessageHeader header)
+        public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, SettlementUpdate? entity)
         {
             Console.WriteLine("SettlementUpdate received");
             return Task.CompletedTask;

@@ -5,6 +5,6 @@ namespace Trade360SDK.CustomersApi.Entities.MetadataApi.Requests
 {
     public class BaseMetadataRequest : BaseRequest
     {
-        public int LanguageId { get; set; }
+        public int? LanguageId { get; set; }
     }
 }

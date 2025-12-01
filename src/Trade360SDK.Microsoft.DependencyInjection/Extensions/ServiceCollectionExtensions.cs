@@ -18,16 +18,21 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
     {
         public static IServiceCollection AddTrade360CustomerApiClient(this IServiceCollection services, IConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             // Register HttpClients with resiliency policies
-            services.AddHttpClient<IMetadataApiClient, MetadataApiClient>()
+            services.AddHttpClient<IMetadataHttpClient, MetadataHttpClient>()
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
-            services.AddHttpClient<IPackageDistributionApiClient, PackageDistributionApiClient>()
+            services.AddHttpClient<IPackageDistributionHttpClient, PackageDistributionHttpClient>()
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
-            services.AddHttpClient<ISubscriptionApiClient, SubscriptionApiClient>()
+            services.AddHttpClient<ISubscriptionHttpClient, SubscriptionHttpClient>()
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
@@ -48,7 +53,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotPrematchApiClient, SnapshotPrematchApiClient>();
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }
@@ -66,7 +71,7 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotInplayApiClient, SnapshotInplayApiClient>();
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }

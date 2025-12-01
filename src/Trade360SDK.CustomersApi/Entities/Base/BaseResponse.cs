@@ -1,6 +1,6 @@
 ﻿namespace Trade360SDK.CustomersApi.Entities.Base
 {
-    internal class BaseResponse<TBody>
+    public class BaseResponse<TBody>
         where TBody : class
     {
         public HeaderResponse? Header { get; set; }

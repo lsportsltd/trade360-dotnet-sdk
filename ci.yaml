@@ -1,0 +1,86 @@
+resources:
+  repositories:
+    - repository: pipeline-templates
+      type: github
+      name: lsportsltd/devops-pipeline-templates
+      endpoint: lsportsltd
+      
+stages:
+  - template: kubernetes/ci-docker.yaml@pipeline-templates
+    parameters:
+      serviceName: trade360-dotnet-sdk
+      dockerUT: true
+      cloud: aws
+      group: trd
+      domain: trade360-sdk
+      product: stm
+      team: guns-n-roses
+  
+  - stage: PublishToNuget
+    displayName: 'Publish to Nuget Registry'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: PublishPackage
+        pool: k8s-agents-ci
+        variables:
+          - template: variables.yml
+        displayName: 'Publish Nuget Package'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: DotNetCoreCLI@2
+            displayName: "Restore Packages"
+            inputs:
+              command: 'restore'
+              projects: '$(project)'
+              feedsToUse: 'config'
+              nugetConfigPath: '$(nugetconfig)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build'
+            inputs:
+              command: 'build'
+              projects: '$(project)'
+              arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
+
+          - script: |
+              # Turn off command echoing to prevent secrets from appearing in logs
+              set +x
+              # Fetch NuGet API key silently
+              echo "##[command]Fetching NuGet API key from SSM..."
+              NUGET_API_KEY=$(aws ssm get-parameter \
+                --name "/devopsr/nuget/publish_token" \
+                --with-decryption \
+                --query "Parameter.Value" \
+                --output text 2>/dev/null)
+              # Set the API key as a secret variable
+              echo "##vso[task.setvariable variable=nugetApiKey;issecret=true]$NUGET_API_KEY"
+              # Print safe message
+              echo "##[section]Successfully retrieved and set all credentials"
+            displayName: 'Get AWS credentials and NuGet API key'
+          - task: DotNetCoreCLI@2
+            displayName: 'Pack NuGet Package'
+            inputs:
+              command: 'pack'
+              packagesToPush: '$(project)'
+              arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
+              outputDir: '$(Build.ArtifactStagingDirectory)'
+
+          - script: |
+              echo "Pushing NuGet packages to nuget.org..."
+              # Set the API key as an environment variable
+              export NUGET_API_KEY=$(nugetApiKey)
+              
+              for package in $(Build.ArtifactStagingDirectory)/*.nupkg; do
+                echo "Pushing package: $package"
+                dotnet nuget push "$package" \
+                  --api-key "$NUGET_API_KEY" \
+                  --source "https://api.nuget.org/v3/index.json" \
+                  --skip-duplicate \
+                  --no-symbols
+              done
+            displayName: 'Push NuGet Packages'
+            condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+            env:
+              NUGET_API_KEY: $(nugetApiKey)

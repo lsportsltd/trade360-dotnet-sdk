@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Feed
 {
@@ -8,6 +9,5 @@ namespace Trade360SDK.Feed
     {
         Task StartAsync(bool connectAtStart, CancellationToken cancellationToken);
         Task StopAsync(CancellationToken cancellationToken);
-        void AddEntityHandler<TEntity>(IEntityHandler<TEntity> entityHandler) where TEntity : new();
     }
 }

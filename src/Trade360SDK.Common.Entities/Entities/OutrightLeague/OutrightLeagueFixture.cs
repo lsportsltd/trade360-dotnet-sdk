@@ -18,5 +18,8 @@ namespace Trade360SDK.Common.Entities.OutrightLeague
         public FixtureStatus Status { get; set; }
 
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
+        
+        public DateTime EndDate { get; set; }
+
     }
 }

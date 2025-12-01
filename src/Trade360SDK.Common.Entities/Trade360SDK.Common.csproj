@@ -15,6 +15,7 @@
 			- 1.5.0 Added participant classification enums: Gender (Men, Women, Mix), AgeCategory (Regular, Youth, Reserves), and ParticipantType (Club, National, Individual, Virtual, Esports, VirtuReal, Doubles) for comprehensive participant metadata support.
 			- 1.6.0 Introduced `Order` and 'PlayerId' to enhance market message, adding enum for incident order types under Livescore.
 			- 2.0.0 Changed BaseBet.PlayerId type from int? to string? to support string-based player identifiers. Added support for inplay outright messages and snapshot
+			- 2.0.1 Add players to livescore incident
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

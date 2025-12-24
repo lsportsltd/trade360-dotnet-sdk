@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Trade360SDK.Common.Entities.Fixtures;
+using Trade360SDK.Common.Entities.Shared;
 using Xunit;
 using System;
 
@@ -17,6 +18,12 @@ namespace Trade360SDK.Common.Tests
             league.Should().NotBeNull();
             league.Id.Should().Be(0);
             league.Name.Should().BeNull();
+            league.Tour.Should().BeNull();
+            league.AgeCategory.Should().BeNull();
+            league.Gender.Should().BeNull();
+            league.Type.Should().BeNull();
+            league.NumberOfPeriods.Should().BeNull();
+            league.SportCategory.Should().BeNull();
         }
 
         [Fact]
@@ -413,6 +420,249 @@ namespace Trade360SDK.Common.Tests
             // Assert
             league.Name.Should().BeNull();
             league.Id.Should().Be(0); // Should not affect ID
+        }
+
+        [Fact]
+        public void League_SetTour_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var tour = new IdNamePair { Id = 1, Name = "ATP Tour" };
+
+            // Act
+            league.Tour = tour;
+
+            // Assert
+            league.Tour.Should().Be(tour);
+            league.Tour.Id.Should().Be(1);
+            league.Tour.Name.Should().Be("ATP Tour");
+        }
+
+        [Fact]
+        public void League_SetAgeCategory_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var ageCategory = 21;
+
+            // Act
+            league.AgeCategory = ageCategory;
+
+            // Assert
+            league.AgeCategory.Should().Be(ageCategory);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(18)]
+        [InlineData(21)]
+        [InlineData(23)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void League_SetVariousAgeCategories_ShouldSetValue(int ageCategory)
+        {
+            // Arrange
+            var league = new League();
+
+            // Act
+            league.AgeCategory = ageCategory;
+
+            // Assert
+            league.AgeCategory.Should().Be(ageCategory);
+        }
+
+        [Fact]
+        public void League_SetGender_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var gender = 1;
+
+            // Act
+            league.Gender = gender;
+
+            // Assert
+            league.Gender.Should().Be(gender);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        public void League_SetVariousGenders_ShouldSetValue(int gender)
+        {
+            // Arrange
+            var league = new League();
+
+            // Act
+            league.Gender = gender;
+
+            // Assert
+            league.Gender.Should().Be(gender);
+        }
+
+        [Fact]
+        public void League_SetType_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var type = 1;
+
+            // Act
+            league.Type = type;
+
+            // Assert
+            league.Type.Should().Be(type);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        public void League_SetVariousTypes_ShouldSetValue(int type)
+        {
+            // Arrange
+            var league = new League();
+
+            // Act
+            league.Type = type;
+
+            // Assert
+            league.Type.Should().Be(type);
+        }
+
+        [Fact]
+        public void League_SetNumberOfPeriods_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var numberOfPeriods = 2;
+
+            // Act
+            league.NumberOfPeriods = numberOfPeriods;
+
+            // Assert
+            league.NumberOfPeriods.Should().Be(numberOfPeriods);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(6)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        public void League_SetVariousNumberOfPeriods_ShouldSetValue(int numberOfPeriods)
+        {
+            // Arrange
+            var league = new League();
+
+            // Act
+            league.NumberOfPeriods = numberOfPeriods;
+
+            // Assert
+            league.NumberOfPeriods.Should().Be(numberOfPeriods);
+        }
+
+        [Fact]
+        public void League_SetSportCategory_ShouldSetValue()
+        {
+            // Arrange
+            var league = new League();
+            var sportCategory = new IdNamePair { Id = 1, Name = "Football" };
+
+            // Act
+            league.SportCategory = sportCategory;
+
+            // Assert
+            league.SportCategory.Should().Be(sportCategory);
+            league.SportCategory.Id.Should().Be(1);
+            league.SportCategory.Name.Should().Be("Football");
+        }
+
+        [Fact]
+        public void League_SetAllNewProperties_ShouldSetAllValues()
+        {
+            // Arrange
+            var league = new League();
+            var tour = new IdNamePair { Id = 1, Name = "ATP Tour" };
+            var ageCategory = 21;
+            var gender = 1;
+            var type = 2;
+            var numberOfPeriods = 4;
+            var sportCategory = new IdNamePair { Id = 5, Name = "Tennis" };
+
+            // Act
+            league.Tour = tour;
+            league.AgeCategory = ageCategory;
+            league.Gender = gender;
+            league.Type = type;
+            league.NumberOfPeriods = numberOfPeriods;
+            league.SportCategory = sportCategory;
+
+            // Assert
+            league.Tour.Should().Be(tour);
+            league.AgeCategory.Should().Be(ageCategory);
+            league.Gender.Should().Be(gender);
+            league.Type.Should().Be(type);
+            league.NumberOfPeriods.Should().Be(numberOfPeriods);
+            league.SportCategory.Should().Be(sportCategory);
+        }
+
+        [Fact]
+        public void League_SetNullNewProperties_ShouldSetNulls()
+        {
+            // Arrange
+            var league = new League();
+
+            // Act
+            league.Tour = null;
+            league.AgeCategory = null;
+            league.Gender = null;
+            league.Type = null;
+            league.NumberOfPeriods = null;
+            league.SportCategory = null;
+
+            // Assert
+            league.Tour.Should().BeNull();
+            league.AgeCategory.Should().BeNull();
+            league.Gender.Should().BeNull();
+            league.Type.Should().BeNull();
+            league.NumberOfPeriods.Should().BeNull();
+            league.SportCategory.Should().BeNull();
+        }
+
+        [Fact]
+        public void League_WithRealWorldDataIncludingNewFields_ShouldStoreCorrectly()
+        {
+            // Arrange & Act
+            var league = new League
+            {
+                Id = 1,
+                Name = "Premier League",
+                Tour = null,
+                AgeCategory = 0,
+                Gender = 1,
+                Type = 1,
+                NumberOfPeriods = 2,
+                SportCategory = new IdNamePair { Id = 1, Name = "Football" }
+            };
+
+            // Assert
+            league.Id.Should().Be(1);
+            league.Name.Should().Be("Premier League");
+            league.AgeCategory.Should().Be(0);
+            league.Gender.Should().Be(1);
+            league.Type.Should().Be(1);
+            league.NumberOfPeriods.Should().Be(2);
+            league.SportCategory.Name.Should().Be("Football");
         }
     }
 } 

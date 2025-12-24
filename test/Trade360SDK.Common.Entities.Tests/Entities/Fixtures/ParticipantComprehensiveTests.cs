@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
 using Trade360SDK.Common.Entities.Fixtures;
@@ -20,6 +21,12 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             participant.Position.Should().BeNull();
             participant.RotationId.Should().BeNull();
             participant.IsActive.Should().Be(-1); // Default value as per class definition
+            participant.Form.Should().BeNull();
+            participant.Formation.Should().BeNull();
+            participant.FixturePlayers.Should().BeNull();
+            participant.Gender.Should().BeNull();
+            participant.AgeCategory.Should().BeNull();
+            participant.Type.Should().BeNull();
         }
 
         [Fact]
@@ -350,7 +357,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             var player1 = new Participant
             {
                 Id = 10,
-                Name = "Cristiano Ronaldo",
+                Name = "Test Player",
                 Position = "Forward",
                 RotationId = 7,
                 IsActive = 1
@@ -366,7 +373,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             };
 
             // Assert
-            player1.Name.Should().Be("Cristiano Ronaldo");
+            player1.Name.Should().Be("Test Player");
             player1.Position.Should().Be("Forward");
             player1.RotationId.Should().Be(7);
 
@@ -529,6 +536,331 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
 
             // Assert
             participant.IsActive.Should().Be(-1);
+        }
+
+        [Fact]
+        public void Participant_SetForm_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var form = "WWDLW";
+
+            // Act
+            participant.Form = form;
+
+            // Assert
+            participant.Form.Should().Be(form);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("WWWWW")]
+        [InlineData("LLLLL")]
+        [InlineData("DDDDD")]
+        [InlineData("WDLWL")]
+        [InlineData("W")]
+        public void Participant_SetVariousForms_ShouldSetValue(string form)
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.Form = form;
+
+            // Assert
+            participant.Form.Should().Be(form);
+        }
+
+        [Fact]
+        public void Participant_SetFormation_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var formation = "4-3-3";
+
+            // Act
+            participant.Formation = formation;
+
+            // Assert
+            participant.Formation.Should().Be(formation);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("4-4-2")]
+        [InlineData("4-3-3")]
+        [InlineData("3-5-2")]
+        [InlineData("5-3-2")]
+        [InlineData("4-2-3-1")]
+        [InlineData("3-4-3")]
+        public void Participant_SetVariousFormations_ShouldSetValue(string formation)
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.Formation = formation;
+
+            // Assert
+            participant.Formation.Should().Be(formation);
+        }
+
+        [Fact]
+        public void Participant_SetFixturePlayers_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var fixturePlayers = new List<FixturePlayer>
+            {
+                new FixturePlayer { PlayerId = 1, ShirtNumber = "10", IsCaptain = true },
+                new FixturePlayer { PlayerId = 2, ShirtNumber = "7", IsCaptain = false }
+            };
+
+            // Act
+            participant.FixturePlayers = fixturePlayers;
+
+            // Assert
+            participant.FixturePlayers.Should().BeEquivalentTo(fixturePlayers);
+            participant.FixturePlayers.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void Participant_SetEmptyFixturePlayers_ShouldSetEmptyList()
+        {
+            // Arrange
+            var participant = new Participant();
+            var emptyList = new List<FixturePlayer>();
+
+            // Act
+            participant.FixturePlayers = emptyList;
+
+            // Assert
+            participant.FixturePlayers.Should().BeEmpty();
+            participant.FixturePlayers.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Participant_SetGender_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var gender = 1;
+
+            // Act
+            participant.Gender = gender;
+
+            // Assert
+            participant.Gender.Should().Be(gender);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void Participant_SetVariousGenders_ShouldSetValue(int gender)
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.Gender = gender;
+
+            // Assert
+            participant.Gender.Should().Be(gender);
+        }
+
+        [Fact]
+        public void Participant_SetAgeCategory_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var ageCategory = 21;
+
+            // Act
+            participant.AgeCategory = ageCategory;
+
+            // Assert
+            participant.AgeCategory.Should().Be(ageCategory);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(18)]
+        [InlineData(21)]
+        [InlineData(23)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void Participant_SetVariousAgeCategories_ShouldSetValue(int ageCategory)
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.AgeCategory = ageCategory;
+
+            // Assert
+            participant.AgeCategory.Should().Be(ageCategory);
+        }
+
+        [Fact]
+        public void Participant_SetType_ShouldSetValue()
+        {
+            // Arrange
+            var participant = new Participant();
+            var type = 1;
+
+            // Act
+            participant.Type = type;
+
+            // Assert
+            participant.Type.Should().Be(type);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MinValue)]
+        public void Participant_SetVariousTypes_ShouldSetValue(int type)
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.Type = type;
+
+            // Assert
+            participant.Type.Should().Be(type);
+        }
+
+        [Fact]
+        public void Participant_SetAllNewProperties_ShouldSetAllValues()
+        {
+            // Arrange
+            var participant = new Participant();
+            var form = "WWDLW";
+            var formation = "4-3-3";
+            var fixturePlayers = new List<FixturePlayer>
+            {
+                new FixturePlayer { PlayerId = 10, ShirtNumber = "10" }
+            };
+            var gender = 1;
+            var ageCategory = 21;
+            var type = 2;
+
+            // Act
+            participant.Form = form;
+            participant.Formation = formation;
+            participant.FixturePlayers = fixturePlayers;
+            participant.Gender = gender;
+            participant.AgeCategory = ageCategory;
+            participant.Type = type;
+
+            // Assert
+            participant.Form.Should().Be(form);
+            participant.Formation.Should().Be(formation);
+            participant.FixturePlayers.Should().BeEquivalentTo(fixturePlayers);
+            participant.Gender.Should().Be(gender);
+            participant.AgeCategory.Should().Be(ageCategory);
+            participant.Type.Should().Be(type);
+        }
+
+        [Fact]
+        public void Participant_SetNullNewProperties_ShouldSetNulls()
+        {
+            // Arrange
+            var participant = new Participant();
+
+            // Act
+            participant.Form = null;
+            participant.Formation = null;
+            participant.FixturePlayers = null;
+            participant.Gender = null;
+            participant.AgeCategory = null;
+            participant.Type = null;
+
+            // Assert
+            participant.Form.Should().BeNull();
+            participant.Formation.Should().BeNull();
+            participant.FixturePlayers.Should().BeNull();
+            participant.Gender.Should().BeNull();
+            participant.AgeCategory.Should().BeNull();
+            participant.Type.Should().BeNull();
+        }
+
+        [Fact]
+        public void Participant_WithRealWorldTeamDataIncludingNewFields_ShouldStoreCorrectly()
+        {
+            // Arrange & Act
+            var team = new Participant
+            {
+                Id = 1,
+                Name = "Manchester United",
+                Position = "1",
+                RotationId = 100,
+                IsActive = 1,
+                Form = "WDWWL",
+                Formation = "4-2-3-1",
+                FixturePlayers = new List<FixturePlayer>
+                {
+                    new FixturePlayer { PlayerId = 1, ShirtNumber = "1", IsStartingLineup = true },
+                    new FixturePlayer { PlayerId = 7, ShirtNumber = "7", IsCaptain = true, IsStartingLineup = true }
+                },
+                Gender = 1,
+                AgeCategory = 0,
+                Type = 1
+            };
+
+            // Assert
+            team.Id.Should().Be(1);
+            team.Name.Should().Be("Manchester United");
+            team.Form.Should().Be("WDWWL");
+            team.Formation.Should().Be("4-2-3-1");
+            team.FixturePlayers.Should().HaveCount(2);
+            team.Gender.Should().Be(1);
+            team.AgeCategory.Should().Be(0);
+            team.Type.Should().Be(1);
+        }
+
+        [Fact]
+        public void Participant_NewProperties_ShouldHaveCorrectTypes()
+        {
+            // Arrange & Act
+            var participantType = typeof(Participant);
+
+            // Assert
+            var formProperty = participantType.GetProperty("Form");
+            formProperty.Should().NotBeNull();
+            formProperty!.PropertyType.Should().Be(typeof(string));
+
+            var formationProperty = participantType.GetProperty("Formation");
+            formationProperty.Should().NotBeNull();
+            formationProperty!.PropertyType.Should().Be(typeof(string));
+
+            var fixturePlayersProperty = participantType.GetProperty("FixturePlayers");
+            fixturePlayersProperty.Should().NotBeNull();
+            fixturePlayersProperty!.PropertyType.Should().Be(typeof(List<FixturePlayer>));
+
+            var genderProperty = participantType.GetProperty("Gender");
+            genderProperty.Should().NotBeNull();
+            genderProperty!.PropertyType.Should().Be(typeof(int?));
+
+            var ageCategoryProperty = participantType.GetProperty("AgeCategory");
+            ageCategoryProperty.Should().NotBeNull();
+            ageCategoryProperty!.PropertyType.Should().Be(typeof(int?));
+
+            var typeProperty = participantType.GetProperty("Type");
+            typeProperty.Should().NotBeNull();
+            typeProperty!.PropertyType.Should().Be(typeof(int?));
         }
     }
 } 

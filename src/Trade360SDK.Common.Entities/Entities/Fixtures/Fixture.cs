@@ -7,6 +7,8 @@ namespace Trade360SDK.Common.Entities.Fixtures
 {
     public class Fixture
     {
+        public string? FixtureName { get; set; }
+        
         public Sport? Sport { get; set; }
 
         public Location? Location { get; set; }
@@ -32,5 +34,7 @@ namespace Trade360SDK.Common.Entities.Fixtures
         public IdNamePair Stage { get; set; }
 
         public IdNamePair Round { get; set; }
+        
+        public IdNamePair Season { get; set; }
     }
 }

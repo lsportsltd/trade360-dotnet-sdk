@@ -17,7 +17,9 @@ using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
 using ParticipantInfo = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.ParticipantInfo;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
+using Season = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Season;
 using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
+using Tour = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Tour;
 using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
 
 namespace Trade360SDK.CustomersApi
@@ -123,6 +125,20 @@ namespace Trade360SDK.CustomersApi
             var request = _mapper.Map<GetParticipantsRequest>(requestDto);
             var response = await PostEntityAsync<GetParticipantsResponse>("Participants/Get", request, cancellationToken);
             return response;
+        }
+
+        public async Task<IEnumerable<Season>> GetSeasonsAsync(GetSeasonsRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetSeasonsRequest>(requestDto);
+            var response = await PostEntityAsync<GetSeasonsResponse>("Seasons/Get", request, cancellationToken);
+            return response.Seasons ?? Enumerable.Empty<Season>();
+        }
+
+        public async Task<IEnumerable<Tour>> GetToursAsync(GetToursRequestDto requestDto, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<GetToursRequest>(requestDto);
+            var response = await PostEntityAsync<GetToursResponse>("Tours/Get", request, cancellationToken);
+            return response.Tours ?? Enumerable.Empty<Tour>();
         }
     }
 }

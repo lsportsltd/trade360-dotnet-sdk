@@ -32,6 +32,8 @@ namespace Trade360SDK.CustomersApi.Mapper
             CreateMap<StateFilterDto, StateFilter>();
             CreateMap<GetParticipantsRequestDto, GetParticipantsRequest>();
             CreateMap<ParticipantFilterDto, ParticipantFilter>();
+            CreateMap<GetSeasonsRequestDto, GetSeasonsRequest>();
+            CreateMap<GetToursRequestDto, GetToursRequest>();
         }
     }
 }

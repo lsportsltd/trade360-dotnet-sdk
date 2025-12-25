@@ -3,11 +3,12 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.2.0</PackageVersion>
+		<PackageVersion>1.3.0</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.1 version includes a new customer api endpoint for GetIncidents.
 			- 1.1.0 Added comprehensive venue management API endpoints: GetVenues, GetCities, and GetStates with full filtering capabilities and request/response models.
 			- 1.2.0 Added Participants metadata API endpoint with advanced filtering (by IDs, sport, location, name, gender, age category, type) and pagination support.
+			- 1.3.0 Added Seasons and Tours metadata API endpoints: GetSeasonsAsync returns seasons with SeasonId and SeasonName; GetToursAsync returns tours with TourId, TourName, SportId, and SportName.
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

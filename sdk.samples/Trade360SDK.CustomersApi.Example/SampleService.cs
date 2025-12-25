@@ -64,6 +64,8 @@ namespace Trade360SDK.CustomersApi.Example
                 { MenuOption.GetCities, async ct => await GetCitiesAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetStates, async ct => await GetStatesAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetParticipants, async ct => await GetParticipantsAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetSeasons, async ct => await GetSeasonsAsync(_prematchMetadataHttpClient, ct)},
+                { MenuOption.GetTours, async ct => await GetToursAsync(_prematchMetadataHttpClient, ct)},
             };
         }
 
@@ -503,6 +505,41 @@ namespace Trade360SDK.CustomersApi.Example
             Console.WriteLine($"Response returned: \n{jsonResponse}\n");
         }
 
+        private async Task GetSeasonsAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetSeasonsRequestDto()
+            {
+                SeasonId = null
+            };
+            
+            var response = await metadataApiClient.GetSeasonsAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
+
+        private async Task GetToursAsync(IMetadataHttpClient metadataApiClient,
+            CancellationToken cancellationToken)
+        {
+            var request = new GetToursRequestDto()
+            {
+                TourId = null, 
+                SportId = null
+            };
+            
+            var response = await metadataApiClient.GetToursAsync(request, cancellationToken);
+            var jsonResponse = JsonSerializer.Serialize(response, response.GetType(), new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            });
+            Console.WriteLine($"Response returned: \n{jsonResponse}\n");
+        }
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Service is stopping.");
@@ -557,6 +594,12 @@ namespace Trade360SDK.CustomersApi.Example
             
             [Description("Metadata API - Get Participants")]
             GetParticipants,
+            
+            [Description("Metadata API - Get Seasons")]
+            GetSeasons,
+            
+            [Description("Metadata API - Get Tours")]
+            GetTours,
 
             [Description("Subscription API - Subscribe to Fixture")]
             SubscribeToFixture,

@@ -12,7 +12,7 @@ public class GetToursRequestDtoTests
 
         // Assert
         Assert.Null(dto.TourId);
-        Assert.Equal(0, dto.SportId);
+        Assert.Null(dto.SportId);
     }
 
     [Fact]

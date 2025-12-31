@@ -19,6 +19,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
 
             // Assert
             fixture.Should().NotBeNull();
+            fixture.FixtureName.Should().BeNull();
             fixture.Sport.Should().BeNull();
             fixture.Location.Should().BeNull();
             fixture.League.Should().BeNull();
@@ -32,6 +33,39 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Venue.Should().BeNull();
             fixture.Stage.Should().BeNull();
             fixture.Round.Should().BeNull();
+            fixture.Season.Should().BeNull();
+        }
+
+        [Fact]
+        public void Fixture_SetFixtureName_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var fixtureName = "Manchester United vs Liverpool";
+
+            // Act
+            fixture.FixtureName = fixtureName;
+
+            // Assert
+            fixture.FixtureName.Should().Be(fixtureName);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("Manchester United vs Liverpool")]
+        [InlineData("Team A vs Team B")]
+        [InlineData("Champions League Final 2024")]
+        public void Fixture_SetVariousFixtureNames_ShouldSetValue(string fixtureName)
+        {
+            // Arrange
+            var fixture = new Fixture();
+
+            // Act
+            fixture.FixtureName = fixtureName;
+
+            // Assert
+            fixture.FixtureName.Should().Be(fixtureName);
         }
 
         [Fact]
@@ -247,10 +281,27 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
         }
 
         [Fact]
+        public void Fixture_SetSeason_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var season = new IdNamePair { Id = 2024, Name = "2024-2025" };
+
+            // Act
+            fixture.Season = season;
+
+            // Assert
+            fixture.Season.Should().Be(season);
+            fixture.Season.Id.Should().Be(2024);
+            fixture.Season.Name.Should().Be("2024-2025");
+        }
+
+        [Fact]
         public void Fixture_SetAllProperties_ShouldSetAllValues()
         {
             // Arrange
             var fixture = new Fixture();
+            var fixtureName = "Manchester United vs Liverpool";
             var sport = new Sport { Id = 1, Name = "Football" };
             var location = new Location { Id = 1, Name = "England" };
             var league = new League { Id = 1, Name = "Premier League" };
@@ -269,8 +320,10 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             };
             var stage = new IdNamePair { Id = 1, Name = "Knockout Stage" };
             var round = new IdNamePair { Id = 2, Name = "Final" };
+            var season = new IdNamePair { Id = 2024, Name = "2024-2025" };
 
             // Act
+            fixture.FixtureName = fixtureName;
             fixture.Sport = sport;
             fixture.Location = location;
             fixture.League = league;
@@ -284,8 +337,10 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Venue = venue;
             fixture.Stage = stage;
             fixture.Round = round;
+            fixture.Season = season;
 
             // Assert
+            fixture.FixtureName.Should().Be(fixtureName);
             fixture.Sport.Should().Be(sport);
             fixture.Location.Should().Be(location);
             fixture.League.Should().Be(league);
@@ -299,6 +354,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Venue.Should().Be(venue);
             fixture.Stage.Should().Be(stage);
             fixture.Round.Should().Be(round);
+            fixture.Season.Should().Be(season);
         }
 
         [Fact]
@@ -325,6 +381,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             var fixture = new Fixture();
 
             // Act
+            fixture.FixtureName = null;
             fixture.Sport = null;
             fixture.Location = null;
             fixture.League = null;
@@ -336,8 +393,10 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Venue = null;
             fixture.Stage = null;
             fixture.Round = null;
+            fixture.Season = null;
 
             // Assert
+            fixture.FixtureName.Should().BeNull();
             fixture.Sport.Should().BeNull();
             fixture.Location.Should().BeNull();
             fixture.League.Should().BeNull();
@@ -349,6 +408,7 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Venue.Should().BeNull();
             fixture.Stage.Should().BeNull();
             fixture.Round.Should().BeNull();
+            fixture.Season.Should().BeNull();
         }
 
         [Theory]
@@ -420,6 +480,76 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             fixture.Status.Should().Be(status1);
             fixture.Status = status2;
             fixture.Status.Should().Be(status2);
+        }
+
+        [Fact]
+        public void Fixture_SetVariousSeasons_ShouldSetValue()
+        {
+            // Arrange
+            var fixture = new Fixture();
+
+            // Act & Assert - Current season
+            var currentSeason = new IdNamePair { Id = 2024, Name = "2024-2025" };
+            fixture.Season = currentSeason;
+            fixture.Season.Should().Be(currentSeason);
+            fixture.Season.Id.Should().Be(2024);
+            fixture.Season.Name.Should().Be("2024-2025");
+
+            // Act & Assert - Previous season
+            var previousSeason = new IdNamePair { Id = 2023, Name = "2023-2024" };
+            fixture.Season = previousSeason;
+            fixture.Season.Should().Be(previousSeason);
+
+            // Act & Assert - Null season
+            fixture.Season = null;
+            fixture.Season.Should().BeNull();
+        }
+
+        [Fact]
+        public void Fixture_Season_ShouldHaveCorrectPropertyType()
+        {
+            // Arrange & Act
+            var fixtureType = typeof(Fixture);
+            var seasonProperty = fixtureType.GetProperty("Season");
+
+            // Assert
+            seasonProperty.Should().NotBeNull();
+            seasonProperty!.PropertyType.Should().Be(typeof(IdNamePair));
+        }
+
+        [Fact]
+        public void Fixture_WithCompleteRealWorldData_ShouldStoreCorrectly()
+        {
+            // Arrange & Act
+            var fixture = new Fixture
+            {
+                FixtureName = "Manchester United vs Liverpool",
+                Sport = new Sport { Id = 1, Name = "Football" },
+                Location = new Location { Id = 1, Name = "England" },
+                League = new League { Id = 1, Name = "Premier League" },
+                StartDate = new DateTime(2024, 12, 25, 15, 0, 0, DateTimeKind.Utc),
+                LastUpdate = DateTime.UtcNow,
+                Status = FixtureStatus.NSY,
+                Participants = new List<Participant>
+                {
+                    new Participant { Id = 1, Name = "Manchester United" },
+                    new Participant { Id = 2, Name = "Liverpool" }
+                },
+                ExternalFixtureId = "EXT-123",
+                Stage = new IdNamePair { Id = 1, Name = "Regular Season" },
+                Round = new IdNamePair { Id = 18, Name = "Matchday 18" },
+                Season = new IdNamePair { Id = 2024, Name = "2024-2025" }
+            };
+
+            // Assert
+            fixture.FixtureName.Should().Be("Manchester United vs Liverpool");
+            fixture.Sport.Name.Should().Be("Football");
+            fixture.League.Name.Should().Be("Premier League");
+            fixture.Participants.Should().HaveCount(2);
+            fixture.Stage.Name.Should().Be("Regular Season");
+            fixture.Round.Name.Should().Be("Matchday 18");
+            fixture.Season.Name.Should().Be("2024-2025");
+            fixture.Season.Id.Should().Be(2024);
         }
     }
 } 

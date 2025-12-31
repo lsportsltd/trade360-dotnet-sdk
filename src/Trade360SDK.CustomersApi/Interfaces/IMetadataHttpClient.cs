@@ -8,8 +8,10 @@ using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
 using Location = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Location;
 using ParticipantInfo = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.ParticipantInfo;
+using Season = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Season;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
+using Tour = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Tour;
 using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
 
 namespace Trade360SDK.CustomersApi.Interfaces
@@ -28,5 +30,7 @@ namespace Trade360SDK.CustomersApi.Interfaces
         Task<IEnumerable<City>> GetCitiesAsync(GetCitiesRequestDto requestDto, CancellationToken cancellationToken);
         Task<IEnumerable<State>> GetStatesAsync(GetStatesRequestDto requestDto, CancellationToken cancellationToken);
         Task<GetParticipantsResponse> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<Season>> GetSeasonsAsync(GetSeasonsRequestDto requestDto, CancellationToken cancellationToken);
+        Task<IEnumerable<Tour>> GetToursAsync(GetToursRequestDto requestDto, CancellationToken cancellationToken);
     }
 }

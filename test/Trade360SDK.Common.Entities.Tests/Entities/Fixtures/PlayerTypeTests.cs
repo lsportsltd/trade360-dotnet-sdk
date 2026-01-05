@@ -22,13 +22,13 @@ namespace Trade360SDK.Common.Tests.Entities.Fixtures
         [Fact]
         public void Enum_Other_ShouldHaveValue2()
         {
-            Assert.Equal(0, (int)PlayerType.Other);
+            Assert.Equal(1, (int)PlayerType.Other);
         }
 
         [Fact]
         public void Enum_Coach_ShouldHaveValue3()
         {
-            Assert.Equal(1, (int)PlayerType.Coach);
+            Assert.Equal(2, (int)PlayerType.Coach);
         }
 
         [Fact]

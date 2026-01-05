@@ -35,7 +35,7 @@ namespace Trade360SDK.Common.Tests.Entities.Fixtures
         public void Enum_ShouldHaveExactlyThreeValues()
         {
             var values = System.Enum.GetValues(typeof(PlayerType));
-            Assert.Equal(2, values.Length);
+            Assert.Equal(3, values.Length);
         }
 
         [Theory]

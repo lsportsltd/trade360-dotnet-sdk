@@ -16,19 +16,19 @@ namespace Trade360SDK.Common.Tests.Entities.Fixtures
         [Fact]
         public void Enum_Player_ShouldHaveValue1()
         {
-            Assert.Equal(1, (int)PlayerType.Player);
+            Assert.Equal(0, (int)PlayerType.Player);
         }
 
         [Fact]
         public void Enum_Other_ShouldHaveValue2()
         {
-            Assert.Equal(2, (int)PlayerType.Other);
+            Assert.Equal(1, (int)PlayerType.Other);
         }
 
         [Fact]
         public void Enum_Coach_ShouldHaveValue3()
         {
-            Assert.Equal(3, (int)PlayerType.Coach);
+            Assert.Equal(2, (int)PlayerType.Coach);
         }
 
         [Fact]
@@ -39,9 +39,9 @@ namespace Trade360SDK.Common.Tests.Entities.Fixtures
         }
 
         [Theory]
-        [InlineData(1, "Player")]
-        [InlineData(2, "Other")]
-        [InlineData(3, "Coach")]
+        [InlineData(0, "Player")]
+        [InlineData(1, "Other")]
+        [InlineData(2, "Coach")]
         public void Enum_ShouldHaveCorrectNameForValue(int value, string expectedName)
         {
             var enumValue = (PlayerType)value;

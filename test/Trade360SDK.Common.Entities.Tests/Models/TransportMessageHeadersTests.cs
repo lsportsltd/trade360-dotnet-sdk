@@ -16,6 +16,7 @@ public class TransportMessageHeadersTests
             { "MessageSequence", "123456789" },
             { "MessageGuid", "abc-def-123" },
             { "FixtureId", "fixture-456" },
+            { "SportId", "sport-789" },
             { "timestamp_in_ms", "1640995200000" }
         };
 
@@ -28,6 +29,7 @@ public class TransportMessageHeadersTests
         result.MessageSequence.Should().Be("123456789");
         result.MessageGuid.Should().Be("abc-def-123");
         result.FixtureId.Should().Be("fixture-456");
+        result.SportId.Should().Be("sport-789");
         result.TimestampInMs.Should().Be("1640995200000");
     }
 
@@ -129,6 +131,7 @@ public class TransportMessageHeadersTests
         var messageSequenceProperty = type.GetProperty(nameof(TransportMessageHeaders.MessageSequence));
         var messageGuidProperty = type.GetProperty(nameof(TransportMessageHeaders.MessageGuid));
         var fixtureIdProperty = type.GetProperty(nameof(TransportMessageHeaders.FixtureId));
+        var sportIdProperty = type.GetProperty(nameof(TransportMessageHeaders.SportId));
 
         messageTypeProperty!.CanRead.Should().BeTrue();
         messageTypeProperty.SetMethod!.IsAssembly.Should().BeTrue();
@@ -141,6 +144,9 @@ public class TransportMessageHeadersTests
 
         fixtureIdProperty!.CanRead.Should().BeTrue();
         fixtureIdProperty.SetMethod!.IsAssembly.Should().BeTrue();
+
+        sportIdProperty!.CanRead.Should().BeTrue();
+        sportIdProperty.SetMethod!.IsAssembly.Should().BeTrue();
     }
 
     [Fact]
@@ -170,6 +176,7 @@ public class TransportMessageHeadersTests
         var messageGuidBytes = Encoding.UTF8.GetBytes("abc-def-123");
         var messageSequenceBytes = Encoding.UTF8.GetBytes("987654321");
         var fixtureIdBytes = Encoding.UTF8.GetBytes("fixture-789");
+        var sportIdBytes = Encoding.UTF8.GetBytes("sport-456");
         
         var properties = new Dictionary<string, object>
         {
@@ -177,6 +184,7 @@ public class TransportMessageHeadersTests
             { "MessageGuid", messageGuidBytes },
             { "MessageSequence", messageSequenceBytes },
             { "FixtureId", fixtureIdBytes },
+            { "SportId", sportIdBytes },
             { "timestamp_in_ms", "1755778318057" }
         };
 
@@ -189,6 +197,7 @@ public class TransportMessageHeadersTests
         result.MessageGuid.Should().Be("abc-def-123");
         result.MessageSequence.Should().Be("987654321");
         result.FixtureId.Should().Be("fixture-789");
+        result.SportId.Should().Be("sport-456");
         result.TimestampInMs.Should().Be("1755778318057");
     }
 
@@ -246,7 +255,7 @@ public class TransportMessageHeadersTests
             { "MessageType", "TestType" },
             { "MessageGuid", "test-guid-123" },
             { "timestamp_in_ms", "1640995200000" }
-            // MessageSequence and FixtureId are missing (optional)
+            // MessageSequence, FixtureId, and SportId are missing (optional)
         };
 
         // Act
@@ -259,11 +268,13 @@ public class TransportMessageHeadersTests
         result.TimestampInMs.Should().Be("1640995200000");
         result.MessageSequence.Should().Be(string.Empty);
         result.FixtureId.Should().Be(string.Empty);
+        result.SportId.Should().Be(string.Empty);
     }
 
     [Theory]
     [InlineData("MessageSequence")]
     [InlineData("FixtureId")]
+    [InlineData("SportId")]
     public void CreateFromProperties_WithNullOptionalProperty_ShouldUseEmptyString(string nullProperty)
     {
         // Arrange
@@ -273,6 +284,7 @@ public class TransportMessageHeadersTests
             { "MessageGuid", "test-guid-123" },
             { "MessageSequence", "sequence-123" },
             { "FixtureId", "fixture-456" },
+            { "SportId", "sport-789" },
             { "timestamp_in_ms", "1640995200000" }
         };
         properties[nullProperty] = null!;
@@ -287,11 +299,19 @@ public class TransportMessageHeadersTests
         {
             result.MessageSequence.Should().Be(string.Empty);
             result.FixtureId.Should().Be("fixture-456");
+            result.SportId.Should().Be("sport-789");
         }
         else if (nullProperty == "FixtureId")
         {
             result.MessageSequence.Should().Be("sequence-123");
             result.FixtureId.Should().Be(string.Empty);
+            result.SportId.Should().Be("sport-789");
+        }
+        else if (nullProperty == "SportId")
+        {
+            result.MessageSequence.Should().Be("sequence-123");
+            result.FixtureId.Should().Be("fixture-456");
+            result.SportId.Should().Be(string.Empty);
         }
     }
 }

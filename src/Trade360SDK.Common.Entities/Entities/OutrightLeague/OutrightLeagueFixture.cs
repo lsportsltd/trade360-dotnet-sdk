@@ -24,6 +24,6 @@ namespace Trade360SDK.Common.Entities.OutrightLeague
         
         public DateTime EndDate { get; set; }
         
-        public IdNamePair Season { get; set; }
+        public IdNamePair? Season { get; set; }
     }
 }

@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.2.0</PackageVersion>
+		<PackageVersion>2.3.0</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).

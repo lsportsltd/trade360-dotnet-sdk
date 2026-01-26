@@ -11,11 +11,13 @@ namespace Trade360SDK.Common.Models
         private const string TimestampInMsKey = "timestamp_in_ms";
         private const string MessageSequenceKey = "MessageSequence";
         private const string FixtureIdKey = "FixtureId";
+        private const string SportIdKey = "SportId";
         
         public string MessageType { get; internal set; }
         public string MessageSequence { get; internal set; }
         public string MessageGuid { get; internal set; }
         public string FixtureId { get; internal set; }
+        public string SportId { get; internal set; }
         public string TimestampInMs { get; internal set; }
         
 
@@ -34,7 +36,8 @@ namespace Trade360SDK.Common.Models
                 MessageType = GetRequiredProperty(properties, MessageTypeKey),
                 TimestampInMs = GetRequiredProperty(properties, TimestampInMsKey),
                 MessageSequence = GetRequiredProperty(properties, MessageSequenceKey, false),
-                FixtureId = GetRequiredProperty(properties, FixtureIdKey, false)
+                FixtureId = GetRequiredProperty(properties, FixtureIdKey, false),
+                SportId = GetRequiredProperty(properties, SportIdKey, false)
             };
         }
 

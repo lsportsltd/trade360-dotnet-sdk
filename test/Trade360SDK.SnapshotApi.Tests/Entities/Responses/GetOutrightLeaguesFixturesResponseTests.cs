@@ -13,15 +13,18 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
         [Fact]
         public void CanAssignAndRetrieveAllProperties()
         {
+            var season = new IdNamePair { Id = 2024, Name = "2024-2025" };
             var outrightLeague = new OutrightLeagueFixtureSnapshotResponse
             {
+                FixtureName = "Champions League 2024",
                 Subscription = null,
                 Sport = new Sport { Id = 2, Name = "Basketball" },
                 Location = new Location { Id = 20, Name = "Arena" },
                 LastUpdate = DateTime.UtcNow,
                 Status = FixtureStatus.Finished,
                 ExtraData = new List<NameValuePair> { new NameValuePair { Name = "LeagueKey", Value = "LeagueValue" } },
-                EndDate = DateTime.UtcNow.AddDays(30)
+                EndDate = DateTime.UtcNow.AddDays(30),
+                Season = season
             };
             var competition = new CompetitionResponse
             {
@@ -61,6 +64,39 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.Equal("LeagueKey", Assert.Single(evt.OutrightLeague.ExtraData).Name);
             Assert.NotNull(evt.OutrightLeague.EndDate);
             Assert.Equal(outrightLeague.EndDate, evt.OutrightLeague.EndDate);
+            Assert.Equal("Champions League 2024", evt.OutrightLeague.FixtureName);
+            Assert.NotNull(evt.OutrightLeague.Season);
+            Assert.Equal(2024, evt.OutrightLeague.Season.Id);
+            Assert.Equal("2024-2025", evt.OutrightLeague.Season.Name);
+        }
+
+        [Fact]
+        public void FixtureNameAndSeason_ShouldGetAndSetValues()
+        {
+            var season = new IdNamePair { Id = 2025, Name = "2025-2026" };
+            var outrightLeague = new OutrightLeagueFixtureSnapshotResponse
+            {
+                FixtureName = "World Cup Final",
+                Season = season
+            };
+
+            Assert.Equal("World Cup Final", outrightLeague.FixtureName);
+            Assert.NotNull(outrightLeague.Season);
+            Assert.Equal(2025, outrightLeague.Season.Id);
+            Assert.Equal("2025-2026", outrightLeague.Season.Name);
+        }
+
+        [Fact]
+        public void FixtureNameAndSeason_ShouldAllowNulls()
+        {
+            var outrightLeague = new OutrightLeagueFixtureSnapshotResponse
+            {
+                FixtureName = null,
+                Season = null
+            };
+
+            Assert.Null(outrightLeague.FixtureName);
+            Assert.Null(outrightLeague.Season);
         }
     }
 } 

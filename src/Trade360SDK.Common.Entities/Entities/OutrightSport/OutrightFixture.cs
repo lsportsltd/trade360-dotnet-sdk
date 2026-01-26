@@ -28,6 +28,6 @@ namespace Trade360SDK.Common.Entities.OutrightSport
         
         public FixtureVenue Venue { get; set; }
         
-        public IdNamePair Season { get; set; }
+        public IdNamePair? Season { get; set; }
     }
 }

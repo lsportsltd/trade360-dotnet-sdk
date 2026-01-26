@@ -35,6 +35,6 @@ namespace Trade360SDK.Common.Entities.Fixtures
 
         public IdNamePair Round { get; set; }
         
-        public IdNamePair Season { get; set; }
+        public IdNamePair? Season { get; set; }
     }
 }

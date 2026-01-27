@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Fixtures;
@@ -8,7 +8,10 @@ namespace Trade360SDK.Common.Entities.OutrightLeague
 {
     public class OutrightLeagueFixture
     {
+        public string? FixtureName { get; set; }
+        
         public Subscription? Subscription { get; set; }
+        
         public Sport? Sport { get; set; }
 
         public Location? Location { get; set; }
@@ -20,6 +23,7 @@ namespace Trade360SDK.Common.Entities.OutrightLeague
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
         
         public DateTime EndDate { get; set; }
-
+        
+        public IdNamePair? Season { get; set; }
     }
 }

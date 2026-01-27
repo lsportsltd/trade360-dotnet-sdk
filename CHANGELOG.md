@@ -11,9 +11,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |---------|---------|---------|
 | Trade360SDK.Feed | 2.0.0 | Breaking changes to IEntityHandler interface |
 | Trade360SDK.Feed.RabbitMQ | 2.1.1 | Bug fixes for message acknowledgments in high-throughput scenarios |
-| Trade360SDK.Common.Entities | 1.5.0 | Added participant classification enums (Gender, AgeCategory, ParticipantType) |
-| Trade360SDK.SnapshotApi | 1.3.0 | Added venue support to OutrightFixtureSnapshotResponse |
+| Trade360SDK.Common.Entities | 2.3.0 | Added FixtureName, Season, and enhanced participant fields to outright entities |
+| Trade360SDK.SnapshotApi | 1.4.0 | Added FixtureName and Season to outright fixture snapshot responses |
 | Trade360SDK.CustomersApi | 1.2.0 | Added Participants metadata API endpoint with filtering and pagination |
+
+---
+
+## [Release Version 2.5.0]
+
+### [Trade360SDK.Common.Entities - v2.3.0]
+
+#### Added
+
+- **Enhanced Outright Fixture Entities**
+  - Added `FixtureName` property (nullable string) to `OutrightFixture` for fixture name information
+  - Added `Season` property (nullable `IdNamePair`) to `OutrightFixture` for season information
+
+- **Enhanced Outright League Fixture Entities**
+  - Added `FixtureName` property (nullable string) to `OutrightLeagueFixture` for fixture name information
+  - Added `Season` property (nullable `IdNamePair`) to `OutrightLeagueFixture` for season information
+
+- **Enhanced Outright Fixture Participant Entities**
+  - Added `Form` property (nullable string) to `OutrightFixtureParticipant` for recent form (e.g., "WWDLW")
+  - Added `Formation` property (nullable string) to `OutrightFixtureParticipant` for tactical formation (e.g., "4-3-3")
+  - Added `FixturePlayers` property (nullable `List<FixturePlayer>`) to `OutrightFixtureParticipant` for player lineup information
+  - Added `Gender` property (nullable int) to `OutrightFixtureParticipant`
+  - Added `AgeCategory` property (nullable int) to `OutrightFixtureParticipant`
+  - Added `Type` property (nullable int) to `OutrightFixtureParticipant`
+
+### [Trade360SDK.SnapshotApi - v1.4.0]
+
+#### Added
+
+- **Enhanced Outright Fixture Snapshot Response**
+  - Added `FixtureName` property (nullable string) to `OutrightFixtureSnapshotResponse`
+  - Added `Season` property (nullable `IdNamePair`) to `OutrightFixtureSnapshotResponse`
+
+- **Enhanced Outright League Fixture Snapshot Response**
+  - Added `FixtureName` property (nullable string) to `OutrightLeagueFixtureSnapshotResponse`
+  - Added `Season` property (nullable `IdNamePair`) to `OutrightLeagueFixtureSnapshotResponse`
+
+### Backward Compatibility (v2.5.0)
+
+All changes are backward compatible. Existing code will continue to work without modification. The new properties are nullable additions to existing entities, ensuring consistency between feed and snapshot response entities.
 
 ---
 

@@ -23,8 +23,10 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Name = "Test Stadium",
                 Assignment = VenueAssignment.Home
             };
+            var season = new IdNamePair { Id = 2024, Name = "2024-2025" };
             var outrightFixture = new OutrightFixtureSnapshotResponse
             {
+                FixtureName = "World Cup 2024",
                 Sport = sport,
                 Location = location,
                 StartDate = new DateTime(2024, 1, 1),
@@ -33,7 +35,8 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Participants = new List<Participant> { participant },
                 ExtraData = new List<NameValuePair> { extraData },
                 Subscription = null,
-                Venue = venue
+                Venue = venue,
+                Season = season
             };
             var eventItem = new SnapshotOutrightFixtureEvent
             {
@@ -69,6 +72,10 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.Equal(1, evt.OutrightFixture.Venue.Id);
             Assert.Equal("Test Stadium", evt.OutrightFixture.Venue.Name);
             Assert.Equal(VenueAssignment.Home, evt.OutrightFixture.Venue.Assignment);
+            Assert.Equal("World Cup 2024", evt.OutrightFixture.FixtureName);
+            Assert.NotNull(evt.OutrightFixture.Season);
+            Assert.Equal(2024, evt.OutrightFixture.Season.Id);
+            Assert.Equal("2024-2025", evt.OutrightFixture.Season.Name);
         }
 
         [Fact]
@@ -80,6 +87,7 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             var extraData = new NameValuePair { Name = "Key", Value = "Value" };
             var outrightFixture = new OutrightFixtureSnapshotResponse
             {
+                FixtureName = null,
                 Sport = sport,
                 Location = location,
                 StartDate = new DateTime(2024, 1, 1),
@@ -88,7 +96,8 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Participants = new List<Participant> { participant },
                 ExtraData = new List<NameValuePair> { extraData },
                 Subscription = null,
-                Venue = null
+                Venue = null,
+                Season = null
             };
             var eventItem = new SnapshotOutrightFixtureEvent
             {
@@ -120,6 +129,24 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.NotNull(evt.OutrightFixture.ExtraData);
             Assert.Equal("Key", Assert.Single(evt.OutrightFixture.ExtraData).Name);
             Assert.Null(evt.OutrightFixture.Venue);
+            Assert.Null(evt.OutrightFixture.FixtureName);
+            Assert.Null(evt.OutrightFixture.Season);
+        }
+
+        [Fact]
+        public void FixtureNameAndSeason_ShouldGetAndSetValues()
+        {
+            var season = new IdNamePair { Id = 2025, Name = "2025-2026" };
+            var outrightFixture = new OutrightFixtureSnapshotResponse
+            {
+                FixtureName = "Champions League Final",
+                Season = season
+            };
+
+            Assert.Equal("Champions League Final", outrightFixture.FixtureName);
+            Assert.NotNull(outrightFixture.Season);
+            Assert.Equal(2025, outrightFixture.Season.Id);
+            Assert.Equal("2025-2026", outrightFixture.Season.Name);
         }
     }
 } 

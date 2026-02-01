@@ -11,6 +11,8 @@ namespace Trade360SDK.Common.Entities.OutrightLeague
 
         public IEnumerable<Bet>? Bets { get; set; }
 
+        public IEnumerable<ProviderMarket>? ProviderMarkets { get; set; }
+
         public string? MainLine { get; set; }
     }
 }

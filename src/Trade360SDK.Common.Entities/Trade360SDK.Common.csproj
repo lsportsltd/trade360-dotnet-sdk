@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.3.0</PackageVersion>
+		<PackageVersion>2.3.1</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).
@@ -18,6 +18,7 @@
 			- 2.0.1 Add players to livescore incident
 			- 2.1.0 Update Fixture model with new properties: FixtureName, Season. Update League and participant properties.
 			- 2.2.0 Added SportId header support for RabbitMQ message transport layer.
+			- 2.3.1 Added ProviderMarkets property to MarketLeague entity for GetOutrightLeagueMarkets API.
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

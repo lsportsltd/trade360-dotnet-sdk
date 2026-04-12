@@ -113,10 +113,10 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetFixturesRequestDto()
             {
-                Sports = new List<int>() { 452674 },
+                Sports = new List<int>() { 6046 },
                 Fixtures = new List<int>()  {/* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Leagues = new List<int>() { 170 },
+                Locations = new List<int>() { 171 }
             };
 
             var response = await snapshotInplayApiClient.GetFixtures(request, cancellationToken);
@@ -131,10 +131,10 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetMarketRequestDto()
             {
-                Sports = new List<int>() { 452674 },
+                Sports = new List<int>() { 6046 },
                 Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Locations = new List<int>() { 171 }
             };
 
             var response = await snapshotInplayApiClient.GetEvents(request, cancellationToken);
@@ -147,8 +147,8 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetMarketRequestDto()
             {
-                Sports = new List<int>() { 452674 },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Sports = new List<int>() { 6046 },
+                Fixtures = new List<int>() { 171 },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -163,8 +163,8 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetLivescoreRequestDto()
             {
-                Sports = new List<int>() { 452674 },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Sports = new List<int>() { 6046 },
+                Fixtures = new List<int>() { 171 },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
@@ -180,10 +180,10 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetFixturesRequestDto()
             {
-                Sports = new List<int>() { 452674 },
+                Sports = new List<int>() { 6046 },
                 Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Locations = new List<int>() { 4 }
             };
 
             var response = await snapshotPrematchApiClient.GetFixtures(request, cancellationToken);
@@ -198,10 +198,10 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetMarketRequestDto()
             {
-                Sports = new List<int>() { 452674 },
+                Sports = new List<int>() { 35232 },
                 Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Locations = new List<int>() { 73 }
             };
 
             var response = await snapshotPrematchApiClient.GetEvents(request, cancellationToken);

@@ -26,10 +26,10 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
                 throw new ArgumentException("Password is required.", nameof(settings.Password));
 
             if (settings.RequestedHeartbeatSeconds <= 10)
-                throw new ArgumentException("RequestedHeartbeatSeconds must be a positive integer - Larger then 9.", nameof(settings.RequestedHeartbeatSeconds));
+                throw new ArgumentException("RequestedHeartbeatSeconds must be a positive integer - Larger than 9.", nameof(settings.RequestedHeartbeatSeconds));
 
             if (settings.NetworkRecoveryInterval <= 15)
-                throw new ArgumentException("NetworkRecoveryInterval must be a positive integer - Larger then 14.", nameof(settings.NetworkRecoveryInterval));
+                throw new ArgumentException("NetworkRecoveryInterval must be a positive integer - Larger than 14.", nameof(settings.NetworkRecoveryInterval));
         }
     }
 }

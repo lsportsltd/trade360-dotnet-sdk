@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Trade360SDK.Feed
+
+#### Added
+
+- **`RmqConnectionSettings`**: optional **`CustomQueueName`** to consume a fixed queue instead of the default pattern `_{PackageId}_`; **`SslEnabled`** toggles TLS (AMQPS) for the RabbitMQ transport (used by Trade360SDK.Feed.RabbitMQ).
+
+#### Changed
+
+- **`RmqConnectionSettingsValidator`**: validates **`PackageId`** vs **`CustomQueueName`** (for example `PackageId` cannot be negative; `PackageId == 0` requires **`CustomQueueName`**), and effective queue name length using **`RabbitMqFeed.ResolveConsumeQueueName`** / **`RabbitMqFeed.ConsumeQueueNameMaxLength`**.
+
+### Trade360SDK.Feed.RabbitMQ
+
+#### Added
+
+- **`RabbitMqFeed`**: public constants **`StandardAmqpPlainPort`** (5672) and **`StandardAmqpTlsPort`** (5671); static **`ResolveConsumeQueueName`** for the effective consume queue name.
+- **`RabbitMqSslConfigurator`**: applies TLS when **`SslEnabled`** is true (`Ssl.Enabled`, **`Ssl.ServerName`** from host).
+- Startup logging of resolved queue name, host, virtual host, and SSL flag after a successful connection.
+- Connection factory uses trimmed **Host**, **VirtualHost**, **UserName**, and **Password**.
+- **`RabbitMqFeedException`** messaging for **`AuthenticationFailureException`** (credentials / virtual host).
+- When **`SslEnabled`** is true but **`Port`** is the plain AMQP port (**5672**), or **`SslEnabled`** is false but **`Port`** is the usual TLS port (**5671**), and the failure includes **`BrokerUnreachableException`**, a targeted **`RabbitMqFeedException`** explains the TLS vs plain port mismatch.
+
+---
+
 ## Package Version Summary
 
 | Package | Version | Changes |

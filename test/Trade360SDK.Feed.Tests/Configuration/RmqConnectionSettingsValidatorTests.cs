@@ -92,9 +92,9 @@ public class RmqConnectionSettingsValidatorTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
-    public void Validate_WithInvalidPackageId_ShouldThrowArgumentException(int packageId)
+    [InlineData(-10)]
+    public void Validate_WithNegativePackageId_ShouldThrowArgumentException(int packageId)
     {
         var settings = new RmqConnectionSettings
         {
@@ -109,7 +109,26 @@ public class RmqConnectionSettingsValidatorTests
         Action act = () => RmqConnectionSettingsValidator.Validate(settings);
 
         act.Should().Throw<ArgumentException>()
-           .WithMessage("PackageId must be a positive integer.*");
+           .WithMessage("PackageId cannot be negative.*");
+    }
+
+    [Fact]
+    public void Validate_WithZeroPackageIdAndNoCustomQueueName_ShouldThrowArgumentException()
+    {
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            PackageId = 0,
+            UserName = "user",
+            Password = "password"
+        };
+
+        Action act = () => RmqConnectionSettingsValidator.Validate(settings);
+
+        act.Should().Throw<ArgumentException>()
+           .WithMessage("*PackageId is required when CustomQueueName*");
     }
 
     [Theory]

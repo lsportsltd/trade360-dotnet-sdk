@@ -283,20 +283,20 @@ graph LR
 
 ### 3. **Trade360SDK.Feed.RabbitMQ** (v2.1.1)
 
-**Purpose**: RabbitMQ transport implementation
+**Purpose**: RabbitMQ transport implementation for the real-time feed.
 
 **Key Classes**:
-- `RmqFeed`: Concrete feed implementation
-- `RmqConnectionSettings`: Connection configuration
-- Message acknowledgment handling
-- Automatic recovery on connection loss
+- `RabbitMqFeed` (`IFeed`): connects to the broker, consumes messages, resolves the queue name, and maps common connection failures to actionable `RabbitMqFeedException` messages.
+- `RabbitMqFeedFactory` (`IFeedFactory`): creates feed instances from `RmqConnectionSettings` and `Trade360Settings`.
+- `RmqConnectionSettings`: host, port, virtual host, `UserName`, `Password`, `PackageId`, optional `CustomQueueName`, `SslEnabled`, prefetch, heartbeat, recovery options.
+- `RmqConnectionSettingsValidator`: validates settings (including queue naming rules) before connect.
+- `RabbitMqSslConfigurator`: when `SslEnabled` is true, enables TLS on the client and sets `Ssl.ServerName` to the configured host.
 
 **Features**:
-- Async message consumption
-- Prefetch configuration
-- Heartbeat management
-- Connection pooling
-- Dead letter queue support
+- TLS (AMQPS) via `SslEnabled`; use port **5671** with TLS and **5672** for plain AMQP in typical RabbitMQ setups (see [RabbitMQ feed connection](#rabbitmq-feed-connection)).
+- Optional `CustomQueueName`; default consume queue is `_{PackageId}_` when `CustomQueueName` is empty.
+- Trims host, virtual host, username, and password before connecting.
+- Async message consumption, prefetch and heartbeat configuration, automatic connection recovery.
 
 **Path**: `src/Trade360SDK.Feed.RabbitMQ/`
 
@@ -428,7 +428,7 @@ graph LR
 ```mermaid
 sequenceDiagram
     participant RMQ as RabbitMQ Broker
-    participant Feed as RmqFeed
+    participant Feed as RabbitMqFeed
     participant Router as Message Router
     participant Handler as IEntityHandler
     participant App as Your Application
@@ -574,6 +574,8 @@ dotnet run
 
 #### 1. Create `appsettings.json`
 
+For **plain AMQP** (no TLS), use port **5672** and `"SslEnabled": false`. For **TLS**, use port **5671** (or the TLS port your broker documents) and `"SslEnabled": true`.
+
 ```json
 {
   "Trade360": {
@@ -582,6 +584,8 @@ dotnet run
       "Port": 5672,
       "VirtualHost": "/",
       "PackageId": 0,
+      "CustomQueueName": "",
+      "SslEnabled": false,
       "Username": "your-username",
       "Password": "your-password",
       "PrefetchCount": 100,
@@ -596,6 +600,8 @@ dotnet run
       "Port": 5672,
       "VirtualHost": "/",
       "PackageId": 0,
+      "CustomQueueName": "",
+      "SslEnabled": false,
       "Username": "your-username",
       "Password": "your-password",
       "PrefetchCount": 100,
@@ -1026,6 +1032,7 @@ The SDK supports configuration via environment variables using the standard ASP.
 # RabbitMQ Configuration
 export Trade360__RmqInplaySettings__Host="your-host"
 export Trade360__RmqInplaySettings__Port=5672
+export Trade360__RmqInplaySettings__SslEnabled=false
 export Trade360__RmqInplaySettings__Username="your-username"
 export Trade360__RmqInplaySettings__Password="your-password"
 
@@ -1131,16 +1138,22 @@ Or via `appsettings.json`:
 
 ### Common Issues & Solutions
 
-#### Issue: Connection Refused
+#### Issue: Connection Refused or `BrokerUnreachableException`
 ```
 RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
 ```
 
 **Solution:**
 - Verify RabbitMQ host and port are correct
+- **TLS vs port:** with `SslEnabled: true`, use the broker’s **TLS** port (often **5671**). With `SslEnabled: false`, use the **plain AMQP** port (often **5672**). Mixing them produces errors such as “Cannot determine the frame size” or unreachable broker; the SDK may wrap these in `RabbitMqFeedException` with a hint when the port matches the usual mismatch pattern
 - Check firewall rules
 - Ensure RabbitMQ service is running
-- Verify credentials are valid
+- Verify credentials and virtual host access (see below)
+
+#### Issue: Authentication refused (`ACCESS_REFUSED`, `AuthenticationFailureException`)
+
+**Solution:**
+- Confirm `UserName`, `Password`, and `VirtualHost` in `RmqConnectionSettings` match the broker. The SDK maps authentication failures to a `RabbitMqFeedException` with guidance; this is separate from queue naming and TLS port issues
 
 #### Issue: Message Handler Not Called
 **Solution:**
@@ -1273,6 +1286,8 @@ services.AddOpenTelemetry()
       "Port": 5672,
       "VirtualHost": "/",
       "PackageId": 12345,
+      "CustomQueueName": "",
+      "SslEnabled": false,
       "Username": "your-username",
       "Password": "your-password",
       "PrefetchCount": 100,
@@ -1287,6 +1302,8 @@ services.AddOpenTelemetry()
       "Port": 5672,
       "VirtualHost": "/",
       "PackageId": 12346,
+      "CustomQueueName": "",
+      "SslEnabled": false,
       "Username": "your-username",
       "Password": "your-password",
       "PrefetchCount": 50,
@@ -1328,6 +1345,45 @@ services.AddOpenTelemetry()
   }
 }
 ```
+
+---
+
+## RabbitMQ feed connection
+
+Settings are bound to `RmqConnectionSettings` (for example from `Trade360:RmqInplaySettings` and `Trade360:RmqPrematchSettings`). The feed implementation is `RabbitMqFeed` in **Trade360SDK.Feed.RabbitMQ**.
+
+### TLS and ports
+
+| Mode | `SslEnabled` | Typical `Port` | Constants on `RabbitMqFeed` |
+|------|----------------|----------------|------------------------------|
+| Plain AMQP | `false` | **5672** | `StandardAmqpPlainPort` |
+| TLS (AMQPS) | `true` | **5671** | `StandardAmqpTlsPort` |
+
+RabbitMQ commonly listens for **plain** AMQP on **5672** and **TLS** on **5671**. Your broker’s documentation may differ.
+
+When TLS is enabled, the client sets `Ssl.Enabled` and `Ssl.ServerName` to the configured **Host** (see `RabbitMqSslConfigurator`). Trust and hostname verification follow .NET / OS defaults unless you extend the client elsewhere.
+
+If `SslEnabled` and `Port` are inconsistent (for example TLS enabled on **5672**, or TLS disabled on **5671**) and the connection fails with `BrokerUnreachableException`, `RabbitMqFeed` throws `RabbitMqFeedException` with a message that explains the usual fix (enable TLS and use the TLS port, or disable TLS and use the plain port).
+
+### Queue name
+
+- If **`CustomQueueName`** is set to a non-empty value (after trim), the consumer uses that queue name.
+- If **`CustomQueueName`** is omitted or empty, the consumer uses **`_{PackageId}_`**, which requires **`PackageId` &gt; 0**.
+- If **`PackageId`** is **0**, you must set **`CustomQueueName`**; validation rejects `PackageId == 0` with no custom queue.
+- **`PackageId`** must not be negative. The effective queue name length must not exceed **`RabbitMqFeed.ConsumeQueueNameMaxLength`** (255 characters).
+
+The resolved name is available as `RabbitMqFeed.ResolveConsumeQueueName(RmqConnectionSettings)` and is validated by `RmqConnectionSettingsValidator`.
+
+### Connection strings and configuration binding
+
+- **Host**, **VirtualHost**, **UserName**, and **Password** are trimmed before use (leading/trailing spaces often break PLAIN login or vhost matching).
+- JSON configuration keys are **case-insensitive**; `Username` and `UserName` both bind to **`UserName`**.
+
+### Errors and logging
+
+- **Authentication** failures (`AuthenticationFailureException`) are wrapped in `RabbitMqFeedException` with a message focused on credentials and virtual host access (not queue naming).
+- **TLS** failures when `SslEnabled` is true may be wrapped with guidance about port, certificate trust, and hostname (SAN/CN).
+- After a successful start, an information log entry includes the **resolved queue name**, host, virtual host, and whether **SSL** is enabled.
 
 ---
 
@@ -1377,6 +1433,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 - **Documentation**: https://docs.lsports.eu
 - **API Reference**: https://docs.lsports.eu/api
+- **This repository — RabbitMQ feed settings (TLS, ports, queues)**: see [RabbitMQ feed connection](#rabbitmq-feed-connection)
 - **Support**: support@lsports.eu
 - **GitHub Repository**: https://github.com/lsportsltd/trade360-dotnet-sdk
 - **NuGet Packages**: https://www.nuget.org/profiles/LSports

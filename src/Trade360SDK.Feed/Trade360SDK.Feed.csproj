@@ -3,9 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-        <PackageVersion>2.0.0</PackageVersion>
+        <PackageVersion>2.1.0</PackageVersion>
         <PackageReleaseNotes>
             - 2.0.0 Added `TransportMessageHeaders` as part of the `IEntityHandler.ProcessAsync` method signature
+            - 2.1.0 RmqConnectionSettings: optional CustomQueueName; queue name is resolved in RabbitMqFeed (default _{PackageId}_)
         </PackageReleaseNotes>
 	</PropertyGroup>
 

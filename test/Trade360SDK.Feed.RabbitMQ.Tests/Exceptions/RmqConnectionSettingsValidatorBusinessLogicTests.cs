@@ -187,7 +187,7 @@ public class RmqConnectionSettingsValidatorBusinessLogicTests
 
         Action act = () => RmqConnectionSettingsValidator.Validate(settings);
 
-        act.Should().Throw<ArgumentException>().WithMessage("*PackageId*");
+        act.Should().Throw<ArgumentException>().WithMessage("*PackageId is required when CustomQueueName*");
     }
 
     [Fact]
@@ -205,7 +205,7 @@ public class RmqConnectionSettingsValidatorBusinessLogicTests
 
         Action act = () => RmqConnectionSettingsValidator.Validate(settings);
 
-        act.Should().Throw<ArgumentException>().WithMessage("*PackageId*");
+        act.Should().Throw<ArgumentException>().WithMessage("*PackageId cannot be negative*");
     }
 
     [Fact]

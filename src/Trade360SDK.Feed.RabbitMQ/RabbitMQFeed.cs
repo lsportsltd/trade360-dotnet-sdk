@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using System;
+using System.IO;
+using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
@@ -16,6 +19,9 @@ namespace Trade360SDK.Feed.RabbitMQ
 {
     public class RabbitMqFeed : IFeed
     {
+        public const int ConsumeQueueNameMaxLength = 255;
+        public const int StandardAmqpPlainPort = 5672;
+        public const int StandardAmqpTlsPort = 5671;
         private readonly MessageConsumer _consumer;
         private readonly ILogger _logger;
         private IConnection? _connection;
@@ -55,20 +61,22 @@ namespace Trade360SDK.Feed.RabbitMQ
                     });
             }
             
-            // Initialize connection factory
+            // Initialize connection factory (trim strings; leading/trailing spaces break PLAIN auth and vhost on some brokers)
             _factory = new ConnectionFactory
             {
-                HostName = _settings.Host,
+                HostName = _settings.Host!.Trim(),
                 Port = _settings.Port,
-                VirtualHost = _settings.VirtualHost,
-                UserName = _settings.UserName,
-                Password = _settings.Password,
+                VirtualHost = _settings.VirtualHost!.Trim(),
+                UserName = _settings.UserName!.Trim(),
+                Password = _settings.Password!.Trim(),
                 RequestedHeartbeat = TimeSpan.FromSeconds(_settings.RequestedHeartbeatSeconds),
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(_settings.NetworkRecoveryInterval),
                 DispatchConsumersAsync = _settings.DispatchConsumersAsync,
                 AutomaticRecoveryEnabled = true, // Enable automatic connection recovery
                 TopologyRecoveryEnabled = true // Disable topology recovery to catch the event ourselves
             };
+
+            RabbitMqSslConfigurator.Apply(_factory, _settings);
         }
 
         public async Task StartAsync(bool connectAtStart, CancellationToken cancellationToken)
@@ -87,11 +95,16 @@ namespace Trade360SDK.Feed.RabbitMQ
                 CreateAndSetupConnection();
                 
                 _consumerTag = _channel.BasicConsume(
-                    queue: $"_{_settings.PackageId}_",
+                    queue: ResolveConsumeQueueName(_settings),
                     autoAck: _settings.AutoAck,
                     consumer: _consumer);
 
-                _logger.LogInformation("Connected to RabbitMQ and started consuming.");
+                _logger.LogInformation(
+                    "Connected to RabbitMQ, consuming queue '{QueueName}' (Host={Host}, VirtualHost={VirtualHost}, Ssl={Ssl}).",
+                    ResolveConsumeQueueName(_settings),
+                    _settings.Host,
+                    _settings.VirtualHost,
+                    _settings.SslEnabled);
             }
             catch (OperationCanceledException)
             {
@@ -101,6 +114,38 @@ namespace Trade360SDK.Feed.RabbitMQ
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error starting RabbitMQFeed.");
+                if (IsAuthenticationFailure(ex))
+                {
+                    throw new RabbitMqFeedException(
+                        $"RabbitMQ authentication failed for '{_settings.Host}:{_settings.Port}' (virtual host '{_settings.VirtualHost}'). Check UserName and Password, that the user is defined on the broker, and that it is granted access to this virtual host. The broker log has details. See inner exception.",
+                        ex);
+                }
+
+                if (_settings.SslEnabled
+                    && _settings.Port == StandardAmqpPlainPort
+                    && HasBrokerUnreachable(ex))
+                {
+                    throw new RabbitMqFeedException(
+                        $"SSL is enabled but Port is {StandardAmqpPlainPort} (plain AMQP). The client then negotiates TLS against a non-TLS listener, which often surfaces as 'Cannot determine the frame size' or 'BrokerUnreachable'. Set Port to {StandardAmqpTlsPort} (or the TLS port your broker documents). See inner exception.",
+                        ex);
+                }
+
+                if (!_settings.SslEnabled
+                    && _settings.Port == StandardAmqpTlsPort
+                    && HasBrokerUnreachable(ex))
+                {
+                    throw new RabbitMqFeedException(
+                        $"SSL is disabled but Port is {StandardAmqpTlsPort} (TLS/AMQPS). The client speaks plain AMQP while this port typically expects TLS first, which often surfaces as 'BrokerUnreachable' or framing errors. Set SslEnabled to true, or use Port {StandardAmqpPlainPort} for plain AMQP (or match your broker's documented ports). See inner exception.",
+                        ex);
+                }
+
+                if (_settings.SslEnabled && IsLikelyTlsFailure(ex))
+                {
+                    throw new RabbitMqFeedException(
+                        $"TLS connection to RabbitMQ at {_settings.Host}:{_settings.Port} failed. Confirm the broker uses TLS on this port (often 5671), the host name matches the server certificate (SAN/CN), and the certificate is trusted on this machine. See inner exception for details.",
+                        ex);
+                }
+
                 throw new RabbitMqFeedException("An error occurred while starting the RabbitMQ feed.", ex);
             }
         }
@@ -229,6 +274,75 @@ namespace Trade360SDK.Feed.RabbitMQ
             }
 
             _logger.LogWarning($"Connection shutdown. ReplyCode: {e.ReplyCode}, ReplyText: {e.ReplyText}");
+        }
+
+        /// <summary>
+        /// Resolves the queue to consume: <see cref="RmqConnectionSettings.CustomQueueName"/> when set (trimmed),
+        /// otherwise <c>_{PackageId}_</c> when <see cref="RmqConnectionSettings.PackageId"/> &gt; 0, otherwise empty string.
+        /// </summary>
+        public static string ResolveConsumeQueueName(RmqConnectionSettings settings)
+        {
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+
+            if (!string.IsNullOrWhiteSpace(settings.CustomQueueName))
+                return settings.CustomQueueName.Trim();
+
+            if (settings.PackageId > 0)
+                return $"_{settings.PackageId}_";
+
+            return string.Empty;
+        }
+
+        private static bool IsAuthenticationFailure(Exception ex)
+        {
+            for (var e = ex; e != null; e = e.InnerException)
+            {
+                if (e is AuthenticationFailureException)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsLikelyTlsFailure(Exception ex)
+        {
+            if (IsAuthenticationFailure(ex))
+                return false;
+
+            for (var e = ex; e != null; e = e.InnerException)
+            {
+                if (e is AuthenticationException || e is IOException)
+                    return true;
+                var message = e.Message ?? string.Empty;
+                if (message.Contains("SSL", StringComparison.OrdinalIgnoreCase)
+                    || message.Contains("TLS", StringComparison.OrdinalIgnoreCase)
+                    || message.Contains("certificate", StringComparison.OrdinalIgnoreCase)
+                    || message.Contains("authentication", StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool HasBrokerUnreachable(Exception ex)
+        {
+            if (ex is AggregateException aggregate)
+            {
+                foreach (var inner in aggregate.InnerExceptions)
+                {
+                    if (HasBrokerUnreachable(inner))
+                        return true;
+                }
+            }
+
+            for (var e = ex; e != null; e = e.InnerException)
+            {
+                if (e is BrokerUnreachableException)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

@@ -27,6 +27,8 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             participant.Gender.Should().BeNull();
             participant.AgeCategory.Should().BeNull();
             participant.Type.Should().BeNull();
+            participant.ShirtColor.Should().BeNull();
+            participant.GoalKeeperShirtColor.Should().BeNull();
         }
 
         [Fact]
@@ -861,6 +863,14 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
             var typeProperty = participantType.GetProperty("Type");
             typeProperty.Should().NotBeNull();
             typeProperty!.PropertyType.Should().Be(typeof(int?));
+
+            var shirtColorProperty = participantType.GetProperty("ShirtColor");
+            shirtColorProperty.Should().NotBeNull();
+            shirtColorProperty!.PropertyType.Should().Be(typeof(UniformColor));
+
+            var goalKeeperShirtColorProperty = participantType.GetProperty("GoalKeeperShirtColor");
+            goalKeeperShirtColorProperty.Should().NotBeNull();
+            goalKeeperShirtColorProperty!.PropertyType.Should().Be(typeof(UniformColor));
         }
     }
 } 

@@ -30,6 +30,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.1]
+
+### [Trade360SDK.Common.Entities - v2.3.2]
+
+#### Added
+
+- Added `ShirtColor` and `GoalKeeperShirtColor` object fields to fixture participants (`Primary`, `Number`, `Outline`).
+- Added `StartDate` to `OutrightLeagueFixture`.
+- Added livescore `StatusDescription` values `46-59`.
+
+### [Trade360SDK.SnapshotApi - v1.4.1]
+
+#### Added
+
+- Added `StartDate` to `OutrightLeagueFixtureSnapshotResponse`.
+
+### Backward Compatibility (v2.5.1)
+
+All changes are backward compatible. New fields are additive and nullable where applicable.
+
+---
+
 ## Package Version Summary
 
 | Package | Version | Changes |

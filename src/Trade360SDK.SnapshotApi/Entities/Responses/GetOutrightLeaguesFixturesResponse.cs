@@ -38,6 +38,8 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
 
         public Location? Location { get; set; }
 
+        public DateTime? StartDate { get; set; }
+
         public DateTime LastUpdate { get; set; }
 
         public FixtureStatus Status { get; set; }

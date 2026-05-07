@@ -20,6 +20,7 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
                 Subscription = null,
                 Sport = new Sport { Id = 2, Name = "Basketball" },
                 Location = new Location { Id = 20, Name = "Arena" },
+                StartDate = DateTime.UtcNow.AddHours(2),
                 LastUpdate = DateTime.UtcNow,
                 Status = FixtureStatus.Finished,
                 ExtraData = new List<NameValuePair> { new NameValuePair { Name = "LeagueKey", Value = "LeagueValue" } },
@@ -60,6 +61,8 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             Assert.Equal(FixtureStatus.Finished, evt.OutrightLeague.Status);
             Assert.Equal("Basketball", evt.OutrightLeague.Sport.Name);
             Assert.Equal("Arena", evt.OutrightLeague.Location.Name);
+            Assert.NotNull(evt.OutrightLeague.StartDate);
+            Assert.Equal(outrightLeague.StartDate, evt.OutrightLeague.StartDate);
             Assert.NotNull(evt.OutrightLeague.ExtraData);
             Assert.Equal("LeagueKey", Assert.Single(evt.OutrightLeague.ExtraData).Name);
             Assert.NotNull(evt.OutrightLeague.EndDate);

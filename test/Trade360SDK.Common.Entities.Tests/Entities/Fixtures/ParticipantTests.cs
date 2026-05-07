@@ -26,7 +26,9 @@ namespace Trade360SDK.Common.Tests
                 FixturePlayers = fixturePlayers,
                 Gender = 1,
                 AgeCategory = 2,
-                Type = 3
+                Type = 3,
+                ShirtColor = new UniformColor { Primary = "ffffff", Number = "000000", Outline = "ffffff" },
+                GoalKeeperShirtColor = new UniformColor { Primary = "ffff00", Number = "000000", Outline = "ffff00" }
             };
             Assert.Equal(5, participant.Id);
             Assert.Equal("PlayerName", participant.Name);
@@ -39,6 +41,12 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal(1, participant.Gender);
             Assert.Equal(2, participant.AgeCategory);
             Assert.Equal(3, participant.Type);
+            Assert.Equal("ffffff", participant.ShirtColor?.Primary);
+            Assert.Equal("000000", participant.ShirtColor?.Number);
+            Assert.Equal("ffffff", participant.ShirtColor?.Outline);
+            Assert.Equal("ffff00", participant.GoalKeeperShirtColor?.Primary);
+            Assert.Equal("000000", participant.GoalKeeperShirtColor?.Number);
+            Assert.Equal("ffff00", participant.GoalKeeperShirtColor?.Outline);
         }
 
         [Fact]
@@ -56,6 +64,8 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(participant.Gender);
             Assert.Null(participant.AgeCategory);
             Assert.Null(participant.Type);
+            Assert.Null(participant.ShirtColor);
+            Assert.Null(participant.GoalKeeperShirtColor);
         }
     }
 } 

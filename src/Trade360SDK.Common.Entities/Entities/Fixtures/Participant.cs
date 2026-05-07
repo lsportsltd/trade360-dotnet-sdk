@@ -17,6 +17,10 @@ namespace Trade360SDK.Common.Entities.Fixtures
         public string? Form { get; set; }
         
         public string? Formation { get; set; }
+
+        public UniformColor? ShirtColor { get; set; }
+
+        public UniformColor? GoalKeeperShirtColor { get; set; }
         
         public List<FixturePlayer>? FixturePlayers { get; set; }
         

@@ -16,6 +16,7 @@ namespace Trade360SDK.Common.Tests
             var subscription = new Subscription();
             var sport = new Sport();
             var location = new Location();
+            var startDate = DateTime.UtcNow.AddHours(1);
             var lastUpdate = DateTime.UtcNow;
             var extraData = new List<NameValuePair> { new NameValuePair { Name = "key", Value = "val" } };
             var endDate = DateTime.UtcNow.AddDays(10);
@@ -27,6 +28,7 @@ namespace Trade360SDK.Common.Tests
                 Subscription = subscription,
                 Sport = sport,
                 Location = location,
+                StartDate = startDate,
                 LastUpdate = lastUpdate,
                 Status = FixtureStatus.Finished,
                 ExtraData = extraData,
@@ -37,6 +39,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal(subscription, fixture.Subscription);
             Assert.Equal(sport, fixture.Sport);
             Assert.Equal(location, fixture.Location);
+            Assert.Equal(startDate, fixture.StartDate);
             Assert.Equal(lastUpdate, fixture.LastUpdate);
             Assert.Equal(FixtureStatus.Finished, fixture.Status);
             Assert.Equal(extraData, fixture.ExtraData);
@@ -54,6 +57,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(fixture.Subscription);
             Assert.Null(fixture.Sport);
             Assert.Null(fixture.Location);
+            Assert.Null(fixture.StartDate);
             Assert.Equal(default, fixture.LastUpdate);
             Assert.Equal(FixtureStatus.NotSet, fixture.Status);
             Assert.Null(fixture.ExtraData);

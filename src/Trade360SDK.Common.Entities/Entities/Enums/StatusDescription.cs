@@ -47,6 +47,20 @@
         PointStarted = 42,
         PointScored = 43,
         PointFault = 44,
-        PointReplayed = 45
+        PointReplayed = 45,
+        BreakAfter1stPeriod = 46,
+        BreakAfter2ndPeriod = 47,
+        BreakAfter3rdPeriod = 48,
+        BreakAfter4thPeriod = 49,
+        BreakAfter5thPeriod = 50,
+        BreakAfter6thPeriod = 51,
+        BreakAfter1stOvertime = 52,
+        BreakAfter2ndOvertime = 53,
+        BreakAfter3rdOvertime = 54,
+        WaitingForExtraTime = 55,
+        WaitingForPenalties = 56,
+        EnteringExtraTime = 57,
+        ExtraTimeBreak = 58,
+        EnteringPenaltyShootout = 59
     }
 }

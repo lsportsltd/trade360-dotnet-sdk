@@ -54,6 +54,20 @@ namespace Trade360SDK.Common.Tests.Entities.Enums
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.PointScored));
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.PointFault));
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.PointReplayed));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter1stPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter2ndPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter3rdPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter4thPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter5thPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter6thPeriod));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter1stOvertime));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter2ndOvertime));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.BreakAfter3rdOvertime));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.WaitingForExtraTime));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.WaitingForPenalties));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.EnteringExtraTime));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.ExtraTimeBreak));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.EnteringPenaltyShootout));
         }
     }
 } 

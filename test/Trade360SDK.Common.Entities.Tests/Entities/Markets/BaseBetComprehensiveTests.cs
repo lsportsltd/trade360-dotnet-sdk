@@ -273,6 +273,7 @@ public class BaseBetComprehensiveTests
 
     [Theory]
     [InlineData(1)]
+    [InlineData(20)]
     [InlineData(100)]
     [InlineData(null)]
     [InlineData(0)]

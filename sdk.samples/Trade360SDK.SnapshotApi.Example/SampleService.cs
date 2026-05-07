@@ -246,7 +246,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightFixturesRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
+                Sports = new List<int>() { 6046 },
                 Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
@@ -310,8 +310,8 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetFixturesRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() {24593410 /* List of fixture IDs, e.g., 12345678, 23456789 */ },
+                Sports = new List<int>() { 6046 },
+                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
                 Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
                 Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };

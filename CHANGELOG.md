@@ -30,6 +30,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.2]
+
+### [Trade360SDK.Common.Entities - v2.3.3]
+
+#### Fixed
+
+- Made `OutrightLeagueFixture.EndDate` nullable so RMQ payloads with `"EndDate": null` deserialize without `System.Text.Json` errors.
+
+### [Trade360SDK.SnapshotApi - v1.4.2]
+
+#### Fixed
+
+- Made `OutrightLeagueFixtureSnapshotResponse.EndDate` nullable so snapshot payloads with `"EndDate": null` deserialize without `System.Text.Json` errors.
+
+### Backward Compatibility (v2.5.2)
+
+All changes are backward compatible. `EndDate` remains optional and now accepts null values from the API.
+
+---
+
 ## [Release Version 2.5.1]
 
 ### [Trade360SDK.Common.Entities - v2.3.2]

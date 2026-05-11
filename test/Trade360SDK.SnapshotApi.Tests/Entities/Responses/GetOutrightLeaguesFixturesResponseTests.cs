@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Trade360SDK.SnapshotApi.Entities.Responses;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Fixtures;
@@ -100,6 +101,25 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
 
             Assert.Null(outrightLeague.FixtureName);
             Assert.Null(outrightLeague.Season);
+        }
+
+        [Fact]
+        public void EndDate_ShouldDeserializeNullFromJson()
+        {
+            const string json = """
+                {
+                    "EndDate": null,
+                    "StartDate": "2026-07-04T10:00:00Z",
+                    "LastUpdate": "2026-05-03T08:51:37.990863Z",
+                    "Status": 1
+                }
+                """;
+
+            var outrightLeague = JsonSerializer.Deserialize<OutrightLeagueFixtureSnapshotResponse>(json);
+
+            Assert.NotNull(outrightLeague);
+            Assert.Null(outrightLeague.EndDate);
+            Assert.NotNull(outrightLeague.StartDate);
         }
     }
 } 

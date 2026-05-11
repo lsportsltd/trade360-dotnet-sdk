@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Trade360SDK.Common.Entities.OutrightLeague;
 using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Fixtures;
@@ -61,7 +62,27 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal(default, fixture.LastUpdate);
             Assert.Equal(FixtureStatus.NotSet, fixture.Status);
             Assert.Null(fixture.ExtraData);
+            Assert.Null(fixture.EndDate);
             Assert.Null(fixture.Season);
+        }
+
+        [Fact]
+        public void EndDate_ShouldDeserializeNullFromJson()
+        {
+            const string json = """
+                {
+                    "EndDate": null,
+                    "StartDate": "2026-07-04T10:00:00Z",
+                    "LastUpdate": "2026-05-03T08:51:37.990863Z",
+                    "Status": 1
+                }
+                """;
+
+            var fixture = JsonSerializer.Deserialize<OutrightLeagueFixture>(json);
+
+            Assert.NotNull(fixture);
+            Assert.Null(fixture.EndDate);
+            Assert.NotNull(fixture.StartDate);
         }
 
         [Fact]

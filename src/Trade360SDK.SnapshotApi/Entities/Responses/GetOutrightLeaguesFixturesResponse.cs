@@ -46,7 +46,7 @@ namespace Trade360SDK.SnapshotApi.Entities.Responses
 
         public IEnumerable<NameValuePair>? ExtraData { get; set; }
         
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         
         public IdNamePair? Season { get; set; }
     }

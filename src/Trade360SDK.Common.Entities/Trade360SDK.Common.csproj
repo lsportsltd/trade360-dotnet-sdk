@@ -25,4 +25,8 @@
 		</PackageReleaseNotes>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+	</ItemGroup>
+
 </Project>

@@ -44,10 +44,11 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
 
             result.Should().NotBeNull();
             result!.Competition.Should().NotBeNull();
+            result.Competition.Should().BeOfType<OutrightLeagueMarketCompetitionWrapper<OutrightLeagueMarketEvent>>();
             result.Competition!.Id.Should().Be(67);
             result.Competition.Name.Should().Be("League_67");
             result.Competition.Type.Should().Be(3);
-            result.Competition.NextFixtureStartTime.Should().Be(DateTime.Parse("2026-05-29T14:44:55Z").ToUniversalTime());
+            result.GetNextFixtureStartTime().Should().Be(DateTime.Parse("2026-05-29T14:44:55Z").ToUniversalTime());
 
             var season = result.Competition.Competitions!.Single();
             season.Id.Should().Be(2029);

@@ -25,4 +25,10 @@
     <ProjectReference Include="../../src/Trade360SDK.Common.Entities/Trade360SDK.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,71 @@
+{
+  "Competition": {
+    "Id": 67,
+    "Name": "League_67",
+    "Type": 3,
+    "NextFixtureStartTime": "2026-05-29T14:44:55Z",
+    "Competitions": [
+      {
+        "Id": 2029,
+        "Name": "Season_2029",
+        "Type": 4,
+        "Events": [
+          {
+            "FixtureId": 26721036,
+            "Livescore": null,
+            "Markets": [
+              {
+                "Id": 274,
+                "Name": "Outright Winner",
+                "Bets": [
+                  {
+                    "Probability": -1.0,
+                    "Id": 2655634626721036,
+                    "Name": "Not Simply Simon",
+                    "Status": 1,
+                    "StartPrice": "1.5",
+                    "Price": "1.5",
+                    "ProviderBetId": "8",
+                    "LastUpdate": "2026-05-27T17:44:59.54+03:00",
+                    "SerializedLastUpdate": "2026-05-27T17:44:59.540Z",
+                    "ParticipantId": 51523593
+                  },
+                  {
+                    "Probability": -1.0,
+                    "Id": 201914637926721036,
+                    "Name": "Ranger Annie",
+                    "Status": 1,
+                    "StartPrice": "2.5",
+                    "Price": "2.5",
+                    "ProviderBetId": "8",
+                    "LastUpdate": "2026-05-27T17:44:59.54+03:00",
+                    "SerializedLastUpdate": "2026-05-27T17:44:59.540Z",
+                    "ParticipantId": 51523594
+                  }
+                ],
+                "ProviderMarkets": [
+                  {
+                    "Id": 8,
+                    "Name": "Bet365",
+                    "LastUpdate": "2026-05-27T17:44:58.254+03:00",
+                    "SerializedLastUpdate": "2026-05-27T17:44:58.254Z",
+                    "Bets": [
+                      {
+                        "Name": "Not Simply Simon",
+                        "Status": 1,
+                        "StartPrice": "1.5",
+                        "Price": "1.5",
+                        "LastUpdate": "2026-05-27T17:44:55.579+03:00",
+                        "SerializedLastUpdate": "2026-05-27T17:44:55.579Z"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

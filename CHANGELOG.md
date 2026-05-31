@@ -30,6 +30,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+---
+
+## [Release Version 2.5.3]
+
+### [Trade360SDK.Common.Entities - v2.3.4]
+
+#### Added
+
+- Added `NextFixtureStartTime` to `OutrightLeagueMarketCompetitionWrapper` for `OutrightLeagueMarketUpdate` (message type 40) (TR-22695).
+
+### Backward Compatibility (v2.5.3)
+
+All changes are backward compatible. The new field is optional and scoped to outright league market messages only.
+
+---
+
 ## [Release Version 2.5.2]
 
 ### [Trade360SDK.Common.Entities - v2.3.3]

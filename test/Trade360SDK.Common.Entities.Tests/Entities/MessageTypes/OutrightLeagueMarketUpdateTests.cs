@@ -68,5 +68,43 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
             market.ProviderMarkets.Should().HaveCount(1);
             market.ProviderMarkets!.First().Name.Should().Be("Bet365");
         }
+
+        [Fact]
+        public void GetNextFixtureStartTime_WhenCompetitionIsBaseWrapper_ShouldReturnNull()
+        {
+            var update = new OutrightLeagueMarketUpdate
+            {
+                Competition = new OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>
+                {
+                    Id = 67,
+                    Name = "League_67",
+                    Type = 3,
+                }
+            };
+
+            update.GetNextFixtureStartTime().Should().BeNull();
+        }
+
+        [Fact]
+        public void GetNextFixtureStartTime_WhenCompetitionIsNull_ShouldReturnNull()
+        {
+            var update = new OutrightLeagueMarketUpdate();
+
+            update.GetNextFixtureStartTime().Should().BeNull();
+        }
+
+        [Fact]
+        public void JsonSerialization_ShouldRoundTripWithNextFixtureStartTime()
+        {
+            var json = File.ReadAllText(Path.Combine("Fixtures", "outright-league-market-update-type40.json"));
+
+            var original = JsonSerializer.Deserialize<OutrightLeagueMarketUpdate>(json, FeedJsonOptions);
+            var serialized = JsonSerializer.Serialize(original, FeedJsonOptions);
+            var roundTripped = JsonSerializer.Deserialize<OutrightLeagueMarketUpdate>(serialized, FeedJsonOptions);
+
+            roundTripped.Should().NotBeNull();
+            roundTripped!.GetNextFixtureStartTime().Should().Be(DateTime.Parse("2026-05-29T14:44:55Z").ToUniversalTime());
+            roundTripped.Competition.Should().BeOfType<OutrightLeagueMarketCompetitionWrapper<OutrightLeagueMarketEvent>>();
+        }
     }
-} 
+}

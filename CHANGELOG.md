@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`RabbitMqFeedException`** messaging for **`AuthenticationFailureException`** (credentials / virtual host).
 - When **`SslEnabled`** is true but **`Port`** is the plain AMQP port (**5672**), or **`SslEnabled`** is false but **`Port`** is the usual TLS port (**5671**), and the failure includes **`BrokerUnreachableException`**, a targeted **`RabbitMqFeedException`** explains the TLS vs plain port mismatch.
 
+### Trade360SDK.Common.Entities
+
+#### Added
+
+- **`StatusDescription`**: 13 new MMA/fight-outcome and positional enum values — `Fighter1Disqualification` (60), `Fighter2Disqualification` (61), `Fighter1MajorityDecision` (62), `Fighter2MajorityDecision` (63), `Fighter1UnanimousDecision` (64), `Fighter2UnanimousDecision` (65), `Fighter1Submission` (66), `Fighter2Submission` (67), `Fighter1KoTko` (68), `Fighter2KoTko` (69), `NoContest` (70), `Top` (71), `Bottom` (72).
+
 ---
 
 ---

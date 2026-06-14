@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Release Version 2.5.4]
+
+### [Trade360SDK.Common.Entities - v2.3.5]
+
+#### Added
+
+- **`TransportMessageHeaders`**: optional `MarketId` customer message header (TRGN-3848).
+
+### Backward Compatibility (v2.5.4)
+
+All changes are backward compatible. The new header is optional.
+
+---
+
 ## [Unreleased]
 
 ### Trade360SDK.Feed

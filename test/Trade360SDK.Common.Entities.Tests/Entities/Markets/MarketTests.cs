@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Markets;
 using Xunit;
 
@@ -35,5 +37,16 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(market.ProviderMarkets);
             Assert.Null(market.MainLine);
         }
+
+        [Fact]
+        public void DeserializeMarketStatusFromJson_MapsStatusProperty()
+        {
+            var market = JsonSerializer.Deserialize<Market>("{\"Id\":52,\"Name\":\"1X2\",\"Status\":2,\"Bets\":[]}");
+
+            Assert.NotNull(market);
+            Assert.Equal(52, market!.Id);
+            Assert.Equal("1X2", market.Name);
+            Assert.Equal(MarketStatus.Suspended, market.Status);
+        }
     }
-} 
+}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Common.Entities.Markets
 {
@@ -13,5 +14,7 @@ namespace Trade360SDK.Common.Entities.Markets
         public IEnumerable<ProviderMarket>? ProviderMarkets { get; set; }
 
         public string? MainLine { get; set; }
+
+        public MarketStatus Status { get; set; }
     }
 }

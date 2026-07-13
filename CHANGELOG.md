@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **`Market.Status`**: RMQ JSON field is `Status` on calculated market payloads (PRD-1516).
+
+---
+
 ## [Release Version 2.5.5]
 
 Adds authoritative market-level status on Market and ProviderMarket messages (PRD-1516).
@@ -14,7 +22,7 @@ Adds authoritative market-level status on Market and ProviderMarket messages (PR
 #### Added
 
 - **`MarketStatus`** enum (`NotSet`, `Open`, `Suspended`, `Settled`) for market-level status values.
-- **`Market.Status`**: maps JSON `MarketStatus` on market payloads (1=Open, 2=Suspended, 3=Settled); also accepts settlement JSON `Status`.
+- **`Market.Status`**: maps JSON `Status` on RMQ market payloads (1=Open, 2=Suspended, 3=Settled).
 - **`ProviderMarket.MarketStatus`**: maps JSON `MarketStatus` on provider market payloads from the feed.
 
 ### Backward Compatibility (v2.5.5)

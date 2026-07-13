@@ -48,14 +48,5 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal("1X2", market.Name);
             Assert.Equal(MarketStatus.Suspended, market.Status);
         }
-
-        [Fact]
-        public void DeserializeMarketStatusFromJson_MapsMarketStatusProperty()
-        {
-            var market = JsonSerializer.Deserialize<Market>("{\"Id\":52,\"Name\":\"1X2\",\"MarketStatus\":2,\"Bets\":[]}");
-
-            Assert.NotNull(market);
-            Assert.Equal(MarketStatus.Suspended, market!.Status);
-        }
     }
 }

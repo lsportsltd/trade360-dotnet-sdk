@@ -16,13 +16,7 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public string? MainLine { get; set; }
 
-        [JsonPropertyName("MarketStatus")]
-        public MarketStatus Status { get; set; }
-
         [JsonPropertyName("Status")]
-        public MarketStatus SettlementStatusAlias
-        {
-            set => Status = value;
-        }
+        public MarketStatus Status { get; set; }
     }
 }

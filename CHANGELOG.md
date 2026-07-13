@@ -14,7 +14,7 @@ Adds authoritative market-level status on Market and ProviderMarket messages (PR
 #### Added
 
 - **`MarketStatus`** enum (`NotSet`, `Open`, `Suspended`, `Settled`) for market-level status values.
-- **`Market.Status`**: maps JSON `Status` on calculated market payloads (1=Open, 2=Suspended, 3=Settled).
+- **`Market.Status`**: maps JSON `MarketStatus` on market payloads (1=Open, 2=Suspended, 3=Settled); also accepts settlement JSON `Status`.
 - **`ProviderMarket.MarketStatus`**: maps JSON `MarketStatus` on provider market payloads from the feed.
 
 ### Backward Compatibility (v2.5.5)

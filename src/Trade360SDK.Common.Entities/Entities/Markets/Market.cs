@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Trade360SDK.Common.Entities.Enums;
 
 namespace Trade360SDK.Common.Entities.Markets
@@ -15,6 +16,13 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public string? MainLine { get; set; }
 
+        [JsonPropertyName("MarketStatus")]
         public MarketStatus Status { get; set; }
+
+        [JsonPropertyName("Status")]
+        public MarketStatus SettlementStatusAlias
+        {
+            set => Status = value;
+        }
     }
 }

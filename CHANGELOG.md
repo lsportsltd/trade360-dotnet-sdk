@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Release Version 2.5.5]
+
+Adds authoritative market-level status on Market and ProviderMarket messages (PRD-1516).
+
+### [Trade360SDK.Common.Entities - v2.3.6]
+
+#### Added
+
+- **`MarketStatus`** enum (`NotSet`, `Open`, `Suspended`, `Settled`) for market-level status values.
+- **`Market.Status`**: maps JSON `Status` on calculated market payloads (1=Open, 2=Suspended, 3=Settled).
+- **`ProviderMarket.MarketStatus`**: maps JSON `MarketStatus` on provider market payloads from the feed.
+
+### Backward Compatibility (v2.5.5)
+
+All changes are backward compatible. New properties default to `NotSet` (0) when absent from the payload.
+
+---
+
 ## [Release Version 2.5.4]
 
 ### [Trade360SDK.Common.Entities - v2.3.5]

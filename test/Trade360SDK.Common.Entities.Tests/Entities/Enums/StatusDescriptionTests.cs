@@ -68,6 +68,19 @@ namespace Trade360SDK.Common.Tests.Entities.Enums
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.EnteringExtraTime));
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.ExtraTimeBreak));
             Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.EnteringPenaltyShootout));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter1Disqualification));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter2Disqualification));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter1MajorityDecision));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter2MajorityDecision));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter1UnanimousDecision));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter2UnanimousDecision));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter1Submission));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter2Submission));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter1KoTko));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Fighter2KoTko));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.NoContest));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Top));
+            Assert.True(System.Enum.IsDefined(typeof(StatusDescription), StatusDescription.Bottom));
         }
     }
-} 
+}

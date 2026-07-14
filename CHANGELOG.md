@@ -13,6 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.6]
+
+### [Trade360SDK.Common.Entities - v2.3.7]
+
+#### Added
+
+- **`StatusDescription`**: 13 new MMA/fight-outcome and positional enum values (TRGN-3981) — `Fighter1Disqualification` (60), `Fighter2Disqualification` (61), `Fighter1MajorityDecision` (62), `Fighter2MajorityDecision` (63), `Fighter1UnanimousDecision` (64), `Fighter2UnanimousDecision` (65), `Fighter1Submission` (66), `Fighter2Submission` (67), `Fighter1KoTko` (68), `Fighter2KoTko` (69), `NoContest` (70), `Top` (71), `Bottom` (72).
+
+### Backward Compatibility (v2.5.6)
+
+All changes are backward compatible. New enum values are additive.
+
+---
+
 ## [Release Version 2.5.5]
 
 Adds authoritative market-level status on Market and ProviderMarket messages (PRD-1516).

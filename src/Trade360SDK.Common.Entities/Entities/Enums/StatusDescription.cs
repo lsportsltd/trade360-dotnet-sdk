@@ -61,6 +61,19 @@
         WaitingForPenalties = 56,
         EnteringExtraTime = 57,
         ExtraTimeBreak = 58,
-        EnteringPenaltyShootout = 59
+        EnteringPenaltyShootout = 59,
+        Fighter1Disqualification = 60,
+        Fighter2Disqualification = 61,
+        Fighter1MajorityDecision = 62,
+        Fighter2MajorityDecision = 63,
+        Fighter1UnanimousDecision = 64,
+        Fighter2UnanimousDecision = 65,
+        Fighter1Submission = 66,
+        Fighter2Submission = 67,
+        Fighter1KoTko = 68,
+        Fighter2KoTko = 69,
+        NoContest = 70,
+        Top = 71,
+        Bottom = 72
     }
 }

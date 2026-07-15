@@ -15,5 +15,7 @@ namespace Trade360SDK.Common.Entities.Markets
         public DateTime LastUpdate { get; set; }
 
         public MarketStatus MarketStatus { get; set; }
+
+        public PredictionData? PredictionData { get; set; }
     }
 }

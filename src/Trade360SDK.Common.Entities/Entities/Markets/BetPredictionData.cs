@@ -2,7 +2,7 @@ using System;
 
 namespace Trade360SDK.Common.Entities.Markets
 {
-    public class PredictionData
+    public class BetPredictionData
     {
         public double? Volume { get; set; }
 

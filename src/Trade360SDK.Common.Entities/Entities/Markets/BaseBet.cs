@@ -47,6 +47,6 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public int? Order { get; set; }
 
-        public PredictionData? PredictionData { get; set; }
+        public BetPredictionData? PredictionData { get; set; }
     }
 }

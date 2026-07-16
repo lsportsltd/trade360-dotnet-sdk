@@ -16,6 +16,6 @@ namespace Trade360SDK.Common.Entities.Markets
 
         public MarketStatus MarketStatus { get; set; }
 
-        public PredictionData? PredictionData { get; set; }
+        public MarketPredictionData? PredictionData { get; set; }
     }
 }

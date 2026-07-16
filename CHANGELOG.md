@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+---
 
-- **`Market.Status`**: RMQ JSON field is `Status` on calculated market payloads (PRD-1516).
+## [Release Version 2.5.7]
+
+### [Trade360SDK.Common.Entities - v2.3.8]
+
+#### Added
+
+- **`PredictionData`**: optional `Volume`, `Liquidity`, `StartDate`, and `EndDate` on `Market`, `ProviderMarket`, and `BaseBet` entities (PRD-1516).
+
+### Backward Compatibility (v2.5.7)
+
+All changes are backward compatible. `PredictionData` is optional and absent when not present in the payload.
 
 ---
 

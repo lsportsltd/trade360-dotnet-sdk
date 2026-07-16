@@ -40,7 +40,7 @@ namespace Trade360SDK.Common.Tests
         }
 
         [Fact]
-        public void DeserializeMarketStatusFromJson_MapsStatusProperty()
+        public void DeserializeMarketStatusFromJson_MapsMarketStatusProperty()
         {
             var market = JsonSerializer.Deserialize<Market>("{\"Id\":52,\"Name\":\"1X2\",\"Status\":2,\"Bets\":[]}");
 

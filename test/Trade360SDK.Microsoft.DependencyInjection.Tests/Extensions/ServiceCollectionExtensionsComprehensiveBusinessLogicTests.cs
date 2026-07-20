@@ -258,41 +258,6 @@ public class ServiceCollectionExtensionsComprehensiveBusinessLogicTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_WithAutoMapper_ShouldRegisterWithAutoMapperSupport()
-    {
-        _services.AddAutoMapper(typeof(Trade360SDK.Microsoft.DependencyInjection.Extensions.ServiceCollectionExtensions));
-        _services.AddTrade360CustomerApiClient(_configuration);
-
-        var serviceProvider = _services.BuildServiceProvider();
-        var factory = serviceProvider.GetService<ICustomersApiFactory>();
-
-        factory.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void AddTrade360PrematchSnapshotClient_WithAutoMapper_ShouldRegisterWithAutoMapperSupport()
-    {
-        _services.AddAutoMapper(typeof(Trade360SDK.Microsoft.DependencyInjection.Extensions.ServiceCollectionExtensions));
-        var settings = new Trade360Settings { SnapshotApiBaseUrl = "https://snapshot.example.com/" };
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = settings.SnapshotApiBaseUrl;
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "prematchuser",
-                Password = "prematchpass"
-            };
-        });
-        _services.AddTrade360PrematchSnapshotClient();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        var client = serviceProvider.GetService<ISnapshotPrematchApiClient>();
-
-        client.Should().NotBeNull();
-    }
-
-    [Fact]
     public void AddTrade360CustomerApiClient_ServiceLifetime_ShouldBeTransient()
     {
         _services.AddTrade360CustomerApiClient(_configuration);

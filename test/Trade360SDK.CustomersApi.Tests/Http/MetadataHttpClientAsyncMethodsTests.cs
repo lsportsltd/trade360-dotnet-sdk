@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
-using AutoMapper;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.Common.Entities.Incidents;
 using Trade360SDK.Common.Entities.Shared;
@@ -48,10 +47,7 @@ public class MetadataHttpClientAsyncMethodsTests
             Password = "test_password",
             PackageId = 123
         };
-
-        var mockMapper = new Mock<IMapper>();
-        SetupAutoMapperDefaults(mockMapper);
-        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     [Fact]
@@ -128,10 +124,7 @@ public class MetadataHttpClientAsyncMethodsTests
                 new Market { Id = 2, Name = "Over/Under" }
             }
         };
-
-        var mockMapper = new Mock<IMapper>();
         var request = new GetMarketsRequest();
-        mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>())).Returns(request);
 
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         var settings = new Trade360Settings { CustomersApiBaseUrl = "https://api.example.com/" };
@@ -139,7 +132,7 @@ public class MetadataHttpClientAsyncMethodsTests
         mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
         
         var client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, 
-            new PackageCredentials { Username = "test", Password = "test", PackageId = 123 }, mockMapper.Object);
+            new PackageCredentials { Username = "test", Password = "test", PackageId = 123 });
 
         SetupHttpResponse(expectedResponse);
 
@@ -509,57 +502,5 @@ public class MetadataHttpClientAsyncMethodsTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(httpResponse)
             .Verifiable();
-    }
-
-    private void SetupAutoMapperDefaults(Mock<IMapper> mockMapper)
-    {
-        mockMapper.Setup(x => x.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
-            .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest 
-            { 
-                Languages = dto?.Languages ?? new List<int> { 1 },
-                SportIds = dto?.SportIds ?? new List<int> { 1 },
-                LocationIds = dto?.LocationIds,
-                LeagueIds = dto?.LeagueIds,
-                MarketIds = dto?.MarketIds,
-                ParticipantIds = dto?.ParticipantIds
-            });
-
-        mockMapper.Setup(x => x.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns(new GetLeaguesRequest());
-
-        mockMapper.Setup(x => x.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns(new GetMarketsRequest());
-
-        mockMapper.Setup(x => x.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns(new GetCompetitionsRequest());
-
-        mockMapper.Setup(x => x.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns(new GetIncidentsRequest());
-
-        mockMapper.Setup(x => x.Map<GetCitiesRequest>(It.IsAny<GetCitiesRequestDto>()))
-            .Returns(new GetCitiesRequest());
-
-        mockMapper.Setup(x => x.Map<GetStatesRequest>(It.IsAny<GetStatesRequestDto>()))
-            .Returns(new GetStatesRequest());
-
-        mockMapper.Setup(x => x.Map<GetVenuesRequest>(It.IsAny<GetVenuesRequestDto>()))
-            .Returns(new GetVenuesRequest());
-
-        mockMapper.Setup(x => x.Map<GetParticipantsRequest>(It.IsAny<GetParticipantsRequestDto>()))
-            .Returns((GetParticipantsRequestDto dto) => new GetParticipantsRequest
-            {
-                Filter = dto?.Filter != null ? new ParticipantFilter
-                {
-                    Ids = dto.Filter.Ids,
-                    SportIds = dto.Filter.SportIds,
-                    LocationIds = dto.Filter.LocationIds,
-                    Name = dto.Filter.Name,
-                    Gender = dto.Filter.Gender,
-                    AgeCategory = dto.Filter.AgeCategory,
-                    Type = dto.Filter.Type
-                } : null,
-                Page = dto?.Page ?? 0,
-                PageSize = dto?.PageSize ?? 0
-            });
     }
 }

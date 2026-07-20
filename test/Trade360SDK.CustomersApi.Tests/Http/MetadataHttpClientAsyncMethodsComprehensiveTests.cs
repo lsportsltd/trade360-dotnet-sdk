@@ -12,14 +12,12 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.Base;
 using Trade360SDK.Common.Entities.Incidents;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
 public class MetadataHttpClientAsyncMethodsComprehensiveTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientAsyncMethodsComprehensiveTests()
@@ -27,7 +25,6 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
-        _mockMapper = new Mock<IMapper>();
         
         var settings = new Trade360Settings
         {
@@ -50,8 +47,7 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
             Password = "testpass"
         };
 
-        SetupAutoMapperDefaults();
-        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, _mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     [Fact]
@@ -262,31 +258,5 @@ public class MetadataHttpClientAsyncMethodsComprehensiveTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(httpResponse)
             .Verifiable();
-    }
-
-    private void SetupAutoMapperDefaults()
-    {
-        _mockMapper.Setup(x => x.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
-            .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest 
-            { 
-                Languages = dto?.Languages ?? new List<int> { 1 },
-                SportIds = dto?.SportIds ?? new List<int> { 1 },
-                LocationIds = dto?.LocationIds,
-                LeagueIds = dto?.LeagueIds,
-                MarketIds = dto?.MarketIds,
-                ParticipantIds = dto?.ParticipantIds
-            });
-
-        _mockMapper.Setup(x => x.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns((GetLeaguesRequestDto _) => new GetLeaguesRequest());
-
-        _mockMapper.Setup(x => x.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns((GetMarketsRequestDto _) => new GetMarketsRequest());
-
-        _mockMapper.Setup(x => x.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns((GetCompetitionsRequestDto _) => new GetCompetitionsRequest());
-
-        _mockMapper.Setup(x => x.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
     }
 }

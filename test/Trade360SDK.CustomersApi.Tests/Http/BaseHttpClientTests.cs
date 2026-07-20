@@ -56,9 +56,8 @@ public class BaseHttpClientTests
     public void Constructor_WithNullHttpClientFactory_ShouldThrowArgumentNullException()
     {
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(null!, "https://api.example.com/", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(null!, "https://api.example.com/", credentials);
 
         act.Should().Throw<ArgumentNullException>()
            .WithParameterName("httpClientFactory");
@@ -68,9 +67,8 @@ public class BaseHttpClientTests
     public void Constructor_WithNullBaseUrl_ShouldThrowArgumentException()
     {
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, null!, credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, null!, credentials);
 
         act.Should().Throw<ArgumentException>()
            .WithParameterName("baseUrl");
@@ -79,9 +77,8 @@ public class BaseHttpClientTests
     [Fact]
     public void Constructor_WithNullPackageCredentials_ShouldThrowArgumentNullException()
     {
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, "https://api.example.com/", null!, mockMapper.Object);
+        var act = () => new MetadataHttpClient(_mockHttpClientFactory.Object, "https://api.example.com/", null!);
 
         act.Should().Throw<ArgumentNullException>()
            .WithParameterName("settings");

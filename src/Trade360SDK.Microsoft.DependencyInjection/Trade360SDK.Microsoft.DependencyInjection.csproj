@@ -3,10 +3,11 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.0.2</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.0 Initial release
 			- 1.0.1 Updated dependencies to latest versions
+			- 1.0.2 Stop registering AutoMapper; CustomersApi/SnapshotApi use manual DTO mapping (TRD-6227).
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

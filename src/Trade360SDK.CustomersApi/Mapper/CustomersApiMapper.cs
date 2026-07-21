@@ -1,3 +1,4 @@
+using System.Globalization;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 
@@ -79,8 +80,8 @@ namespace Trade360SDK.CustomersApi.Mapper
 
         public static GetFixtureMetadataRequest Map(GetFixtureMetadataRequestDto source) => new GetFixtureMetadataRequest
         {
-            FromDate = source.FromDate.ToString("MM/dd/yyyy"),
-            ToDate = source.ToDate.ToString("MM/dd/yyyy"),
+            FromDate = source.FromDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
+            ToDate = source.ToDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
             SportIds = source.SportIds,
             LocationIds = source.LocationIds,
             LeagueIds = source.LeagueIds

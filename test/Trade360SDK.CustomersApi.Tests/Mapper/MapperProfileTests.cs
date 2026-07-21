@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using FluentAssertions;
 using System.Text.Json;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
@@ -28,6 +30,31 @@ public class MapperProfileTests
         result.SportIds.Should().BeEquivalentTo(new List<int> { 1 });
         result.LocationIds.Should().BeEquivalentTo(new List<int> { 2 });
         result.LeagueIds.Should().BeEquivalentTo(new List<int> { 3 });
+    }
+
+    [Fact]
+    public void Map_GetFixtureMetadataRequestDto_FormatsDatesWithInvariantCulture()
+    {
+        var previousCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            // de-DE would otherwise format MM/dd/yyyy differently (e.g. month names / separators).
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+
+            var dto = new GetFixtureMetadataRequestDto
+            {
+                FromDate = new DateTime(2024, 6, 1),
+                ToDate = new DateTime(2024, 6, 30)
+            };
+
+            var result = CustomersApiMapper.Map(dto);
+            result.FromDate.Should().Be("06/01/2024");
+            result.ToDate.Should().Be("06/30/2024");
+        }
+        finally
+        {
+            Thread.CurrentThread.CurrentCulture = previousCulture;
+        }
     }
 
     [Fact]

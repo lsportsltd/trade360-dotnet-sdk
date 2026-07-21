@@ -60,26 +60,4 @@ public class SnapshotApiServiceCollectionExtensionsTests
         var httpClientRegistrations = services.Where(s => s.ServiceType.Name.Contains("HttpClient")).ToList();
         httpClientRegistrations.Should().NotBeEmpty();
     }
-
-    [Fact]
-    public void AddTrade360PrematchSnapshotClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-
-        services.AddTrade360PrematchSnapshotClient();
-
-        var autoMapperRegistrations = services.Where(s => s.ServiceType.Name.Contains("Mapper")).ToList();
-        autoMapperRegistrations.Should().NotBeEmpty();
-    }
-
-    [Fact]
-    public void AddTrade360InplaySnapshotClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-
-        services.AddTrade360InplaySnapshotClient();
-
-        var autoMapperRegistrations = services.Where(s => s.ServiceType.Name.Contains("Mapper")).ToList();
-        autoMapperRegistrations.Should().NotBeEmpty();
-    }
 }

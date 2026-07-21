@@ -39,18 +39,6 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
-
-        services.AddTrade360CustomerApiClient(configuration);
-
-        var autoMapperRegistrations = services.Where(s => s.ServiceType.Name.Contains("Mapper")).ToList();
-        autoMapperRegistrations.Should().NotBeEmpty();
-    }
-
-    [Fact]
     public void AddTrade360PrematchSnapshotClient_ShouldRegisterServices()
     {
         var services = new ServiceCollection();

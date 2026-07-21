@@ -11,14 +11,12 @@ using Trade360SDK.SnapshotApi.Entities.Requests;
 using Trade360SDK.SnapshotApi.Entities.Responses;
 using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Markets;
-using AutoMapper;
 
 namespace Trade360SDK.SnapshotApi.Tests;
 
 public class SnapshotInplayApiClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly SnapshotInplayApiClient _client;
 
     public SnapshotInplayApiClientAsyncMethodsTests()
@@ -26,7 +24,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
-        _mockMapper = new Mock<IMapper>();
         
         var settings = new Trade360Settings
         {
@@ -48,7 +45,7 @@ public class SnapshotInplayApiClientAsyncMethodsTests
 
         mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        _client = new SnapshotInplayApiClient(mockHttpClientFactory.Object, mockOptions.Object, _mockMapper.Object);
+        _client = new SnapshotInplayApiClient(mockHttpClientFactory.Object, mockOptions.Object);
     }
 
     [Fact]
@@ -61,7 +58,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedFixtures);
 
@@ -82,7 +78,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetLivescoreRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedLivescores);
 
@@ -103,7 +98,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetMarketRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedMarkets);
 
@@ -124,7 +118,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetMarketRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedEvents);
 
@@ -143,7 +136,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
     {
         var errorFixtures = new FixtureEvent[0];
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(errorFixtures, statusCode);
 
@@ -160,7 +152,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
         cancellationTokenSource.Cancel();
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         var act = async () => await _client.GetFixtures(new GetFixturesRequestDto(), cancellationTokenSource.Token);
 
@@ -175,7 +166,6 @@ public class SnapshotInplayApiClientAsyncMethodsTests
             .ToArray();
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetLivescoreRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(largeLivescoreSet);
 

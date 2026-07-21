@@ -5,7 +5,6 @@ using Moq;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Interfaces;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -20,8 +19,6 @@ public class CustomersApiFactoryComprehensiveTests
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
 
         mockServiceProvider.Setup(x => x.GetService(typeof(IHttpClientFactory))).Returns(_mockHttpClientFactory.Object);
-        var mockMapper = new Mock<IMapper>();
-        mockServiceProvider.Setup(x => x.GetService(typeof(IMapper))).Returns(mockMapper.Object);
 
         _factory = new CustomersApiFactory(mockServiceProvider.Object);
     }

@@ -6,22 +6,17 @@ using Trade360SDK.SnapshotApi;
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Options;
-using AutoMapper;
 
 namespace Trade360SDK.SnapshotApi.Tests;
 
 public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
 {
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
-
-    private readonly Mock<IMapper> _mockMapper;
     private readonly SnapshotInplayApiClient _client;
 
     public SnapshotInplayApiClientComprehensiveBusinessLogicTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
-
-        _mockMapper = new Mock<IMapper>();
         
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
@@ -44,7 +39,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
             }
         };
         
-        _client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        _client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
     }
 
     [Fact]
@@ -82,7 +77,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SnapshotPrematchApiClient>();
@@ -91,7 +86,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
     [Fact]
     public void CreateSnapshotInplayApiClient_WithNullSettings_ShouldThrowNullReferenceException()
     {
-        var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, null!, _mockMapper.Object);
+        var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, null!);
 
         act.Should().Throw<NullReferenceException>();
     }
@@ -99,7 +94,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
     [Fact]
     public void CreateSnapshotPrematchApiClient_WithNullSettings_ShouldThrowNullReferenceException()
     {
-        var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, null!, _mockMapper.Object);
+        var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, null!);
 
         act.Should().Throw<NullReferenceException>();
     }
@@ -112,7 +107,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
             SnapshotApiBaseUrl = ""
         };
 
-        var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         act.Should().Throw<UriFormatException>();
     }
@@ -125,7 +120,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
             SnapshotApiBaseUrl = ""
         };
 
-        var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var act = () => new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         act.Should().Throw<UriFormatException>();
     }
@@ -153,7 +148,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SnapshotInplayApiClient>();
@@ -182,7 +177,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SnapshotPrematchApiClient>();
@@ -211,8 +206,8 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result1 = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
-        var result2 = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result1 = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
+        var result2 = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result1.Should().NotBeNull();
         result2.Should().NotBeNull();
@@ -242,8 +237,8 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result1 = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
-        var result2 = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result1 = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
+        var result2 = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result1.Should().NotBeNull();
         result2.Should().NotBeNull();
@@ -270,7 +265,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
             }
         };
 
-        var act = () => new SnapshotInplayApiClient(null!, Options.Create(settings), _mockMapper.Object);
+        var act = () => new SnapshotInplayApiClient(null!, Options.Create(settings));
 
         act.Should().Throw<ArgumentNullException>();
     }
@@ -298,7 +293,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SnapshotInplayApiClient>();
@@ -327,7 +322,7 @@ public class SnapshotInplayApiClientComprehensiveBusinessLogicTests
         var httpClient = new HttpClient();
         _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings), _mockMapper.Object);
+        var result = new SnapshotPrematchApiClient(_mockHttpClientFactory.Object, Options.Create(settings));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SnapshotPrematchApiClient>();

@@ -97,20 +97,6 @@ public class ServiceCollectionExtensionsComprehensiveTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-        var mockConfiguration = new Mock<IConfiguration>();
-        var configuration = mockConfiguration.Object;
-        services.AddTrade360CustomerApiClient(configuration);
-
-        var serviceProvider = services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
-    }
-
-    [Fact]
     public void AddTrade360PrematchSnapshotClient_WithNullSnapshotApiBaseUrl_ShouldThrowInvalidOperationException()
     {
         var services = new ServiceCollection();
@@ -158,52 +144,6 @@ public class ServiceCollectionExtensionsComprehensiveTests
         };
 
         act.Should().Throw<InvalidOperationException>();
-    }
-
-    [Fact]
-    public void AddTrade360PrematchSnapshotClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-        services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "testuser",
-                Password = "testpass"
-            };
-        });
-
-        services.AddTrade360PrematchSnapshotClient();
-
-        var serviceProvider = services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void AddTrade360InplaySnapshotClient_ShouldRegisterAutoMapper()
-    {
-        var services = new ServiceCollection();
-        services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
-            options.InplayPackageCredentials = new PackageCredentials
-            {
-                PackageId = 456,
-                Username = "inplayuser",
-                Password = "inplaypass"
-            };
-        });
-
-        services.AddTrade360InplaySnapshotClient();
-
-        var serviceProvider = services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
     }
 
     [Fact]

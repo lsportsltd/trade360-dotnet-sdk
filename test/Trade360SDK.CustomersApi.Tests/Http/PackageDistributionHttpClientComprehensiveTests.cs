@@ -8,7 +8,6 @@ using System.Text.Json;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 

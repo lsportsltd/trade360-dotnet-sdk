@@ -10,7 +10,6 @@ using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.Common.Entities.Incidents;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -25,30 +24,11 @@ public class MetadataHttpClientComprehensiveTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         _mockLogger = new Mock<ILogger<MetadataHttpClient>>();
-        var mockMapper = new Mock<IMapper>();
         
-        mockMapper.Setup(m => m.Map<GetTranslationsRequest>(It.IsAny<GetTranslationsRequestDto>()))
-            .Returns((GetTranslationsRequestDto dto) => new GetTranslationsRequest
-            {
-                Languages = dto.Languages ?? new List<int>(),
-                SportIds = dto.SportIds ?? new List<int>(),
-                LocationIds = dto.LocationIds ?? new List<int>(),
-                LeagueIds = dto.LeagueIds ?? new List<int>(),
-                MarketIds = dto.MarketIds ?? new List<int>(),
-                ParticipantIds = dto.ParticipantIds ?? new List<int>()
-            });
             
-        mockMapper.Setup(m => m.Map<GetLeaguesRequest>(It.IsAny<GetLeaguesRequestDto>()))
-            .Returns((GetLeaguesRequestDto _) => new GetLeaguesRequest());
             
-        mockMapper.Setup(m => m.Map<GetMarketsRequest>(It.IsAny<GetMarketsRequestDto>()))
-            .Returns((GetMarketsRequestDto _) => new GetMarketsRequest());
             
-        mockMapper.Setup(m => m.Map<GetCompetitionsRequest>(It.IsAny<GetCompetitionsRequestDto>()))
-            .Returns((GetCompetitionsRequestDto _) => new GetCompetitionsRequest());
             
-        mockMapper.Setup(m => m.Map<GetIncidentsRequest>(It.IsAny<GetIncidentsRequestDto>()))
-            .Returns((GetIncidentsRequestDto _) => new GetIncidentsRequest());
         
         var settings = new Trade360Settings
         {
@@ -71,7 +51,7 @@ public class MetadataHttpClientComprehensiveTests
 
         SetupDefaultHttpResponse();
         
-        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
+        _client = new MetadataHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     private void SetupDefaultHttpResponse()

@@ -6,7 +6,6 @@ using Polly.Extensions.Http;
 using System.Net.Http;
 using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Interfaces;
-using Trade360SDK.CustomersApi.Mapper;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi;
 using Trade360SDK.SnapshotApi.Interfaces;
@@ -37,7 +36,6 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ICustomersApiFactory, CustomersApiFactory>();
-            services.AddAutoMapper(typeof(MappingProfile));
             return services;
         }
 
@@ -53,7 +51,6 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotPrematchApiClient, SnapshotPrematchApiClient>();
-            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }
@@ -71,7 +68,6 @@ namespace Trade360SDK.Microsoft.DependencyInjection.Extensions
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddTransient<ISnapshotInplayApiClient, SnapshotInplayApiClient>();
-            services.AddAutoMapper(typeof(Trade360SDK.SnapshotApi.Mapper.MappingProfile));
 
             return services;
         }

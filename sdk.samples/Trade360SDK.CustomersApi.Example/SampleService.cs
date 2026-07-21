@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Trade360SDK.Common.Configuration;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
@@ -246,8 +247,9 @@ namespace Trade360SDK.CustomersApi.Example
         {
             var request = new GetCompetitionsRequestDto
             {
-                LocationIds = new[] { 1 },
-                SubscriptionStatus = 0
+                // Must be a Competition Sport (not Football 6046). Same id as SubscribeToOutrightCompetition.
+                SportIds = new[] { 687888 },
+                SubscriptionStatus = SubscriptionState.All
             };
             var response = await metadataApiClient.GetCompetitionsAsync(request, cancellationToken);
             Console.WriteLine($"{response.Competitions?.Count()} Competitions retrieved.");

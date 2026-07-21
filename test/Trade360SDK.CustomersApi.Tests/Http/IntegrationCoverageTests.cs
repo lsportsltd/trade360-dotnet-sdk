@@ -18,9 +18,8 @@ public class IntegrationCoverageTests
     public void BaseHttpClient_Constructor_WithNullHttpClientFactory_ShouldExecuteActualValidation()
     {
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(null!, "https://api.test.com", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(null!, "https://api.test.com", credentials);
 
         act.Should().Throw<ArgumentNullException>()
            .WithParameterName("httpClientFactory");
@@ -31,9 +30,8 @@ public class IntegrationCoverageTests
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, null!, credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, null!, credentials);
 
         act.Should().Throw<ArgumentException>()
            .WithParameterName("baseUrl");
@@ -44,9 +42,8 @@ public class IntegrationCoverageTests
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, "", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, "", credentials);
 
         act.Should().Throw<ArgumentException>()
            .WithParameterName("baseUrl");
@@ -56,9 +53,8 @@ public class IntegrationCoverageTests
     public void BaseHttpClient_Constructor_WithNullCredentials_ShouldExecuteActualValidation()
     {
         var mockFactory = new Mock<IHttpClientFactory>();
-        var mockMapper = new Mock<AutoMapper.IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", null!, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", null!);
 
         act.Should().Throw<ArgumentNullException>()
            .WithParameterName("settings");

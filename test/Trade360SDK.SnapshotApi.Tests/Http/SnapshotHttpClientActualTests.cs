@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi;
-using AutoMapper;
 using Microsoft.Extensions.Options;
 
 namespace Trade360SDK.SnapshotApi.Tests;
@@ -14,7 +13,6 @@ public class SnapshotHttpClientActualTests
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
-        var mockMapper = new Mock<IMapper>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
         var settings = new Trade360Settings 
         { 
@@ -23,7 +21,7 @@ public class SnapshotHttpClientActualTests
         };
         mockOptions.Setup(x => x.Value).Returns(settings);
 
-        var act = () => new SnapshotInplayApiClient(mockFactory.Object, mockOptions.Object, mockMapper.Object);
+        var act = () => new SnapshotInplayApiClient(mockFactory.Object, mockOptions.Object);
 
         act.Should().NotThrow();
     }
@@ -33,7 +31,6 @@ public class SnapshotHttpClientActualTests
     {
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
-        var mockMapper = new Mock<IMapper>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
         var settings = new Trade360Settings 
         { 
@@ -42,7 +39,7 @@ public class SnapshotHttpClientActualTests
         };
         mockOptions.Setup(x => x.Value).Returns(settings);
 
-        var act = () => new SnapshotPrematchApiClient(mockFactory.Object, mockOptions.Object, mockMapper.Object);
+        var act = () => new SnapshotPrematchApiClient(mockFactory.Object, mockOptions.Object);
 
         act.Should().NotThrow();
     }

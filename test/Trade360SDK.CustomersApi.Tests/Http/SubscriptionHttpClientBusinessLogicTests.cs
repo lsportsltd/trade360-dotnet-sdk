@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
@@ -14,7 +13,6 @@ using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
-using Trade360SDK.CustomersApi.Mapper;
 using Xunit;
 
 namespace Trade360SDK.CustomersApi.Tests
@@ -23,16 +21,14 @@ namespace Trade360SDK.CustomersApi.Tests
     {
         private readonly SubscriptionHttpClient _client;
         private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-        private readonly Mock<IMapper> _mockMapper;
 
         public SubscriptionHttpClientBusinessLogicTests()
         {
             _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-            _mockMapper = new Mock<IMapper>();
             var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
             var httpClient = new HttpClient(_mockHttpMessageHandler.Object) { BaseAddress = new Uri("http://localhost") };
             var httpClientFactory = new TestHttpClientFactory(httpClient);
-            _client = new SubscriptionHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mockMapper.Object);
+            _client = new SubscriptionHttpClient(httpClientFactory, "http://localhost", packageCredentials);
         }
 
         [Fact]
@@ -50,13 +46,10 @@ namespace Trade360SDK.CustomersApi.Tests
         {
             var expectedResponse = new FixtureScheduleCollectionResponse { Fixtures = new List<FixtureSchedule> { new FixtureSchedule { FixtureId = 1 } } };
             var requestDto = new GetFixtureScheduleRequestDto { LeagueIds = new List<int> { 1 } };
-            var mappedRequest = new GetFixtureScheduleRequest();
-            _mockMapper.Setup(x => x.Map<GetFixtureScheduleRequest>(requestDto)).Returns(mappedRequest);
             SetupHttpResponse(expectedResponse);
             var result = await _client.GetInplayFixtureSchedule(requestDto, CancellationToken.None);
             result.Should().NotBeNull();
             result.Fixtures.Should().HaveCount(1);
-            _mockMapper.Verify(x => x.Map<GetFixtureScheduleRequest>(requestDto), Times.Once);
         }
 
         [Fact]
@@ -64,13 +57,10 @@ namespace Trade360SDK.CustomersApi.Tests
         {
             var expectedResponse = new FixtureSubscriptionCollectionResponse { Fixtures = new List<FixtureSubscription> { new FixtureSubscription { FixtureId = 1 } } };
             var requestDto = new FixtureSubscriptionRequestDto { Fixtures = new List<int> { 1 } };
-            var mappedRequest = new FixtureSubscriptionRequest();
-            _mockMapper.Setup(x => x.Map<FixtureSubscriptionRequest>(requestDto)).Returns(mappedRequest);
             SetupHttpResponse(expectedResponse);
             var result = await _client.SubscribeByFixture(requestDto, CancellationToken.None);
             result.Should().NotBeNull();
             result.Fixtures.Should().HaveCount(1);
-            _mockMapper.Verify(x => x.Map<FixtureSubscriptionRequest>(requestDto), Times.Once);
         }
 
         [Fact]

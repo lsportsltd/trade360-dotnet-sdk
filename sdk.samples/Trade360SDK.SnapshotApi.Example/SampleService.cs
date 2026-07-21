@@ -90,16 +90,17 @@ namespace Trade360SDK.SnapshotApi.Example
                     await GetOutrightEvents(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "9":
+                    // Prematch only: Inplay package returns empty Body for GetOutrightLeagues.
+                    // Also Snapshot enforces 1 request/sec across endpoints — avoid back-to-back calls.
                     await GetOutrightLeaguesFixtures(_snapshotPrematchApiClient, cancellationToken);
-                    await GetOutrightLeaguesFixtures(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "10":
+                    // Prematch only: Inplay/GetOutrightLeagueMarkets currently returns HTTP 500 for this package.
                     await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
-                    await GetOutrightLeaguesMarkets(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "11":
+                    // Prematch only: Inplay league-event snapshot is unavailable / rate-limited for this package.
                     await GetOutrightLeaguesEvents(_snapshotPrematchApiClient, cancellationToken);
-                    await GetOutrightLeaguesEvents(_snapshotInplayApiClient, cancellationToken);
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
@@ -246,10 +247,8 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightFixturesRequestDto()
             {
-                Sports = new List<int>() { 6046 },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                // Fixture outrights: competition sport (e.g. Horse Racing). Football 6046 returns null Body here.
+                Sports = new List<int>() { 687888 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightFixture(request, cancellationToken);
@@ -262,10 +261,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightLivescoreRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 687888 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightScores(request, cancellationToken);
@@ -278,10 +274,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightMarketsRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 687888 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightFixtureMarkets(request, cancellationToken);
@@ -294,10 +287,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightMarketsRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 687888 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightEvents(request, cancellationToken);
@@ -310,10 +300,8 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetFixturesRequestDto()
             {
+                // League outrights use regular sports (Football). Competition sport 687888 returns null Body here.
                 Sports = new List<int>() { 6046 },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightLeagues(request, cancellationToken);
@@ -326,10 +314,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetMarketRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 6046 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightLeaguesMarkets(request, cancellationToken);
@@ -342,10 +327,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightFixturesRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 6046 },
             };
 
             var response = await snapshotPrematchApiClient.GetOutrightLeagueEvents(request, cancellationToken);
@@ -359,10 +341,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetFixturesRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 6046 },
             };
 
             var response = await snapshotInplayApiClient.GetOutrightLeagues(request, cancellationToken);
@@ -375,10 +354,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetMarketRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Leagues = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 6046 },
             };
 
             var response = await snapshotInplayApiClient.GetOutrightLeaguesMarkets(request, cancellationToken);
@@ -391,10 +367,7 @@ namespace Trade360SDK.SnapshotApi.Example
 
             var request = new GetOutrightFixturesRequestDto()
             {
-                Sports = new List<int>() { /* List of sport IDs, e.g., 1234, 2345 */ },
-                Fixtures = new List<int>() { /* List of fixture IDs, e.g., 12345678, 23456789 */ },
-                Tournaments = new List<int>() { /* List of league IDs, e.g., 1111, 2222 */ },
-                Locations = new List<int>() { /* List of location IDs, e.g., 3333, 4444 */ }
+                Sports = new List<int>() { 6046 },
             };
 
             var response = await snapshotInplayApiClient.GetOutrightLeagueEvents(request, cancellationToken);

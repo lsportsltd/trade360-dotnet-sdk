@@ -31,7 +31,14 @@ namespace Trade360SDK.SnapshotApi.Example
 
                     if (choice != null)
                     {
-                        await HandleMenuChoice(choice, cancellationToken);
+                        try
+                        {
+                            await HandleMenuChoice(choice, cancellationToken);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "An error occurred while retrieving data");
+                        }
                     }
                 }
             }
@@ -43,63 +50,90 @@ namespace Trade360SDK.SnapshotApi.Example
         
          private void ShowMenu()
         {
-            Console.WriteLine("Select an option:");
-            Console.WriteLine("1. Snapshot API - Get Fixtures");
-            Console.WriteLine("2. Snapshot API - Get Events");
-            Console.WriteLine("3. Snapshot API - Get Fixture Markets");
-            Console.WriteLine("4. Snapshot API - Get Livescore");
-            Console.WriteLine("5. Snapshot API - Get Outright Fixtures");
-            Console.WriteLine("6. Snapshot API - Get Outright Livescore");
-            Console.WriteLine("7. Snapshot API - Get Outright Markets");
-            Console.WriteLine("8. Snapshot API - Get Outright Events");
-            Console.WriteLine("9. Snapshot API - Get Outright Leagues Fixtures");
-            Console.WriteLine("10. Snapshot API - Get Outright Leagues Markets");
-            Console.WriteLine("11. Snapshot API - Get Outright Leagues Events");
+            Console.WriteLine();
+            Console.WriteLine("Select an option (type 'exit' to quit):");
+            Console.WriteLine("--- InPlay ---");
+            Console.WriteLine("1.  InPlay - Get Fixtures");
+            Console.WriteLine("2.  InPlay - Get Events");
+            Console.WriteLine("3.  InPlay - Get Fixture Markets");
+            Console.WriteLine("4.  InPlay - Get Livescore");
+            Console.WriteLine("5.  InPlay - Get Outright Leagues Fixtures");
+            Console.WriteLine("6.  InPlay - Get Outright Leagues Markets");
+            Console.WriteLine("7.  InPlay - Get Outright Leagues Events");
+            Console.WriteLine("--- Prematch ---");
+            Console.WriteLine("8.  Prematch - Get Fixtures");
+            Console.WriteLine("9.  Prematch - Get Events");
+            Console.WriteLine("10. Prematch - Get Fixture Markets");
+            Console.WriteLine("11. Prematch - Get Livescore");
+            Console.WriteLine("12. Prematch - Get Outright Fixtures");
+            Console.WriteLine("13. Prematch - Get Outright Livescore");
+            Console.WriteLine("14. Prematch - Get Outright Markets");
+            Console.WriteLine("15. Prematch - Get Outright Events");
+            Console.WriteLine("16. Prematch - Get Outright Leagues Fixtures");
+            Console.WriteLine("17. Prematch - Get Outright Leagues Markets");
+            Console.WriteLine("18. Prematch - Get Outright Leagues Events");
+            Console.WriteLine();
         }
 
         private async Task HandleMenuChoice(string choice, CancellationToken cancellationToken)
         {
             switch (choice)
             {
+                // InPlay — all ISnapshotInplayApiClient endpoints
                 case "1":
                     await GetFixtures(_snapshotInplayApiClient, cancellationToken);
-                    //await GetFixtures(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "2":
-                    //await GetEvents(_snapshotPrematchApiClient, cancellationToken);
                     await GetEvents(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "3":
-                    //await GetFixtureMarkets(_snapshotPrematchApiClient, cancellationToken);
                     await GetFixtureMarkets(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "4":
-                    //await GetLivescore(_snapshotPrematchApiClient, cancellationToken);
                     await GetLivescore(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "5":
-                    await GetOutrightFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesFixtures(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "6":
-                    await GetOutrightLivescore(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesMarkets(_snapshotInplayApiClient, cancellationToken);
                     break;
                 case "7":
-                    await GetOutrightMarkets(_snapshotPrematchApiClient, cancellationToken);
+                    await GetOutrightLeaguesEvents(_snapshotInplayApiClient, cancellationToken);
                     break;
+
+                // Prematch — all ISnapshotPrematchApiClient endpoints
                 case "8":
-                    await GetOutrightEvents(_snapshotPrematchApiClient, cancellationToken);
+                    await GetFixtures(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "9":
-                    // Prematch only: Inplay package returns empty Body for GetOutrightLeagues.
-                    // Also Snapshot enforces 1 request/sec across endpoints — avoid back-to-back calls.
-                    await GetOutrightLeaguesFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    await GetEvents(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "10":
-                    // Prematch only: Inplay/GetOutrightLeagueMarkets currently returns HTTP 500 for this package.
-                    await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
+                    await GetFixtureMarkets(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 case "11":
-                    // Prematch only: Inplay league-event snapshot is unavailable / rate-limited for this package.
+                    await GetLivescore(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "12":
+                    await GetOutrightFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "13":
+                    await GetOutrightLivescore(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "14":
+                    await GetOutrightMarkets(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "15":
+                    await GetOutrightEvents(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "16":
+                    await GetOutrightLeaguesFixtures(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "17":
+                    await GetOutrightLeaguesMarkets(_snapshotPrematchApiClient, cancellationToken);
+                    break;
+                case "18":
                     await GetOutrightLeaguesEvents(_snapshotPrematchApiClient, cancellationToken);
                     break;
                 default:
@@ -335,7 +369,7 @@ namespace Trade360SDK.SnapshotApi.Example
         }
         
         
-                private async Task GetOutrightLeaguesFixtures(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
+        private async Task GetOutrightLeaguesFixtures(ISnapshotInplayApiClient snapshotInplayApiClient, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting GetOutrightLeaguesFixtures...");
 

@@ -60,6 +60,7 @@ namespace Trade360SDK.CustomersApi.Example
                 { MenuOption.GetPackageQuota, async ct => await GetPackageQuota(_inplaySubscriptionHttpClient, ct) },
                 { MenuOption.GetDistributionStatus, async ct => await GetDistributionStatus(_prematchPackageDistributionHttpClient, ct) },
                 { MenuOption.StartDistribution, async ct => await StartDistribution(_prematchPackageDistributionHttpClient, ct) },
+                { MenuOption.StopDistribution, async ct => await StopDistribution(_prematchPackageDistributionHttpClient, ct) },
                 { MenuOption.GetIncidents, async ct => await GetIncidentsAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetVenues, async ct => await GetVenuesAsync(_prematchMetadataHttpClient, ct)},
                 { MenuOption.GetCities, async ct => await GetCitiesAsync(_prematchMetadataHttpClient, ct)},
@@ -276,6 +277,12 @@ namespace Trade360SDK.CustomersApi.Example
         {
             await packageDistributionApiClient.StartDistributionAsync(cancellationToken);
             Console.WriteLine("Distribution started.");
+        }
+
+        private async Task StopDistribution(IPackageDistributionHttpClient packageDistributionApiClient, CancellationToken cancellationToken)
+        {
+            await packageDistributionApiClient.StopDistributionAsync(cancellationToken);
+            Console.WriteLine("Distribution stopped.");
         }
 
         private async Task GetMarkets(IMetadataHttpClient metadataApiClient, CancellationToken cancellationToken)
@@ -643,7 +650,10 @@ namespace Trade360SDK.CustomersApi.Example
             GetDistributionStatus,
 
             [Description("Package Distribution API - Start Distribution")]
-            StartDistribution
+            StartDistribution,
+
+            [Description("Package Distribution API - Stop Distribution")]
+            StopDistribution
         }
         #endregion
     }

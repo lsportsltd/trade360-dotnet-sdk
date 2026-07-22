@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -11,6 +10,7 @@ using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Http;
 using Trade360SDK.CustomersApi.Interfaces;
+using Trade360SDK.CustomersApi.Mapper;
 using Trade360SDK.CustomersApi.Validators;
 using City = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.City;
 using League = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.League;
@@ -26,11 +26,9 @@ namespace Trade360SDK.CustomersApi
 {
     public class MetadataHttpClient : BaseHttpClient, IMetadataHttpClient
     {
-        private readonly IMapper _mapper;
-        public MetadataHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials, IMapper mapper)
+        public MetadataHttpClient(IHttpClientFactory httpClientFactory, string? baseUrl, PackageCredentials? packageCredentials)
             : base(httpClientFactory, baseUrl, packageCredentials)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<IEnumerable<Sport>> GetSportsAsync(CancellationToken cancellationToken)
@@ -51,7 +49,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<IEnumerable<League>> GetLeaguesAsync(GetLeaguesRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetLeaguesRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var leaguesCollection = await PostEntityAsync<LeaguesCollectionResponse>(
                 "Leagues/get",
                 request,
@@ -61,7 +59,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<IEnumerable<Market>> GetMarketsAsync(GetMarketsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetMarketsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var leaguesCollection = await PostEntityAsync<MarketsCollectionResponse>(
                 "Markets/get",
                 request,
@@ -71,7 +69,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<TranslationResponse> GetTranslationsAsync(GetTranslationsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetTranslationsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
 
             GetTranslationsRequestValidator.Validate(request);
             var response = await PostEntityAsync<TranslationResponse>(
@@ -83,7 +81,7 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<CompetitionCollectionResponse> GetCompetitionsAsync(GetCompetitionsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetCompetitionsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
 
             var response = await PostEntityAsync<CompetitionCollectionResponse>(
                 "Outright/GetCompetitions",
@@ -94,49 +92,49 @@ namespace Trade360SDK.CustomersApi
 
         public async Task<IEnumerable<Incident>> GetIncidentsAsync(GetIncidentsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetIncidentsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetIncidentsResponse>("Incidents/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<Incident>();
         }
 
         public async Task<IEnumerable<Venue>> GetVenuesAsync(GetVenuesRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetVenuesRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetVenuesResponse>("Venues/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<Venue>();
         }
 
         public async Task<IEnumerable<City>> GetCitiesAsync(GetCitiesRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetCitiesRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetCitiesResponse>("Cities/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<City>();
         }
 
         public async Task<IEnumerable<State>> GetStatesAsync(GetStatesRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetStatesRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetStatesResponse>("States/Get", request, cancellationToken);
             return response.Data ?? Enumerable.Empty<State>();
         }
 
         public async Task<GetParticipantsResponse> GetParticipantsAsync(GetParticipantsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetParticipantsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetParticipantsResponse>("Participants/Get", request, cancellationToken);
             return response;
         }
 
         public async Task<IEnumerable<Season>> GetSeasonsAsync(GetSeasonsRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetSeasonsRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetSeasonsResponse>("Seasons/Get", request, cancellationToken);
             return response.Seasons ?? Enumerable.Empty<Season>();
         }
 
         public async Task<IEnumerable<Tour>> GetToursAsync(GetToursRequestDto requestDto, CancellationToken cancellationToken)
         {
-            var request = _mapper.Map<GetToursRequest>(requestDto);
+            var request = CustomersApiMapper.Map(requestDto);
             var response = await PostEntityAsync<GetToursResponse>("Tours/Get", request, cancellationToken);
             return response.Tours ?? Enumerable.Empty<Tour>();
         }

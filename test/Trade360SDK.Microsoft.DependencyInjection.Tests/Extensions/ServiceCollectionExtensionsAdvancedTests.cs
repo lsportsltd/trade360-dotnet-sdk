@@ -42,16 +42,6 @@ public class ServiceCollectionExtensionsAdvancedTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_ShouldRegisterAutoMapper()
-    {
-        var mockConfiguration = new Mock<IConfiguration>();
-        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
-
-        var serviceProvider = _services.BuildServiceProvider();
-        serviceProvider.GetService<AutoMapper.IMapper>().Should().NotBeNull();
-    }
-
-    [Fact]
     public void AddTrade360CustomerApiClient_WithNullConfiguration_ShouldThrowArgumentNullException()
     {
         var act = () => _services.AddTrade360CustomerApiClient(null);
@@ -102,26 +92,6 @@ public class ServiceCollectionExtensionsAdvancedTests
     }
 
     [Fact]
-    public void AddTrade360PrematchSnapshotClient_ShouldRegisterAutoMapper()
-    {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com";
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "testuser",
-                Password = "testpass"
-            };
-        });
-
-        _services.AddTrade360PrematchSnapshotClient();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        serviceProvider.GetService<AutoMapper.IMapper>().Should().NotBeNull();
-    }
-
-    [Fact]
     public void AddTrade360InplaySnapshotClient_ShouldRegisterServices()
     {
         _services.Configure<Trade360Settings>(options =>
@@ -161,26 +131,6 @@ public class ServiceCollectionExtensionsAdvancedTests
 
         var serviceDescriptors = _services.Where(s => s.ServiceType.Name.Contains("HttpClient")).ToList();
         serviceDescriptors.Should().NotBeEmpty();
-    }
-
-    [Fact]
-    public void AddTrade360InplaySnapshotClient_ShouldRegisterAutoMapper()
-    {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com";
-            options.InplayPackageCredentials = new PackageCredentials
-            {
-                PackageId = 456,
-                Username = "inplayuser",
-                Password = "inplaypass"
-            };
-        });
-
-        _services.AddTrade360InplaySnapshotClient();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        serviceProvider.GetService<AutoMapper.IMapper>().Should().NotBeNull();
     }
 
     [Fact]
@@ -453,6 +403,5 @@ public class ServiceCollectionExtensionsAdvancedTests
         serviceProvider.GetService<ICustomersApiFactory>().Should().NotBeNull();
         serviceProvider.GetService<ISnapshotPrematchApiClient>().Should().NotBeNull();
         serviceProvider.GetService<ISnapshotInplayApiClient>().Should().NotBeNull();
-        serviceProvider.GetService<AutoMapper.IMapper>().Should().NotBeNull();
     }
 }

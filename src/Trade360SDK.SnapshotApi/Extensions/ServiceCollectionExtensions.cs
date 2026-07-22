@@ -6,7 +6,6 @@ using Polly;
 using Polly.Extensions.Http;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.SnapshotApi.Interfaces;
-using Trade360SDK.SnapshotApi.Mapper;
 
 namespace Trade360SDK.SnapshotApi.Extensions
 {
@@ -25,7 +24,6 @@ namespace Trade360SDK.SnapshotApi.Extensions
 
             services.AddTransient<ISnapshotPrematchApiClient, SnapshotPrematchApiClient>();
 
-            services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
         }
@@ -44,7 +42,6 @@ namespace Trade360SDK.SnapshotApi.Extensions
 
             services.AddTransient<ISnapshotInplayApiClient, SnapshotInplayApiClient>();
 
-            services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
         }

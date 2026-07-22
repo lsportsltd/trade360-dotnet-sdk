@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Trade360SDK.Common.Configuration;
@@ -16,6 +17,12 @@ namespace Trade360SDK.CustomersApi.Http
 {
     public abstract class BaseHttpClient : IDisposable
     {
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+        {
+            // STM rejects explicit nulls for optional filters (e.g. LocationIds: null → "LocationId invalid").
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
         private readonly HttpClient _httpClient;
 
         private readonly int _packageId;
@@ -57,7 +64,7 @@ namespace Trade360SDK.CustomersApi.Http
             request.UserName = _username;
             request.Password = _password;
 
-            var requestJson = JsonSerializer.Serialize(request, request.GetType());
+            var requestJson = JsonSerializer.Serialize(request, request.GetType(), SerializerOptions);
             var content = new StringContent(
                 requestJson,
                 Encoding.UTF8,
@@ -152,7 +159,7 @@ namespace Trade360SDK.CustomersApi.Http
                 return string.Empty;
             }
 
-            var json = JsonSerializer.Serialize(request, request.GetType());
+            var json = JsonSerializer.Serialize(request, request.GetType(), SerializerOptions);
             var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
             var queryString = new StringBuilder();
 

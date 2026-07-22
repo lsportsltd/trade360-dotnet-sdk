@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using Trade360SDK.Common.Configuration;
@@ -18,9 +17,8 @@ namespace Trade360SDK.CustomersApi
 
         public IMetadataHttpClient CreateMetadataHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
-            var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new MetadataHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
+            return new MetadataHttpClient(httpClientFactory, baseUrl, packageCredentials);
         }
 
         public IPackageDistributionHttpClient CreatePackageDistributionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
@@ -31,9 +29,8 @@ namespace Trade360SDK.CustomersApi
 
         public ISubscriptionHttpClient CreateSubscriptionHttpClient(string? baseUrl, PackageCredentials? packageCredentials)
         {
-            var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-            return new SubscriptionHttpClient(httpClientFactory, baseUrl, packageCredentials, mapper);
+            return new SubscriptionHttpClient(httpClientFactory, baseUrl, packageCredentials);
         }
     }
 }

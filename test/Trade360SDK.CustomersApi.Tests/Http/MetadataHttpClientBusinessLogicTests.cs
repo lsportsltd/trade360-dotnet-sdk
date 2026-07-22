@@ -9,7 +9,6 @@ using Trade360SDK.CustomersApi;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.Common.Entities.Incidents;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -31,12 +30,10 @@ public class MetadataHttpClientBusinessLogicTests
 {
     private readonly MetadataHttpClient _client;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IMapper> _mockMapper;
 
     public MetadataHttpClientBusinessLogicTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockMapper = new Mock<IMapper>();
         
         var packageCredentials = new PackageCredentials
         {
@@ -51,7 +48,7 @@ public class MetadataHttpClientBusinessLogicTests
         };
 
         var httpClientFactory = new TestHttpClientFactory(httpClient);
-        _client = new MetadataHttpClient(httpClientFactory, "https://api.example.com/", packageCredentials, _mockMapper.Object);
+        _client = new MetadataHttpClient(httpClientFactory, "https://api.example.com/", packageCredentials);
     }
 
     [Fact]
@@ -108,9 +105,7 @@ public class MetadataHttpClientBusinessLogicTests
             }
         };
         var requestDto = new GetLeaguesRequestDto { SportIds = new List<int> { 1 }, LanguageId = 1 };
-        var mappedRequest = new GetLeaguesRequest();
 
-        _mockMapper.Setup(x => x.Map<GetLeaguesRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetLeaguesAsync(requestDto, CancellationToken.None);
@@ -118,7 +113,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
         result.First().Name.Should().Be("Premier League");
-        _mockMapper.Verify(x => x.Map<GetLeaguesRequest>(requestDto), Times.Once);
     }
 
     [Fact]
@@ -133,9 +127,7 @@ public class MetadataHttpClientBusinessLogicTests
             }
         };
         var requestDto = new GetMarketsRequestDto { SportIds = new List<int> { 1 }, LanguageId = 1 };
-        var mappedRequest = new GetMarketsRequest();
 
-        _mockMapper.Setup(x => x.Map<GetMarketsRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetMarketsAsync(requestDto, CancellationToken.None);
@@ -143,7 +135,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
         result.First().Name.Should().Be("1X2");
-        _mockMapper.Verify(x => x.Map<GetMarketsRequest>(requestDto), Times.Once);
     }
 
     [Fact]
@@ -165,13 +156,7 @@ public class MetadataHttpClientBusinessLogicTests
             }
         };
         var requestDto = new GetTranslationsRequestDto { Languages = new List<int> { 1 }, SportIds = new List<int> { 1 } };
-        var mappedRequest = new GetTranslationsRequest 
-        { 
-            Languages = new List<int> { 1 }, 
-            SportIds = new List<int> { 1 } 
-        };
 
-        _mockMapper.Setup(x => x.Map<GetTranslationsRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetTranslationsAsync(requestDto, CancellationToken.None);
@@ -180,7 +165,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Sports.Should().ContainKey("en");
         result.Leagues.Should().ContainKey("en");
         result.Markets.Should().ContainKey("en");
-        _mockMapper.Verify(x => x.Map<GetTranslationsRequest>(requestDto), Times.Once);
     }
 
     [Fact]
@@ -195,9 +179,7 @@ public class MetadataHttpClientBusinessLogicTests
             }
         };
         var requestDto = new GetCompetitionsRequestDto { SportIds = new List<int> { 1 }, LanguageId = 1 };
-        var mappedRequest = new GetCompetitionsRequest();
 
-        _mockMapper.Setup(x => x.Map<GetCompetitionsRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetCompetitionsAsync(requestDto, CancellationToken.None);
@@ -205,7 +187,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Should().NotBeNull();
         result.Competitions.Should().HaveCount(2);
         result.Competitions.First().Name.Should().Be("World Cup");
-        _mockMapper.Verify(x => x.Map<GetCompetitionsRequest>(requestDto), Times.Once);
     }
 
     [Fact]
@@ -220,9 +201,7 @@ public class MetadataHttpClientBusinessLogicTests
             }
         };
         var requestDto = new GetIncidentsRequestDto();
-        var mappedRequest = new GetIncidentsRequest();
 
-        _mockMapper.Setup(x => x.Map<GetIncidentsRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetIncidentsAsync(requestDto, CancellationToken.None);
@@ -230,7 +209,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
         result.First().IncidentName.Should().Be("Goal");
-        _mockMapper.Verify(x => x.Map<GetIncidentsRequest>(requestDto), Times.Once);
     }
 
     [Theory]
@@ -296,14 +274,7 @@ public class MetadataHttpClientBusinessLogicTests
             SportIds = new List<int> { 1, 2 },
             LeagueIds = new List<int> { 1, 2 }
         };
-        var mappedRequest = new GetTranslationsRequest 
-        { 
-            Languages = new List<int> { 1, 2 },
-            SportIds = new List<int> { 1, 2 },
-            LeagueIds = new List<int> { 1, 2 }
-        };
 
-        _mockMapper.Setup(x => x.Map<GetTranslationsRequest>(requestDto)).Returns(mappedRequest);
         SetupHttpResponse(expectedResponse);
 
         var result = await _client.GetTranslationsAsync(requestDto, CancellationToken.None);
@@ -311,7 +282,6 @@ public class MetadataHttpClientBusinessLogicTests
         result.Should().NotBeNull();
         result.Sports.Should().HaveCount(2);
         result.Leagues.Should().HaveCount(2);
-        _mockMapper.Verify(x => x.Map<GetTranslationsRequest>(requestDto), Times.Once);
     }
 
     [Fact]

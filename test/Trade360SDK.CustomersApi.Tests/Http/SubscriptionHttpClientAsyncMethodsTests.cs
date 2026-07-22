@@ -12,7 +12,6 @@ using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Requests;
 using Trade360SDK.CustomersApi.Entities.SubscriptionApi.Responses;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Responses;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -44,31 +43,15 @@ public class SubscriptionHttpClientAsyncMethodsTests
             Password = "test_password",
             PackageId = 123
         };
-
-        var mockMapper = new Mock<AutoMapper.IMapper>();
         
-        mockMapper.Setup(m => m.Map<GetFixtureScheduleRequest>(It.IsAny<GetFixtureScheduleRequestDto>()))
-            .Returns((GetFixtureScheduleRequestDto _) => new GetFixtureScheduleRequest());
             
-        mockMapper.Setup(m => m.Map<FixtureSubscriptionRequest>(It.IsAny<FixtureSubscriptionRequestDto>()))
-            .Returns((FixtureSubscriptionRequestDto _) => new FixtureSubscriptionRequest());
             
-        mockMapper.Setup(m => m.Map<LeagueSubscriptionRequest>(It.IsAny<LeagueSubscriptionRequestDto>()))
-            .Returns((LeagueSubscriptionRequestDto _) => new LeagueSubscriptionRequest());
             
-        mockMapper.Setup(m => m.Map<GetSubscriptionRequest>(It.IsAny<GetSubscriptionRequestDto>()))
-            .Returns((GetSubscriptionRequestDto _) => new GetSubscriptionRequest());
             
-        mockMapper.Setup(m => m.Map<CompetitionSubscriptionRequest>(It.IsAny<CompetitionSubscriptionRequestDto>()))
-            .Returns((CompetitionSubscriptionRequestDto _) => new CompetitionSubscriptionRequest());
             
-        mockMapper.Setup(m => m.Map<ChangeManualSuspensionRequest>(It.IsAny<ChangeManualSuspensionRequestDto>()))
-            .Returns((ChangeManualSuspensionRequestDto _) => new ChangeManualSuspensionRequest());
             
-        mockMapper.Setup(m => m.Map<GetFixtureMetadataRequest>(It.IsAny<GetFixtureMetadataRequestDto>()))
-            .Returns((GetFixtureMetadataRequestDto _) => new GetFixtureMetadataRequest());
         
-        _client = new SubscriptionHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials, mockMapper.Object);
+        _client = new SubscriptionHttpClient(mockHttpClientFactory.Object, settings.CustomersApiBaseUrl, packageCredentials);
     }
 
     [Fact]

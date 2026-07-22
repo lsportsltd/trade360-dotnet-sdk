@@ -141,62 +141,6 @@ public class ServiceCollectionExtensionsAdvancedBusinessLogicTests
     }
 
     [Fact]
-    public void AddTrade360CustomerApiClient_WithAutoMapperConfiguration_ShouldRegisterMappingProfile()
-    {
-        var mockConfiguration = new Mock<IConfiguration>();
-        _services.AddTrade360CustomerApiClient(mockConfiguration.Object);
-
-        var serviceProvider = _services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void AddTrade360PrematchSnapshotClient_WithAutoMapperConfiguration_ShouldRegisterMappingProfile()
-    {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
-            options.PrematchPackageCredentials = new PackageCredentials
-            {
-                PackageId = 123,
-                Username = "prematchuser",
-                Password = "prematchpass"
-            };
-        });
-
-        _services.AddTrade360PrematchSnapshotClient();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void AddTrade360InplaySnapshotClient_WithAutoMapperConfiguration_ShouldRegisterMappingProfile()
-    {
-        _services.Configure<Trade360Settings>(options =>
-        {
-            options.SnapshotApiBaseUrl = "https://snapshot.example.com/";
-            options.InplayPackageCredentials = new PackageCredentials
-            {
-                PackageId = 456,
-                Username = "inplayuser",
-                Password = "inplaypass"
-            };
-        });
-
-        _services.AddTrade360InplaySnapshotClient();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        var mapper = serviceProvider.GetService<AutoMapper.IMapper>();
-
-        mapper.Should().NotBeNull();
-    }
-
-    [Fact]
     public void AddTrade360CustomerApiClient_WithTransientLifetime_ShouldRegisterTransientServices()
     {
         var mockConfiguration = new Mock<IConfiguration>();

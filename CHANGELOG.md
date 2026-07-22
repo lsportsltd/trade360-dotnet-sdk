@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Removed AutoMapper** from `Trade360SDK.CustomersApi` and `Trade360SDK.SnapshotApi` (TRD-6227 / CVE-2026-32933 / GHSA-rvv3-g6hj-g44x). DTO→request mapping is now manual via `CustomersApiMapper` / `SnapshotApiMapper`. Packages: CustomersApi **1.3.1**, SnapshotApi **1.4.3**.
+
+### Changed
+
+- **`Market.Status`**: RMQ JSON field is `Status` on calculated market payloads (PRD-1516).
+
 ---
 
 ## [Release Version 2.5.7]

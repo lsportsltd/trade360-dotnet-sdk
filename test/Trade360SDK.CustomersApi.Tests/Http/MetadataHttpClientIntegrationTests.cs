@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -13,7 +12,6 @@ using State = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.State;
 using Venue = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Venue;
 using Trade360SDK.Common.Entities.Shared;
 using Trade360SDK.CustomersApi.Entities.Base;
-using Trade360SDK.CustomersApi.Mapper;
 using Sport = Trade360SDK.CustomersApi.Entities.MetadataApi.Responses.Sport;
 
 namespace Trade360SDK.CustomersApi.Tests;
@@ -22,7 +20,6 @@ public class MetadataHttpClientIntegrationTests
 {
     private readonly TestServer _server;
     private readonly HttpClient _httpClient;
-    private readonly IMapper _mapper;
     private readonly MetadataHttpClient _client;
 
     public MetadataHttpClientIntegrationTests()
@@ -34,12 +31,9 @@ public class MetadataHttpClientIntegrationTests
         _httpClient = _server.CreateClient();
         _httpClient.BaseAddress = new Uri("http://localhost");
 
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-        _mapper = config.CreateMapper();
-
         var httpClientFactory = new TestHttpClientFactory(_httpClient);
         var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
-        _client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mapper);
+        _client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials);
     }
 
     [Fact]
@@ -57,7 +51,7 @@ public class MetadataHttpClientIntegrationTests
         var httpClient = new HttpClient(messageHandler) { BaseAddress = new Uri("http://localhost") };
         var httpClientFactory = new TestHttpClientFactory(httpClient);
         var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
-        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mapper);
+        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials);
 
         // Act
         var result = await client.GetSportsAsync(CancellationToken.None);
@@ -87,7 +81,7 @@ public class MetadataHttpClientIntegrationTests
         var httpClient = new HttpClient(messageHandler) { BaseAddress = new Uri("http://localhost") };
         var httpClientFactory = new TestHttpClientFactory(httpClient);
         var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
-        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mapper);
+        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials);
 
         // Act
         var result = await client.GetCitiesAsync(new GetCitiesRequestDto { Filter = new CityFilterDto { StateIds = new[] { 10 } } }, CancellationToken.None);
@@ -119,7 +113,7 @@ public class MetadataHttpClientIntegrationTests
         var httpClient = new HttpClient(messageHandler) { BaseAddress = new Uri("http://localhost") };
         var httpClientFactory = new TestHttpClientFactory(httpClient);
         var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
-        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mapper);
+        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials);
 
         // Act
         var result = await client.GetStatesAsync(new GetStatesRequestDto { Filter = new StateFilterDto { CountryIds = new[] { 100 } } }, CancellationToken.None);
@@ -151,7 +145,7 @@ public class MetadataHttpClientIntegrationTests
         var httpClient = new HttpClient(messageHandler) { BaseAddress = new Uri("http://localhost") };
         var httpClientFactory = new TestHttpClientFactory(httpClient);
         var packageCredentials = new PackageCredentials { PackageId = 1, Username = "user", Password = "pass" };
-        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials, _mapper);
+        var client = new MetadataHttpClient(httpClientFactory, "http://localhost", packageCredentials);
 
         // Act
         var result = await client.GetVenuesAsync(new GetVenuesRequestDto { Filter = new VenueFilterDto { CityIds = new[] { 10 } } }, CancellationToken.None);

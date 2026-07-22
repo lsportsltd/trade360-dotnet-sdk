@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using AutoMapper;
+using System.Globalization;
+using System.Threading;
 using FluentAssertions;
 using System.Text.Json;
 using Trade360SDK.CustomersApi.Entities.MetadataApi.Requests;
@@ -11,14 +12,6 @@ namespace Trade360SDK.CustomersApi.Tests;
 
 public class MapperProfileTests
 {
-    private readonly IMapper _mapper;
-
-    public MapperProfileTests()
-    {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-        _mapper = config.CreateMapper();
-    }
-
     [Fact]
     public void Map_GetFixtureMetadataRequestDto_To_GetFixtureMetadataRequest_MapsDatesCorrectly()
     {
@@ -31,12 +24,37 @@ public class MapperProfileTests
             LeagueIds = new List<int> { 3 }
         };
 
-        var result = _mapper.Map<GetFixtureMetadataRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.FromDate.Should().Be("06/01/2024");
         result.ToDate.Should().Be("06/30/2024");
         result.SportIds.Should().BeEquivalentTo(new List<int> { 1 });
         result.LocationIds.Should().BeEquivalentTo(new List<int> { 2 });
         result.LeagueIds.Should().BeEquivalentTo(new List<int> { 3 });
+    }
+
+    [Fact]
+    public void Map_GetFixtureMetadataRequestDto_FormatsDatesWithInvariantCulture()
+    {
+        var previousCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            // de-DE would otherwise format MM/dd/yyyy differently (e.g. month names / separators).
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+
+            var dto = new GetFixtureMetadataRequestDto
+            {
+                FromDate = new DateTime(2024, 6, 1),
+                ToDate = new DateTime(2024, 6, 30)
+            };
+
+            var result = CustomersApiMapper.Map(dto);
+            result.FromDate.Should().Be("06/01/2024");
+            result.ToDate.Should().Be("06/30/2024");
+        }
+        finally
+        {
+            Thread.CurrentThread.CurrentCulture = previousCulture;
+        }
     }
 
     [Fact]
@@ -52,7 +70,7 @@ public class MapperProfileTests
             ParticipantIds = new List<int> { 7 }
         };
 
-        var result = _mapper.Map<GetTranslationsRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Languages.Should().BeEquivalentTo(new List<int> { 1, 2 });
         result.SportIds.Should().BeEquivalentTo(new List<int> { 3 });
         result.LocationIds.Should().BeEquivalentTo(new List<int> { 4 });
@@ -95,7 +113,7 @@ public class MapperProfileTests
             Filter = new CityFilterDto { StateIds = new[] { 123 } }
         };
 
-        var result = _mapper.Map<GetCitiesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter?.StateIds.Should().Contain(123);
     }
 
@@ -107,7 +125,7 @@ public class MapperProfileTests
             Filter = null
         };
 
-        var result = _mapper.Map<GetCitiesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter.Should().BeNull();
     }
 
@@ -119,7 +137,7 @@ public class MapperProfileTests
             Filter = new StateFilterDto { CountryIds = new[] { 456 } }
         };
 
-        var result = _mapper.Map<GetStatesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter?.CountryIds.Should().Contain(456);
     }
 
@@ -131,7 +149,7 @@ public class MapperProfileTests
             Filter = null
         };
 
-        var result = _mapper.Map<GetStatesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter.Should().BeNull();
     }
 
@@ -143,7 +161,7 @@ public class MapperProfileTests
             Filter = new VenueFilterDto { CityIds = new[] { 789 } }
         };
 
-        var result = _mapper.Map<GetVenuesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter?.CityIds.Should().Contain(789);
     }
 
@@ -155,7 +173,7 @@ public class MapperProfileTests
             Filter = null
         };
 
-        var result = _mapper.Map<GetVenuesRequest>(dto);
+        var result = CustomersApiMapper.Map(dto);
         result.Filter.Should().BeNull();
     }
 
@@ -220,8 +238,8 @@ public class MapperProfileTests
             PageSize = 100
         };
 
-        var result = _mapper.Map<GetParticipantsRequest>(dto);
-        
+        var result = CustomersApiMapper.Map(dto);
+
         result.Filter.Should().NotBeNull();
         result.Filter!.Ids.Should().BeEquivalentTo(new[] { 1, 2, 3 });
         result.Filter.SportIds.Should().BeEquivalentTo(new[] { 6046 });
@@ -244,8 +262,8 @@ public class MapperProfileTests
             PageSize = 50
         };
 
-        var result = _mapper.Map<GetParticipantsRequest>(dto);
-        
+        var result = CustomersApiMapper.Map(dto);
+
         result.Filter.Should().BeNull();
         result.Page.Should().Be(1);
         result.PageSize.Should().Be(50);
@@ -260,13 +278,13 @@ public class MapperProfileTests
             SportIds = new[] { 6046, 6047 },
             LocationIds = new[] { 142, 143 },
             Name = "Team Name",
-            Gender = 2, // Women
-            AgeCategory = 1, // Youth
-            Type = 3 // Individual
+            Gender = 2,
+            AgeCategory = 1,
+            Type = 3
         };
 
-        var result = _mapper.Map<ParticipantFilter>(dto);
-        
+        var result = CustomersApiMapper.Map(dto);
+
         result.Ids.Should().BeEquivalentTo(new[] { 10, 20 });
         result.SportIds.Should().BeEquivalentTo(new[] { 6046, 6047 });
         result.LocationIds.Should().BeEquivalentTo(new[] { 142, 143 });
@@ -287,9 +305,9 @@ public class MapperProfileTests
                 SportIds = new[] { 6046 },
                 LocationIds = new[] { 142 },
                 Name = "Test Team",
-                Gender = 3, // Mix
-                AgeCategory = 2, // Reserves
-                Type = 7 // Doubles
+                Gender = 3,
+                AgeCategory = 2,
+                Type = 7
             },
             Page = 3,
             PageSize = 25
@@ -297,7 +315,7 @@ public class MapperProfileTests
 
         var json = JsonSerializer.Serialize(dto);
         var deserialized = JsonSerializer.Deserialize<GetParticipantsRequestDto>(json);
-        
+
         deserialized.Should().NotBeNull();
         deserialized!.Filter.Should().NotBeNull();
         deserialized.Filter!.Ids.Should().BeEquivalentTo(new[] { 1, 2 });
@@ -310,4 +328,4 @@ public class MapperProfileTests
         deserialized.Page.Should().Be(3);
         deserialized.PageSize.Should().Be(25);
     }
-} 
+}

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <PackageVersion>1.4.2</PackageVersion>
+    <PackageVersion>1.4.3</PackageVersion>
     <PackageReleaseNotes>
       - 1.1.0 Added GetOutrightLeagueEvents API method and GetOutrightLeagueEventsResponse entity to support outright league events retrieval
 	  - 1.2.0 Added endDate property to OutrightFixture entity
@@ -11,6 +11,7 @@
 	  - 1.3.1 Added support of inplay outright league snapshot endpoints
       - 1.4.1 Added StartDate to OutrightLeagueFixtureSnapshotResponse.
       - 1.4.2 Made OutrightLeagueFixtureSnapshotResponse.EndDate nullable to support null payloads.
+      - 1.4.3 Removed AutoMapper dependency (CVE-2026-32933 / GHSA-rvv3-g6hj-g44x); DTO mapping is now manual.
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -21,8 +22,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />

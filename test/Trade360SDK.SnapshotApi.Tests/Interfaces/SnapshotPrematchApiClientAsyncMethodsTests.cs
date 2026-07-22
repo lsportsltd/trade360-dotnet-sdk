@@ -12,14 +12,12 @@ using Trade360SDK.SnapshotApi.Entities.Responses;
 using Trade360SDK.Common.Entities.Fixtures;
 using Trade360SDK.Common.Entities.Markets;
 using Trade360SDK.Common.Entities.Livescore;
-using AutoMapper;
 
 namespace Trade360SDK.SnapshotApi.Tests;
 
 public class SnapshotPrematchApiClientAsyncMethodsTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly SnapshotPrematchApiClient _client;
 
     public SnapshotPrematchApiClientAsyncMethodsTests()
@@ -27,7 +25,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         var mockHttpClientFactory = new Mock<IHttpClientFactory>();
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
-        _mockMapper = new Mock<IMapper>();
         
         var settings = new Trade360Settings
         {
@@ -49,7 +46,7 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
 
         mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-        _client = new SnapshotPrematchApiClient(mockHttpClientFactory.Object, mockOptions.Object, _mockMapper.Object);
+        _client = new SnapshotPrematchApiClient(mockHttpClientFactory.Object, mockOptions.Object);
     }
 
     [Fact]
@@ -62,7 +59,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedFixtures);
 
@@ -83,7 +79,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetMarketRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedMarkets);
 
@@ -104,7 +99,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetMarketRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedEvents);
 
@@ -123,7 +117,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
     {
         var errorFixtures = new FixtureEvent[0];
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(errorFixtures, statusCode);
 
@@ -140,7 +133,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         cancellationTokenSource.Cancel();
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         _mockHttpMessageHandler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -163,7 +155,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
             .ToArray();
 
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetLivescoreRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(largeLivescoreSet);
 
@@ -178,7 +169,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
     public async Task GetOutrightLeagues_WithNetworkTimeout_ShouldHandleTimeout()
     {
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         _mockHttpMessageHandler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -198,7 +188,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
     {
         var emptyFixtures = new FixtureEvent[0];
         var baseRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(It.IsAny<GetFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(emptyFixtures);
 
@@ -217,7 +206,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseOutrightRequest();
-        _mockMapper.Setup(m => m.Map<BaseOutrightRequest>(It.IsAny<GetOutrightMarketsRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedMarkets);
 
@@ -255,7 +243,6 @@ public class SnapshotPrematchApiClientAsyncMethodsTests
         };
 
         var baseRequest = new BaseOutrightRequest();
-        _mockMapper.Setup(m => m.Map<BaseOutrightRequest>(It.IsAny<GetOutrightFixturesRequestDto>())).Returns(baseRequest);
 
         SetupHttpResponse(expectedEvents);
 

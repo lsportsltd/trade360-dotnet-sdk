@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Trade360SDK.Common.Configuration;
 using Trade360SDK.CustomersApi.Http;
-using AutoMapper;
 
 namespace Trade360SDK.CustomersApi.Tests;
 
@@ -14,9 +13,8 @@ public class MetadataHttpClientActualTests
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", credentials);
 
         act.Should().NotThrow();
     }
@@ -27,9 +25,8 @@ public class MetadataHttpClientActualTests
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(new HttpClient());
         var credentials = new PackageCredentials { Username = "test", Password = "test", PackageId = 123 };
-        var mockMapper = new Mock<IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, "https://secure-api.test.com/v1", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, "https://secure-api.test.com/v1", credentials);
 
         act.Should().NotThrow();
     }
@@ -45,9 +42,8 @@ public class MetadataHttpClientActualTests
             Password = "P@ssw0rd!123", 
             PackageId = 999 
         };
-        var mockMapper = new Mock<IMapper>();
 
-        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", credentials, mockMapper.Object);
+        var act = () => new MetadataHttpClient(mockFactory.Object, "https://api.test.com", credentials);
 
         act.Should().NotThrow();
     }

@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -16,13 +15,11 @@ public class SnapshotInplayApiClientTests
 {
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
     private readonly Mock<IOptions<Trade360Settings>> _mockOptions;
-    private readonly Mock<IMapper> _mockMapper;
 
     public SnapshotInplayApiClientTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
         _mockOptions = new Mock<IOptions<Trade360Settings>>();
-        _mockMapper = new Mock<IMapper>();
 
         var settings = new Trade360Settings
         {
@@ -44,7 +41,7 @@ public class SnapshotInplayApiClientTests
     [Fact]
     public void Constructor_ShouldInitializeCorrectly()
     {
-        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object);
 
         client.Should().NotBeNull();
         _mockHttpClientFactory.Verify(f => f.CreateClient(It.IsAny<string>()), Times.AtLeastOnce);
@@ -66,7 +63,7 @@ public class SnapshotInplayApiClientTests
         var mockOptions = new Mock<IOptions<Trade360Settings>>();
         mockOptions.Setup(o => o.Value).Returns(settings);
 
-        Action act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, mockOptions.Object, _mockMapper.Object);
+        Action act = () => new SnapshotInplayApiClient(_mockHttpClientFactory.Object, mockOptions.Object);
 
         act.Should().Throw<InvalidOperationException>();
     }
@@ -74,10 +71,8 @@ public class SnapshotInplayApiClientTests
     [Fact]
     public async Task GetFixtures_ShouldMapRequestAndCallPostEntityAsync()
     {
-        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object);
         var requestDto = new GetFixturesRequestDto();
-        var mappedRequest = new BaseStandardRequest();
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(requestDto)).Returns(mappedRequest);
 
         try
         {
@@ -88,17 +83,14 @@ public class SnapshotInplayApiClientTests
             // Devin: Expected exception in test - verifying method call behavior only
         }
 
-        _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
     }
 
     [Fact]
     public async Task GetLivescore_ShouldMapRequestAndCallPostEntityAsync()
     {
-        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object);
         var requestDto = new GetLivescoreRequestDto();
-        var mappedRequest = new BaseStandardRequest();
 
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(requestDto)).Returns(mappedRequest);
 
         try
         {
@@ -109,17 +101,14 @@ public class SnapshotInplayApiClientTests
             // Devin: Expected exception in test - verifying method call behavior only
         }
 
-        _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
     }
 
     [Fact]
     public async Task GetFixtureMarkets_ShouldMapRequestAndCallPostEntityAsync()
     {
-        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object);
         var requestDto = new GetMarketRequestDto();
-        var mappedRequest = new BaseStandardRequest();
 
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(requestDto)).Returns(mappedRequest);
 
         try
         {
@@ -130,17 +119,14 @@ public class SnapshotInplayApiClientTests
             // Devin: Expected exception in test - verifying method call behavior only
         }
 
-        _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
     }
 
     [Fact]
     public async Task GetEvents_ShouldMapRequestAndCallPostEntityAsync()
     {
-        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object, _mockMapper.Object);
+        var client = new SnapshotInplayApiClient(_mockHttpClientFactory.Object, _mockOptions.Object);
         var requestDto = new GetMarketRequestDto();
-        var mappedRequest = new BaseStandardRequest();
 
-        _mockMapper.Setup(m => m.Map<BaseStandardRequest>(requestDto)).Returns(mappedRequest);
 
         try
         {
@@ -151,6 +137,5 @@ public class SnapshotInplayApiClientTests
             // Devin: Expected exception in test - verifying method call behavior only
         }
 
-        _mockMapper.Verify(m => m.Map<BaseStandardRequest>(requestDto), Times.Once);
     }
 }

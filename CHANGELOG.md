@@ -9,31 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Release Version 2.5.8]
-
-### [Trade360SDK.Common.Entities - v2.3.9]
-
-#### Changed
-
-- **`PredictionData` split**: replaced unified `PredictionData` with `MarketPredictionData` (volume only) on `Market` and `ProviderMarket`, and `BetPredictionData` (volume, liquidity, startDate, endDate) on `BaseBet` (PRD-1516).
-
-### Backward Compatibility (v2.5.8)
-
-All changes are backward compatible. JSON field `PredictionData` is unchanged; market entities ignore extra bet-only fields, and bet entities deserialize all fields as before.
-
----
-
 ## [Release Version 2.5.7]
 
 ### [Trade360SDK.Common.Entities - v2.3.8]
 
 #### Added
 
-- **`PredictionData`**: optional `Volume`, `Liquidity`, `StartDate`, and `EndDate` on `Market`, `ProviderMarket`, and `BaseBet` entities (PRD-1516).
+- **`MarketPredictionData`**: optional `Volume` on `Market` and `ProviderMarket` (JSON field `PredictionData`).
+- **`BetPredictionData`**: optional `Volume`, `Liquidity`, `StartDate`, and `EndDate` on `BaseBet` (JSON field `PredictionData`) (PRD-1516).
 
 ### Backward Compatibility (v2.5.7)
 
-All changes are backward compatible. `PredictionData` is optional and absent when not present in the payload.
+All changes are backward compatible. JSON field `PredictionData` is unchanged; market entities ignore extra bet-only fields, and bet entities deserialize all fields as before.
 
 ---
 

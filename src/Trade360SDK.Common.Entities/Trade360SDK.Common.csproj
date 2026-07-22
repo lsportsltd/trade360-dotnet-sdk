@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.3.9</PackageVersion>
+		<PackageVersion>2.3.8</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).
@@ -25,8 +25,7 @@
 			- 2.3.5 Added optional MarketId customer message header to TransportMessageHeaders.
 			- 2.3.6 Added MarketStatus enum and Status property on Market entity (PRD-1516).
 			- 2.3.7 Added 13 MMA/fight-outcome and positional StatusDescription enum values (IDs 60-72) (TRGN-3981).
-			- 2.3.8 Added PredictionData on Market, ProviderMarket, and BaseBet entities (PRD-1516).
-			- 2.3.9 Split PredictionData into MarketPredictionData (volume only) and BetPredictionData (all fields) (PRD-1516).
+			- 2.3.8 Added MarketPredictionData (volume only) on Market and ProviderMarket, and BetPredictionData (volume, liquidity, startDate, endDate) on BaseBet (PRD-1516).
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

@@ -18,5 +18,7 @@ namespace Trade360SDK.Common.Entities.Markets
 
         [JsonPropertyName("Status")]
         public MarketStatus Status { get; set; }
+
+        public MarketPredictionData? PredictionData { get; set; }
     }
 }

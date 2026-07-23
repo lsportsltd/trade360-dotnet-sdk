@@ -199,6 +199,21 @@ namespace Trade360SDK.Common.Entities.Tests.Entities.Fixtures
         }
 
         [Fact]
+        public void Fixture_SetRulesExtraData_ShouldPreserveRulesValue()
+        {
+            const string rulesText = "Match consists of two halves of 45 minutes each.";
+            var fixture = new Fixture
+            {
+                FixtureExtraData = new List<NameValuePair>
+                {
+                    new NameValuePair { Name = "Rules", Value = rulesText }
+                }
+            };
+
+            fixture.FixtureExtraData.Should().ContainSingle(x => x.Name == "Rules" && x.Value == rulesText);
+        }
+
+        [Fact]
         public void Fixture_SetExternalFixtureId_ShouldSetValue()
         {
             // Arrange

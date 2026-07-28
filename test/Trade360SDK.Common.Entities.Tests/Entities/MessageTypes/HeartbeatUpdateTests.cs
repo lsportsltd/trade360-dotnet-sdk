@@ -15,11 +15,11 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         };
 
         [Fact]
-        public void Problem_ShouldDefaultToZero()
+        public void FeedInterrupted_ShouldDefaultToZero()
         {
             var update = new HeartbeatUpdate();
 
-            update.Problem.Should().Be(0);
+            update.FeedInterrupted.Should().Be(0);
         }
 
         [Fact]
@@ -27,10 +27,10 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         {
             var update = new HeartbeatUpdate
             {
-                Problem = 1
+                FeedInterrupted = 1
             };
 
-            update.Problem.Should().Be(1);
+            update.FeedInterrupted.Should().Be(1);
         }
 
         [Fact]
@@ -43,36 +43,36 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         }
 
         [Fact]
-        public void JsonDeserialization_WithProblemInBody_ShouldPopulateProblem()
+        public void JsonDeserialization_WithFeedInterruptedInBody_ShouldPopulate()
         {
-            const string body = "{\"Problem\":1}";
+            const string body = "{\"FeedInterrupted\":1}";
 
             var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
 
             result.Should().NotBeNull();
-            result!.Problem.Should().Be(1);
+            result!.FeedInterrupted.Should().Be(1);
         }
 
         [Fact]
-        public void JsonDeserialization_WithoutProblemInBody_ShouldDefaultToZero()
+        public void JsonDeserialization_WithoutFeedInterruptedInBody_ShouldDefaultToZero()
         {
             const string body = "{}";
 
             var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
 
             result.Should().NotBeNull();
-            result!.Problem.Should().Be(0);
+            result!.FeedInterrupted.Should().Be(0);
         }
 
         [Fact]
-        public void JsonDeserialization_WithLowercaseProblemInBody_ShouldPopulateProblem()
+        public void JsonDeserialization_WithCamelCaseFeedInterrupted_ShouldPopulate()
         {
-            const string body = "{\"problem\":1}";
+            const string body = "{\"feedInterrupted\":1}";
 
             var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
 
             result.Should().NotBeNull();
-            result!.Problem.Should().Be(1);
+            result!.FeedInterrupted.Should().Be(1);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Trade360SDK.Common.Attributes;
+using Trade360SDK.Common.Attributes;
 
 namespace Trade360SDK.Common.Entities.MessageTypes
 {
@@ -6,9 +6,9 @@ namespace Trade360SDK.Common.Entities.MessageTypes
     public class HeartbeatUpdate : MessageUpdate
     {
         /// <summary>
-        /// Feed health signal. 0 = no problem (default), non-zero = problem detected upstream.
+        /// Feed interruption signal. 0 = normal (default), non-zero = feed interrupted upstream.
         /// Signal only — does not trigger auto-suspend or recovery.
         /// </summary>
-        public int Problem { get; set; }
+        public int FeedInterrupted { get; set; }
     }
 }

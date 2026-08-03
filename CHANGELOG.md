@@ -23,11 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Added
 
-- **`HeartbeatUpdate.FeedInterrupted`**: optional feed interruption signal on type-32 heartbeat body (`0` = normal, non-zero = interrupted). Signal only — does not trigger auto-suspend or recovery (TRGN-3934).
+- **`HeartbeatUpdate.FeedInterrupted`**: optional feed interruption domains on type-32 heartbeat body. Healthy or absent is an empty `int[]`; interrupted carries domain values such as `[1]` (Markets). Signal only — does not trigger auto-suspend or recovery (TRGN-3934).
 
 ### Backward Compatibility (v2.5.8)
 
-All changes are backward compatible. `FeedInterrupted` is optional and defaults to `0` when absent from the payload.
+All changes are backward compatible. `FeedInterrupted` is optional and defaults to an empty array when absent from the payload.
 
 ---
 

@@ -10,7 +10,7 @@ namespace Trade360SDK.Common.Entities.MessageTypes
         /// Phase 1: <c>[1]</c> = Markets (<see cref="FeedInterruptedDomainEnum.Markets"/>).
         /// Signal only — does not trigger auto-suspend or recovery.
         /// </summary>
-        public int[] FeedInterrupted { get; set; } = [];
+        public int[] FeedInterrupted { get; set; } = System.Array.Empty<int>();
     }
 
     public enum FeedInterruptedDomainEnum

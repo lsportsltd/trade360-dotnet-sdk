@@ -15,11 +15,11 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         };
 
         [Fact]
-        public void FeedInterrupted_ShouldDefaultToZero()
+        public void FeedInterrupted_ShouldDefaultToEmptyArray()
         {
             var update = new HeartbeatUpdate();
 
-            update.FeedInterrupted.Should().Be(0);
+            update.FeedInterrupted.Should().BeEmpty();
         }
 
         [Fact]
@@ -27,10 +27,10 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         {
             var update = new HeartbeatUpdate
             {
-                FeedInterrupted = 1
+                FeedInterrupted = [(int)FeedInterruptedDomainEnum.Markets]
             };
 
-            update.FeedInterrupted.Should().Be(1);
+            update.FeedInterrupted.Should().Equal(1);
         }
 
         [Fact]
@@ -43,36 +43,25 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         }
 
         [Fact]
-        public void JsonDeserialization_WithFeedInterruptedInBody_ShouldPopulate()
+        public void JsonDeserialization_WithFeedInterruptedArrayInBody_ShouldPopulate()
         {
-            const string body = "{\"FeedInterrupted\":1}";
+            const string body = "{\"FeedInterrupted\":[1]}";
 
             var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
 
             result.Should().NotBeNull();
-            result!.FeedInterrupted.Should().Be(1);
+            result!.FeedInterrupted.Should().Equal(1);
         }
 
         [Fact]
-        public void JsonDeserialization_WithoutFeedInterruptedInBody_ShouldDefaultToZero()
+        public void JsonDeserialization_WithoutFeedInterruptedInBody_ShouldDefaultToEmpty()
         {
             const string body = "{}";
 
             var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
 
             result.Should().NotBeNull();
-            result!.FeedInterrupted.Should().Be(0);
-        }
-
-        [Fact]
-        public void JsonDeserialization_WithCamelCaseFeedInterrupted_ShouldPopulate()
-        {
-            const string body = "{\"feedInterrupted\":1}";
-
-            var result = JsonSerializer.Deserialize<HeartbeatUpdate>(body, FeedJsonOptions);
-
-            result.Should().NotBeNull();
-            result!.FeedInterrupted.Should().Be(1);
+            result!.FeedInterrupted.Should().BeEmpty();
         }
     }
 }

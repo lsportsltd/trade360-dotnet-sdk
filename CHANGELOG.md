@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.8]
+
+### [Trade360SDK.Common.Entities - v2.3.9]
+
+#### Added
+
+- **`HeartbeatUpdate.FeedInterrupted`**: optional feed interruption signal on type-32 heartbeat body (`0` = normal, non-zero = interrupted). Signal only — does not trigger auto-suspend or recovery (TRGN-3934).
+
+### Backward Compatibility (v2.5.8)
+
+All changes are backward compatible. `FeedInterrupted` is optional and defaults to `0` when absent from the payload.
+
+---
+
 ## [Release Version 2.5.7]
 
 ### [Trade360SDK.Common.Entities - v2.3.8]

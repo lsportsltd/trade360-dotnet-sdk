@@ -9,7 +9,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Prematch
         public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, HeartbeatUpdate? entity)
         {
             Console.WriteLine(
-                $"[FIH] HeartbeatUpdate PreMatch: FeedInterruptedDomains=[{string.Join(',', entity?.FeedInterrupted ?? [])}] (empty=normal)");
+                $"[FIH] HeartbeatUpdate PreMatch: FeedInterruptedDomains=[{string.Join(',', entity?.FeedInterrupted ?? Array.Empty<int>())}] (empty=normal)");
             return Task.CompletedTask;
         }
     }

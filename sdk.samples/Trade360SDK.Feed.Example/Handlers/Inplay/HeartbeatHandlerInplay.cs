@@ -9,7 +9,7 @@ namespace Trade360SDK.Feed.Example.Handlers.Inplay
         public Task ProcessAsync(TransportMessageHeaders? transportMessageHeaders, MessageHeader? header, HeartbeatUpdate? entity)
         {
             Console.WriteLine(
-                $"[FIH] HeartbeatUpdate InPlay: FeedInterruptedDomains=[{string.Join(',', entity?.FeedInterrupted ?? [])}] (empty=normal)");
+                $"[FIH] HeartbeatUpdate InPlay: FeedInterruptedDomains=[{string.Join(',', entity?.FeedInterrupted ?? Array.Empty<int>())}] (empty=normal)");
             return Task.CompletedTask;
         }
     }

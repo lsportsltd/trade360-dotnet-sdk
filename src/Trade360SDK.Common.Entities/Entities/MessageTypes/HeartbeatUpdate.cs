@@ -1,4 +1,4 @@
-using Trade360SDK.Common.Attributes;
+﻿using Trade360SDK.Common.Attributes;
 
 namespace Trade360SDK.Common.Entities.MessageTypes
 {

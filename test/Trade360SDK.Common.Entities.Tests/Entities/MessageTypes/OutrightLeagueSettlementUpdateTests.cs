@@ -88,6 +88,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
                             ""Events"": [
                                 {
                                     ""FixtureId"": 24603148,
+                                    ""FixtureName"": ""Premier League 2023/2024 Outright Winner"",
                                     ""Markets"": [
                                         {
                                             ""Id"": 274,
@@ -152,6 +153,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
             // Market event level assertions
             var marketEvent = eventsWrapper.Events!.First();
             marketEvent.FixtureId.Should().Be(24603148);
+            marketEvent.FixtureName.Should().Be("Premier League 2023/2024 Outright Winner");
             marketEvent.Markets.Should().NotBeNull();
             marketEvent.Markets.Should().HaveCount(1);
             

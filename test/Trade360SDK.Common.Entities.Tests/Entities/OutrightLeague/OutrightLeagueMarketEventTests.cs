@@ -13,9 +13,11 @@ namespace Trade360SDK.Common.Tests
             var evt = new OutrightLeagueMarketEvent
             {
                 FixtureId = 123,
+                FixtureName = "Premier League 2023/2024 Outright Winner",
                 Markets = markets
             };
             Assert.Equal(123, evt.FixtureId);
+            Assert.Equal("Premier League 2023/2024 Outright Winner", evt.FixtureName);
             Assert.Equal(markets, evt.Markets);
         }
 
@@ -24,6 +26,7 @@ namespace Trade360SDK.Common.Tests
         {
             var evt = new OutrightLeagueMarketEvent();
             Assert.Equal(0, evt.FixtureId); // default int
+            Assert.Null(evt.FixtureName);
             Assert.Null(evt.Markets);
         }
     }

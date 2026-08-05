@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.9]
+
+### [Trade360SDK.Common.Entities - v2.3.10]
+
+#### Added
+
+- **`OutrightLeagueMarketEvent.FixtureName`**: optional fixture name on nested events in OutrightLeagueMarketUpdate (type 40) and OutrightLeagueSettlementUpdate (type 43). Omitted when absent from the payload (TRGN-1739).
+
+### Backward Compatibility (v2.5.9)
+
+All changes are backward compatible. `FixtureName` is optional and remains `null` when absent from the payload.
+
+---
+
 ## [Release Version 2.5.8]
 
 ### [Trade360SDK.Common.Entities - v2.3.9]

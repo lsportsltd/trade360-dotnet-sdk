@@ -57,6 +57,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
 
             var marketEvent = season.Events!.Single();
             marketEvent.FixtureId.Should().Be(26721036);
+            marketEvent.FixtureName.Should().Be("Premier League 2023/2024 Outright Winner");
             marketEvent.Markets.Should().HaveCount(1);
 
             var market = marketEvent.Markets!.Single();

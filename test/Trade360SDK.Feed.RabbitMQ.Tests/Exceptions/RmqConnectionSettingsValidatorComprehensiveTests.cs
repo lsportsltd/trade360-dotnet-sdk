@@ -386,9 +386,7 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
-    [InlineData(15)]
-    [InlineData(10)]
-    [InlineData(5)]
+    [InlineData(4)]
     [InlineData(0)]
     [InlineData(-1)]
     public void Validate_WithInvalidNetworkRecoveryInterval_ShouldThrowArgumentException(int invalidInterval)
@@ -408,7 +406,7 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
         var act = () => RmqConnectionSettingsValidator.Validate(settings);
 
         act.Should().Throw<ArgumentException>()
-           .WithMessage("NetworkRecoveryInterval must be a positive integer.*")
+           .WithMessage("NetworkRecoveryInterval must be a positive integer - Larger than or equal to 5.*")
            .And.ParamName.Should().Be("NetworkRecoveryInterval");
     }
 
@@ -486,6 +484,8 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
+    [InlineData(5)]
+    [InlineData(10)]
     [InlineData(16)]
     [InlineData(20)]
     [InlineData(30)]

@@ -14,7 +14,7 @@
         public bool AutomaticRecoveryEnabled { get; set; } = true; // Default true;
         public bool AutoAck { get; set; } = true; // Default true;
         public int RequestedHeartbeatSeconds { get; set; } = 30; // Default 30 seconds
-        public int NetworkRecoveryInterval { get; set; } = 30; // Default 30 seconds
+        public int NetworkRecoveryInterval { get; set; } = 5; // Default 5 seconds
         public bool SslEnabled { get; set; }
     }
 

@@ -34,8 +34,8 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
             if (settings.RequestedHeartbeatSeconds <= 10)
                 throw new ArgumentException("RequestedHeartbeatSeconds must be a positive integer - Larger then 10.", nameof(settings.RequestedHeartbeatSeconds));
 
-            if (settings.NetworkRecoveryInterval <= 15)
-                throw new ArgumentException("NetworkRecoveryInterval must be a positive integer.", nameof(settings.NetworkRecoveryInterval));
+            if (settings.NetworkRecoveryInterval < 5)
+                throw new ArgumentException("NetworkRecoveryInterval must be a positive integer - Larger than or equal to 5.", nameof(settings.NetworkRecoveryInterval));
 
             if (!string.IsNullOrWhiteSpace(settings.CustomQueueName) && settings.CustomQueueName.Trim().Length > RabbitMqFeed.ConsumeQueueNameMaxLength)
                 throw new ArgumentException(

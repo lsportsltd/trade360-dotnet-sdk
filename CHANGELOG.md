@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **`Market.Status`**: RMQ JSON field is `Status` on calculated market payloads (PRD-1516).
-- **`NetworkRecoveryInterval`**: default and sample config lowered from 30s to 5s; minimum allowed value is now 5 (was 16). Faster RabbitMQ network recovery after disconnects (TRGN-4200).
+- **`NetworkRecoveryInterval`**: removed SDK default (must be set in configuration); sample config set to 5s; minimum allowed value is now 5 (was 16). Faster RabbitMQ network recovery after disconnects (TRGN-4200).
 
 ---
 

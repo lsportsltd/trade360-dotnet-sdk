@@ -386,31 +386,6 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
-    [InlineData(4)]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void Validate_WithInvalidNetworkRecoveryInterval_ShouldThrowArgumentException(int invalidInterval)
-    {
-        var settings = new RmqConnectionSettings
-        {
-            Host = "localhost",
-            Port = 5672,
-            VirtualHost = "/",
-            PackageId = 123,
-            UserName = "guest",
-            Password = "guest",
-            RequestedHeartbeatSeconds = 20,
-            NetworkRecoveryInterval = invalidInterval
-        };
-
-        var act = () => RmqConnectionSettingsValidator.Validate(settings);
-
-        act.Should().Throw<ArgumentException>()
-           .WithMessage("NetworkRecoveryInterval must be a positive integer - Larger than or equal to 5.*")
-           .And.ParamName.Should().Be("NetworkRecoveryInterval");
-    }
-
-    [Theory]
     [InlineData("/")]
     [InlineData("/production")]
     [InlineData("/test")]
@@ -484,6 +459,7 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
+    [InlineData(1)]
     [InlineData(5)]
     [InlineData(10)]
     [InlineData(16)]

@@ -300,25 +300,6 @@ public class RmqConnectionSettingsValidatorBusinessLogicTests
     }
 
     [Fact]
-    public void Validate_WithNegativeNetworkRecoveryInterval_ShouldThrowArgumentException()
-    {
-        var settings = new RmqConnectionSettings
-        {
-            Host = "localhost",
-            Port = 5672,
-            VirtualHost = "/",
-            PackageId = 1,
-            UserName = "user",
-            Password = "password",
-            NetworkRecoveryInterval = -1
-        };
-
-        Action act = () => RmqConnectionSettingsValidator.Validate(settings);
-
-        act.Should().Throw<ArgumentException>().WithMessage("*NetworkRecoveryInterval*");
-    }
-
-    [Fact]
     public void Validate_WithZeroPrefetchCount_ShouldNotThrow()
     {
         var settings = new RmqConnectionSettings

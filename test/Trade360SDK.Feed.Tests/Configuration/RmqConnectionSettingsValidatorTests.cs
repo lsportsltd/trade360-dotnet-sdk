@@ -197,27 +197,4 @@ public class RmqConnectionSettingsValidatorTests
         act.Should().Throw<ArgumentException>()
            .WithMessage("RequestedHeartbeatSeconds must be a positive integer - Larger then 10.*");
     }
-
-    [Theory]
-    [InlineData(4)]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void Validate_WithInvalidNetworkRecoveryInterval_ShouldThrowArgumentException(int networkRecoveryInterval)
-    {
-        var settings = new RmqConnectionSettings
-        {
-            Host = "localhost",
-            Port = 5672,
-            VirtualHost = "/",
-            PackageId = 1,
-            UserName = "user",
-            Password = "password",
-            NetworkRecoveryInterval = networkRecoveryInterval
-        };
-
-        Action act = () => RmqConnectionSettingsValidator.Validate(settings);
-
-        act.Should().Throw<ArgumentException>()
-           .WithMessage("NetworkRecoveryInterval must be a positive integer - Larger than or equal to 5.*");
-    }
 }

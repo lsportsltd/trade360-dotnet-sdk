@@ -14,7 +14,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **`Market.Status`**: RMQ JSON field is `Status` on calculated market payloads (PRD-1516).
+
+---
+
+## [Release Version 2.5.10]
+
+### [Trade360SDK.Feed - v2.1.1]
+
+#### Changed
+
+- **`NetworkRecoveryInterval`**: removed SDK property default; value comes from configuration. Sample config remains 30s (TRGN-4200).
+
+### [Trade360SDK.Feed.RabbitMQ - v2.4.1]
+
+#### Changed
+
 - **`NetworkRecoveryInterval`**: removed validation so customers can set any value from configuration (e.g. 5s). Sample config remains 30s (TRGN-4200).
+
+### Backward Compatibility (v2.5.10)
+
+Backward compatible. Existing configs with `NetworkRecoveryInterval: 30` are unchanged; lower values such as `5` are now accepted.
 
 ---
 

@@ -40,7 +40,7 @@ public class ValidationTests
     [InlineData("localhost", 5672, "/", 1, "user", null, 30, 20)]
     [InlineData("localhost", 5672, "/", 1, "user", "", 30, 20)]
     [InlineData("localhost", 5672, "/", 1, "user", "pass", 5, 20)]
-    [InlineData("localhost", 5672, "/", 1, "user", "pass", 30, 4)]
+    [InlineData("localhost", 5672, "/", 1, "user", "pass", 30, -1)]
     public void RmqConnectionSettingsValidator_WithInvalidSettings_ShouldThrowArgumentException(
         string host, int port, string virtualHost, int packageId, string userName, string password, int heartbeat, int recovery)
     {

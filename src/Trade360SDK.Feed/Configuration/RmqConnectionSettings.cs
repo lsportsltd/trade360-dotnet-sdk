@@ -15,7 +15,7 @@
         public bool AutoAck { get; set; } = true; // Default true;
         public int RequestedHeartbeatSeconds { get; set; } = 30; // Default 30 seconds
         /// <summary>
-        /// Network recovery interval in seconds. Default 30. Allowed range: 5–4,294,967.
+        /// Network recovery interval in seconds. Default 30. Allowed range: 0–4,294,967. Sample: 5.
         /// </summary>
         public int NetworkRecoveryInterval { get; set; } = 30;
         public bool SslEnabled { get; set; }

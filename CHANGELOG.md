@@ -29,11 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Changed
 
-- **`NetworkRecoveryInterval`**: allowed range lowered so customers can set **5** seconds (previous effective minimum was 16). Values must be between **5** and **4,294,967** seconds (upper bound keeps recovery delays within RabbitMQ.Client `Task.Delay` limits). Sample may use `5` or `30` (TRGN-4200).
+- **`NetworkRecoveryInterval`**: sample config is **5** seconds. Allowed range is **0–4,294,967** seconds (`0` permitted for immediate retry; upper bound keeps delays within RabbitMQ.Client `Task.Delay` limits). Previous effective minimum was 16 (TRGN-4200).
 
 ### Backward Compatibility (v2.5.10)
 
-Backward compatible for omitted and `30` configs: the property default remains **30** seconds. Explicit values below **5**, zero, negative, or above **4,294,967** are rejected at validation.
+Backward compatible for omitted and `30` configs: the property default remains **30** seconds. Sample uses **5**. Explicit negative values or values above **4,294,967** are rejected; **0** and **5** are accepted.
 ---
 
 ## [Release Version 2.5.9]

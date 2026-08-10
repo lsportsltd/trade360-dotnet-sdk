@@ -459,8 +459,6 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
-    [InlineData(4)]
-    [InlineData(0)]
     [InlineData(-1)]
     [InlineData(int.MaxValue)]
     public void Validate_WithInvalidNetworkRecoveryInterval_ShouldThrowArgumentException(int invalidInterval)
@@ -480,11 +478,12 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
         var act = () => RmqConnectionSettingsValidator.Validate(settings);
 
         act.Should().Throw<ArgumentException>()
-           .WithMessage("NetworkRecoveryInterval must be between 5 and 4294967 seconds.*")
+           .WithMessage("NetworkRecoveryInterval must be between 0 and 4294967 seconds.*")
            .And.ParamName.Should().Be("NetworkRecoveryInterval");
     }
 
     [Theory]
+    [InlineData(0)]
     [InlineData(5)]
     [InlineData(10)]
     [InlineData(16)]

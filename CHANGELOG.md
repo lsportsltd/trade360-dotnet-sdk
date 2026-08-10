@@ -17,6 +17,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.10]
+
+### [Trade360SDK.Feed - v2.1.1]
+
+#### Changed
+
+- **`NetworkRecoveryInterval`**: default remains **30** seconds when omitted from configuration (TRGN-4200).
+
+### [Trade360SDK.Feed.RabbitMQ - v2.4.1]
+
+#### Changed
+
+- **`NetworkRecoveryInterval`**: allowed range lowered so customers can set **5** seconds (previous effective minimum was 16). Values must be between **5** and **4,294,967** seconds (upper bound keeps recovery delays within RabbitMQ.Client `Task.Delay` limits). Sample may use `5` or `30` (TRGN-4200).
+
+### Backward Compatibility (v2.5.10)
+
+Backward compatible for omitted and `30` configs: the property default remains **30** seconds. Explicit values below **5**, zero, negative, or above **4,294,967** are rejected at validation.
+---
+
 ## [Release Version 2.5.9]
 
 ### [Trade360SDK.Common.Entities - v2.3.10]

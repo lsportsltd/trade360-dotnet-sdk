@@ -6,6 +6,17 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
 {
     public static class RmqConnectionSettingsValidator
     {
+        /// <summary>
+        /// Minimum allowed NetworkRecoveryInterval in seconds (matches customer-tunable floor of 5s).
+        /// </summary>
+        public const int MinNetworkRecoveryIntervalSeconds = 5;
+
+        /// <summary>
+        /// Maximum allowed NetworkRecoveryInterval in seconds so TimeSpan-based recovery
+        /// stays within RabbitMQ.Client Task.Delay (~4,294,967,294 ms) limits.
+        /// </summary>
+        public const int MaxNetworkRecoveryIntervalSeconds = 4_294_967;
+
         public static void Validate(RmqConnectionSettings settings)
         {
             if (string.IsNullOrWhiteSpace(settings.Host))
@@ -34,8 +45,13 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
             if (settings.RequestedHeartbeatSeconds <= 10)
                 throw new ArgumentException("RequestedHeartbeatSeconds must be a positive integer - Larger then 10.", nameof(settings.RequestedHeartbeatSeconds));
 
-            if (settings.NetworkRecoveryInterval <= 15)
-                throw new ArgumentException("NetworkRecoveryInterval must be a positive integer.", nameof(settings.NetworkRecoveryInterval));
+            if (settings.NetworkRecoveryInterval < MinNetworkRecoveryIntervalSeconds
+                || settings.NetworkRecoveryInterval > MaxNetworkRecoveryIntervalSeconds)
+            {
+                throw new ArgumentException(
+                    $"NetworkRecoveryInterval must be between {MinNetworkRecoveryIntervalSeconds} and {MaxNetworkRecoveryIntervalSeconds} seconds.",
+                    nameof(settings.NetworkRecoveryInterval));
+            }
 
             if (!string.IsNullOrWhiteSpace(settings.CustomQueueName) && settings.CustomQueueName.Trim().Length > RabbitMqFeed.ConsumeQueueNameMaxLength)
                 throw new ArgumentException(

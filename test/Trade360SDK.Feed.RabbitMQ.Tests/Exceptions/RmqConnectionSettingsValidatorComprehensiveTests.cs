@@ -459,14 +459,39 @@ public class RmqConnectionSettingsValidatorComprehensiveTests
     }
 
     [Theory]
-    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(int.MaxValue)]
+    public void Validate_WithInvalidNetworkRecoveryInterval_ShouldThrowArgumentException(int invalidInterval)
+    {
+        var settings = new RmqConnectionSettings
+        {
+            Host = "localhost",
+            Port = 5672,
+            VirtualHost = "/",
+            PackageId = 123,
+            UserName = "guest",
+            Password = "guest",
+            RequestedHeartbeatSeconds = 20,
+            NetworkRecoveryInterval = invalidInterval
+        };
+
+        var act = () => RmqConnectionSettingsValidator.Validate(settings);
+
+        act.Should().Throw<ArgumentException>()
+           .WithMessage("NetworkRecoveryInterval must be between 5 and 4294967 seconds.*")
+           .And.ParamName.Should().Be("NetworkRecoveryInterval");
+    }
+
+    [Theory]
     [InlineData(5)]
     [InlineData(10)]
     [InlineData(16)]
     [InlineData(20)]
     [InlineData(30)]
     [InlineData(60)]
-    [InlineData(int.MaxValue)]
+    [InlineData(RmqConnectionSettingsValidator.MaxNetworkRecoveryIntervalSeconds)]
     public void Validate_WithValidNetworkRecoveryInterval_ShouldNotThrow(int validInterval)
     {
         var settings = new RmqConnectionSettings

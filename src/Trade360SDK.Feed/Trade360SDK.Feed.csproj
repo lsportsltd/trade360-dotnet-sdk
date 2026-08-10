@@ -7,7 +7,7 @@
         <PackageReleaseNotes>
             - 2.0.0 Added `TransportMessageHeaders` as part of the `IEntityHandler.ProcessAsync` method signature
             - 2.1.0 RmqConnectionSettings: optional CustomQueueName; queue name is resolved in RabbitMqFeed (default _{PackageId}_)
-            - 2.1.1 Removed NetworkRecoveryInterval SDK default; value must come from configuration (TRGN-4200)
+            - 2.1.1 NetworkRecoveryInterval default remains 30s; customers may set 5–4,294,967s (TRGN-4200)
         </PackageReleaseNotes>
 	</PropertyGroup>
 

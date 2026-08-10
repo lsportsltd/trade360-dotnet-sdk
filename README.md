@@ -591,7 +591,7 @@ For **plain AMQP** (no TLS), use port **5672** and `"SslEnabled": false`. For **
       "PrefetchCount": 100,
       "AutoAck": false,
       "RequestedHeartbeatSeconds": 30,
-      "NetworkRecoveryInterval": 30,
+      "NetworkRecoveryInterval": 5,
       "DispatchConsumersAsync": true,
       "AutomaticRecoveryEnabled": true
     },
@@ -607,7 +607,7 @@ For **plain AMQP** (no TLS), use port **5672** and `"SslEnabled": false`. For **
       "PrefetchCount": 100,
       "AutoAck": false,
       "RequestedHeartbeatSeconds": 30,
-      "NetworkRecoveryInterval": 30,
+      "NetworkRecoveryInterval": 5,
       "DispatchConsumersAsync": true,
       "AutomaticRecoveryEnabled": true
     }
@@ -1293,7 +1293,7 @@ services.AddOpenTelemetry()
       "PrefetchCount": 100,
       "AutoAck": false,
       "RequestedHeartbeatSeconds": 30,
-      "NetworkRecoveryInterval": 30,
+      "NetworkRecoveryInterval": 5,
       "DispatchConsumersAsync": true,
       "AutomaticRecoveryEnabled": true
     },
@@ -1309,7 +1309,7 @@ services.AddOpenTelemetry()
       "PrefetchCount": 50,
       "AutoAck": false,
       "RequestedHeartbeatSeconds": 30,
-      "NetworkRecoveryInterval": 30,
+      "NetworkRecoveryInterval": 5,
       "DispatchConsumersAsync": true,
       "AutomaticRecoveryEnabled": true
     }

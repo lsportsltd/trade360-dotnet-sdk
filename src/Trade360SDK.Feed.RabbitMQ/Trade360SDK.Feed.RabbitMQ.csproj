@@ -12,7 +12,7 @@
 			- 2.2.0 Enhanced JSON deserialization with case-insensitive property matching and camel case naming policy support. Improved exception logging in MessageProcessor.
 			- 2.3.0 Added optional RabbitMQ TLS via SslEnabled (set Port to the TLS listener, e.g. 5671).
 			- 2.4.0 Added optional CustomQueueName for the RabbitMQ consumer queue (default _{PackageId}_); validation for queue names on RmqConnectionSettings.
-			- 2.4.1 NetworkRecoveryInterval validation allows 5-4294967 seconds (previous floor was effectively 16). Default remains 30s (TRGN-4200).
+			- 2.4.1 NetworkRecoveryInterval validation allows 0-4294967 seconds; sample 5s; default remains 30s (TRGN-4200).
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

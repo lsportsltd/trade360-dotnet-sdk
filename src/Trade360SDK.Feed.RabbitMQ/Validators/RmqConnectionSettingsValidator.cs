@@ -7,9 +7,9 @@ namespace Trade360SDK.Feed.RabbitMQ.Validators
     public static class RmqConnectionSettingsValidator
     {
         /// <summary>
-        /// Minimum allowed NetworkRecoveryInterval in seconds (matches customer-tunable floor of 5s).
+        /// Minimum allowed NetworkRecoveryInterval in seconds (0 = immediate retry).
         /// </summary>
-        public const int MinNetworkRecoveryIntervalSeconds = 5;
+        public const int MinNetworkRecoveryIntervalSeconds = 0;
 
         /// <summary>
         /// Maximum allowed NetworkRecoveryInterval in seconds so TimeSpan-based recovery

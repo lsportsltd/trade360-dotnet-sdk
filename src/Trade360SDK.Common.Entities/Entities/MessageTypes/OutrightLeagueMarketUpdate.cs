@@ -11,7 +11,6 @@ namespace Trade360SDK.Common.Entities.MessageTypes
         [JsonConverter(typeof(OutrightLeagueMarketCompetitionWrapperConverter))]
         public OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>? Competition { get; set; }
 
-        public DateTime? GetNextFixtureStartTime() =>
-            (Competition as OutrightLeagueMarketCompetitionWrapper<OutrightLeagueMarketEvent>)?.NextFixtureStartTime;
+        public DateTime? GetNextFixtureStartTime() => Competition?.NextFixtureStartTime;
     }
 }

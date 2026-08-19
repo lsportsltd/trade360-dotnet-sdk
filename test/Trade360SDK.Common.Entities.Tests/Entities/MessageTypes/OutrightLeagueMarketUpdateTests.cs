@@ -71,8 +71,9 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
         }
 
         [Fact]
-        public void GetNextFixtureStartTime_WhenCompetitionIsBaseWrapper_ShouldReturnNull()
+        public void GetNextFixtureStartTime_WhenCompetitionIsBaseWrapper_ShouldReturnNextFixtureStartTime()
         {
+            var nextFixtureStartTime = DateTime.Parse("2026-05-29T14:44:55Z").ToUniversalTime();
             var update = new OutrightLeagueMarketUpdate
             {
                 Competition = new OutrightLeagueCompetitionWrapper<OutrightLeagueMarketEvent>
@@ -80,10 +81,11 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
                     Id = 67,
                     Name = "League_67",
                     Type = 3,
+                    NextFixtureStartTime = nextFixtureStartTime,
                 }
             };
 
-            update.GetNextFixtureStartTime().Should().BeNull();
+            update.GetNextFixtureStartTime().Should().Be(nextFixtureStartTime);
         }
 
         [Fact]

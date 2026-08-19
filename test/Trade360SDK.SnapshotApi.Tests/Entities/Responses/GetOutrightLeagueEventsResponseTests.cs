@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Trade360SDK.Common.Entities.OutrightLeague;
 using Trade360SDK.SnapshotApi.Entities.Responses;
 using Xunit;
@@ -158,6 +160,46 @@ namespace Trade360SDK.SnapshotApi.Tests.Entities.Responses
             response.Competition = secondCompetitions;
             Assert.Equal(secondCompetitions, response.Competition);
             Assert.Equal(2, response.Competition.Count());
+        }
+
+        [Fact]
+        public void JsonDeserialization_WithNextFixtureStartTime_ShouldPopulateCompetition()
+        {
+            const string json = """
+                [
+                  {
+                    "Competition": [
+                      {
+                        "Id": 67,
+                        "Name": "League_67",
+                        "Type": 3,
+                        "NextFixtureStartTime": "2026-05-29T14:44:55Z",
+                        "Competitions": [
+                          {
+                            "Id": 2029,
+                            "Name": "Season_2029",
+                            "Type": 4,
+                            "Events": [
+                              { "FixtureId": 26721036 }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+                """;
+
+            var result = JsonSerializer.Deserialize<GetOutrightLeagueEventsResponse[]>(json);
+
+            Assert.NotNull(result);
+            Assert.Single(result);
+            var competition = Assert.Single(result![0].Competition);
+            Assert.Equal(67, competition.Id);
+            Assert.Equal("League_67", competition.Name);
+            Assert.Equal(3, competition.Type);
+            Assert.Equal(DateTime.Parse("2026-05-29T14:44:55Z").ToUniversalTime(), competition.NextFixtureStartTime?.ToUniversalTime());
+            Assert.Equal(26721036, competition.Competitions!.Single().Events!.Single().FixtureId);
         }
     }
 }

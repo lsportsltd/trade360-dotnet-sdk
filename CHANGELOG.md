@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.11]
+
+### [Trade360SDK.Common.Entities - v2.3.11]
+
+#### Added
+
+- **`OutrightLeagueCompetitionWrapper.NextFixtureStartTime`**: optional next fixture start time on the league `Competition` node for snapshot `GetOutrightLeagueEvents` and `GetOutrightLeagueMarkets` (TRGN-4310). Previously only deserialized on feed type 40 via `OutrightLeagueMarketCompetitionWrapper`.
+
+### Backward Compatibility (v2.5.11)
+
+All changes are backward compatible. `NextFixtureStartTime` is optional and remains `null` when absent from the payload.
+
+---
+
 ## [Release Version 2.5.10]
 
 ### [Trade360SDK.Feed - v2.1.1]

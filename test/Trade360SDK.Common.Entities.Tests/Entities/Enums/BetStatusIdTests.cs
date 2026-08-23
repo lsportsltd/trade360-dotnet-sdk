@@ -14,6 +14,9 @@ namespace Trade360SDK.Common.Tests.Entities.Enums
             ((int)BetStatusId.Settled).Should().Be(3);
             ((int)BetStatusId.Closed).Should().Be(4);
             System.Enum.IsDefined(typeof(BetStatusId), 0).Should().BeFalse();
+            ((int)BetStatusId.Open).Should().Be((int)BetStatus.Open);
+            ((int)BetStatusId.Suspended).Should().Be((int)BetStatus.Suspended);
+            ((int)BetStatusId.Settled).Should().Be((int)BetStatus.Settled);
         }
 
         [Theory]

@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.12]
+
+### [Trade360SDK.Common.Entities - v2.3.12]
+
+#### Added
+
+- **`BetStatusId`**: new enum `Open=1`, `Suspended=2`, `Settled=3`, `Closed=4` (no 0) and optional `BaseBet.BetStatusId` on feed and snapshot bet models (TRGN-4441). Legacy `Status` (0–3) is unchanged. Markets may send `Closed=4` while `Status` stays Suspended; settlement sends `BetStatusId=3` beside the existing `Settlement` outcome.
+
+### Backward Compatibility (v2.5.12)
+
+All changes are backward compatible. `BetStatusId` is optional and remains `null` when absent from the payload. Legacy `Status` is unchanged.
+
+---
+
 ## [Release Version 2.5.11]
 
 ### [Trade360SDK.Common.Entities - v2.3.11]

@@ -35,6 +35,8 @@ namespace Trade360SDK.Common.Entities.Markets
         
         public int? SuspensionReason { get; set; }
 
+        public RefundReason? RefundReason { get; set; }
+
         public DateTime LastUpdate { get; set; }
 
         public double? Probability { get; set; }

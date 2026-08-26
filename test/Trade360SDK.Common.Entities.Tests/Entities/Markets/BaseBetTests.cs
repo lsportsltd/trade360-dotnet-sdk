@@ -17,6 +17,7 @@ namespace Trade360SDK.Common.Tests
                 Line = "1.5",
                 BaseLine = "2.0",
                 Status = BetStatus.Open,
+                BetStatusId = BetStatusId.Open,
                 StartPrice = "2.5",
                 Price = "2.0",
                 PriceIN = "1.9",
@@ -39,6 +40,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal("1.5", bet.Line);
             Assert.Equal("2.0", bet.BaseLine);
             Assert.Equal(BetStatus.Open, bet.Status);
+            Assert.Equal(BetStatusId.Open, bet.BetStatusId);
             Assert.Equal("2.5", bet.StartPrice);
             Assert.Equal("2.0", bet.Price);
             Assert.Equal("1.9", bet.PriceIN);
@@ -73,6 +75,7 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(bet.PriceHK);
             Assert.Null(bet.PriceVolume);
             Assert.Null(bet.Settlement);
+            Assert.Null(bet.BetStatusId);
             Assert.Null(bet.SuspensionReason);
             Assert.Null(bet.ParticipantId);
             Assert.Null(bet.PlayerId);

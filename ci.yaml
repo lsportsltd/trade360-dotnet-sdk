@@ -10,7 +10,7 @@ stages:
     parameters:
       serviceName: trade360-dotnet-sdk
       dockerUT: true
-      cloud: aws
+      cloud: gcp
       group: trd
       domain: trade360-sdk
       product: stm
@@ -21,7 +21,7 @@ stages:
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - job: PublishPackage
-        pool: k8s-agents-ci
+        pool: k8s-agents-gcp-amd
         variables:
           - template: variables.yml
         displayName: 'Publish Nuget Package'
@@ -48,17 +48,13 @@ stages:
               # Turn off command echoing to prevent secrets from appearing in logs
               set +x
               # Fetch NuGet API key silently
-              echo "##[command]Fetching NuGet API key from SSM..."
-              NUGET_API_KEY=$(aws ssm get-parameter \
-                --name "/devopsr/nuget/publish_token" \
-                --with-decryption \
-                --query "Parameter.Value" \
-                --output text 2>/dev/null)
+              echo "##[command]Fetching NuGet API key from SM..."
+              NUGET_API_KEY=$(gcloud secrets versions access latest --project lsports-tooling --secret="_aws_devopsr_nuget_publish_token")
               # Set the API key as a secret variable
               echo "##vso[task.setvariable variable=nugetApiKey;issecret=true]$NUGET_API_KEY"
               # Print safe message
               echo "##[section]Successfully retrieved and set all credentials"
-            displayName: 'Get AWS credentials and NuGet API key'
+            displayName: 'Get GCP credentials and NuGet API key'
           - task: DotNetCoreCLI@2
             displayName: 'Pack NuGet Package'
             inputs:

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using FluentAssertions;
 using Trade360SDK.Common.Attributes;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.Markets;
 using Trade360SDK.Common.Entities.MessageTypes;
 using Xunit;
@@ -308,6 +310,18 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
             update.Events.Should().HaveCount(3);
             update.Events.Count(e => e.FixtureId == 100).Should().Be(2);
             update.Events.Count(e => e.FixtureId == 200).Should().Be(1);
+        }
+
+        [Fact]
+        public void Deserialize_ClosedMarketStatus_OnMarketsAndProviderMarkets()
+        {
+            var update = JsonSerializer.Deserialize<MarketUpdate>(
+                "{\"Events\":[{\"FixtureId\":20009162,\"Markets\":[{\"Id\":1,\"Name\":\"1X2\",\"Status\":4,\"ProviderMarkets\":[{\"Id\":13,\"Name\":\"BWin\",\"MarketStatus\":4}]}]}]}");
+
+            update.Should().NotBeNull();
+            var market = update!.Events!.Single().Markets!.Single();
+            market.Status.Should().Be(MarketStatus.Closed);
+            market.ProviderMarkets!.Single().MarketStatus.Should().Be(MarketStatus.Closed);
         }
     }
 } 

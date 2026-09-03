@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.3.12</PackageVersion>
+		<PackageVersion>2.3.13</PackageVersion>
 		<PackageReleaseNotes>
 			- 1.0.2 version includes clock addition to scoreboard model, and playerstatistic addition to livescore model
 			- 1.0.3 Added additional values to StatusDescription Enum (which is part of the ScoreBoard entity).
@@ -30,6 +30,7 @@
 			- 2.3.10 Added FixtureName to OutrightLeagueMarketEvent for message types 40 and 43 (TRGN-1739).
 			- 2.3.11 Added NextFixtureStartTime to OutrightLeagueCompetitionWrapper for snapshot GetOutrightLeagueEvents/GetOutrightLeagueMarkets (TRGN-4310).
 			- 2.3.12 Added BetStatusId enum (1–4) and optional BaseBet.BetStatusId for feed and snapshot bets (TRGN-4441).
+			- 2.3.13 Added MarketStatus.Closed = 4 on Markets[].Status and ProviderMarkets[].MarketStatus (TRGN-4561).
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

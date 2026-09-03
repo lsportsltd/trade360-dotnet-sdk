@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.13]
+
+### [Trade360SDK.Common.Entities - v2.3.13]
+
+#### Added
+
+- **`MarketStatus.Closed = 4`**: `Markets[].Status` and `ProviderMarkets[].MarketStatus` can be Closed (TRGN-4561).
+
+### Backward Compatibility (v2.5.13)
+
+All changes are backward compatible. Existing `MarketStatus` values `0–3` are unchanged.
+
+---
+
 ## [Release Version 2.5.12]
 
 ### [Trade360SDK.Common.Entities - v2.3.12]

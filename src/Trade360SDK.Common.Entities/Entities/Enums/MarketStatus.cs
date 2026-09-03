@@ -5,6 +5,7 @@ namespace Trade360SDK.Common.Entities.Enums
         NotSet = 0,
         Open = 1,
         Suspended = 2,
-        Settled = 3
+        Settled = 3,
+        Closed = 4
     }
 }

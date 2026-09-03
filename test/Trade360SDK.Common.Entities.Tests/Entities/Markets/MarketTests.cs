@@ -51,6 +51,16 @@ namespace Trade360SDK.Common.Tests
         }
 
         [Fact]
+        public void DeserializeClosedMarketStatusFromJson_MapsStatusProperty()
+        {
+            var market = JsonSerializer.Deserialize<Market>("{\"Id\":1,\"Name\":\"1X2\",\"Status\":4,\"Bets\":[]}");
+
+            Assert.NotNull(market);
+            Assert.Equal(1, market!.Id);
+            Assert.Equal(MarketStatus.Closed, market.Status);
+        }
+
+        [Fact]
         public void DeserializePredictionData_FromJson_MapsMarketAndBetFields()
         {
             const string json = """

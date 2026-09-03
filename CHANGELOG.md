@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Added
 
-- **`MarketStatus.Closed = 4`**: ProviderOdds+ Type 3 `ProviderMarkets[].MarketStatus` (and market `Status`) can be Closed (TRGN-4561).
+- **`MarketStatus.Closed = 4`**: `Markets[].Status` and `ProviderMarkets[].MarketStatus` can be Closed (TRGN-4561).
 
 ### Backward Compatibility (v2.5.13)
 

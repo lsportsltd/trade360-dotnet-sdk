@@ -31,7 +31,7 @@
 			- 2.3.11 Added NextFixtureStartTime to OutrightLeagueCompetitionWrapper for snapshot GetOutrightLeagueEvents/GetOutrightLeagueMarkets (TRGN-4310).
 			- 2.3.12 Added BetStatusId enum (1–4) and optional BaseBet.BetStatusId for feed and snapshot bets (TRGN-4441).
 			- 2.3.13 Added MarketStatus.Closed = 4 on Markets[].Status and ProviderMarkets[].MarketStatus (TRGN-4561).
-			- 2.3.14 Added optional RefundReason on BaseBet for settlement refund messages (TR-23341).
+			- 2.3.14 Added optional RefundReasonId on BaseBet for settlement refund messages (TR-23341).
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

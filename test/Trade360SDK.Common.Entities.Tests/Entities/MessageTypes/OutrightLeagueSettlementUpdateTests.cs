@@ -170,6 +170,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
             firstBet.Id.Should().Be(126691427424603148);
             firstBet.Name.Should().Be("Reliable Miss");
             firstBet.Status.Should().Be(Trade360SDK.Common.Entities.Enums.BetStatus.Settled);
+            firstBet.BetStatusId.Should().BeNull();
             firstBet.StartPrice.Should().Be("1.0");
             firstBet.Price.Should().Be("1.44");
             firstBet.Settlement.Should().Be(Trade360SDK.Common.Entities.Enums.SettlementType.Winner);

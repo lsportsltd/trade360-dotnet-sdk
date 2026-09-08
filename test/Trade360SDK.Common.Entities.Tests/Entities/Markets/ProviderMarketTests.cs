@@ -45,5 +45,17 @@ namespace Trade360SDK.Common.Tests
             Assert.Equal("Bet365", providerMarket.Name);
             Assert.Equal(MarketStatus.Suspended, providerMarket.MarketStatus);
         }
+
+        [Fact]
+        public void DeserializeClosedMarketStatusFromJson_MapsMarketStatusProperty()
+        {
+            var providerMarket = JsonSerializer.Deserialize<ProviderMarket>(
+                "{\"Id\":13,\"Name\":\"BWin\",\"MarketStatus\":4,\"Bets\":[]}");
+
+            Assert.NotNull(providerMarket);
+            Assert.Equal(13, providerMarket!.Id);
+            Assert.Equal("BWin", providerMarket.Name);
+            Assert.Equal(MarketStatus.Closed, providerMarket.MarketStatus);
+        }
     }
 } 

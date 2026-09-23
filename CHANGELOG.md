@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.14]
+
+### [Trade360SDK.Common.Entities - v2.3.14]
+
+#### Added
+
+- **`RefundReasonId`**: optional enum on `BaseBet` for settlement refund messages (TR-23341).
+
+### Backward Compatibility (v2.5.14)
+
+All changes are backward compatible. `RefundReasonId` is optional and remains `null` when absent from the payload.
+
+---
+
 ## [Release Version 2.5.13]
 
 ### [Trade360SDK.Common.Entities - v2.3.13]

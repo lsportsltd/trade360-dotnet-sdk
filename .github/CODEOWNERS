@@ -1,0 +1,12 @@
+# BEGIN PLATFORM-BEE MANAGED CODEOWNERS
+# Reconciled by GitHub SSA. Do not edit this block.
+* @lsportsltd/trade-guns-n-roses @lsportsltd/trade-leads
+# END PLATFORM-BEE MANAGED CODEOWNERS
+
+# BEGIN PLATFORM-BEE MANAGED WORKFLOWS
+.github/workflows/** @lsportsltd/trade-leads @lsportsltd/devex-devops
+.github/workflows/ci.yaml @lsportsltd/trade-leads
+.github/workflows/ci.yml @lsportsltd/trade-leads
+.github/workflows/cd.yaml @lsportsltd/trade-leads
+.github/workflows/cd.yml @lsportsltd/trade-leads
+# END PLATFORM-BEE MANAGED WORKFLOWS

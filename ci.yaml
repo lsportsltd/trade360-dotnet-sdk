@@ -49,7 +49,7 @@ stages:
               set +x
               # Fetch NuGet API key silently
               echo "##[command]Fetching NuGet API key from SM..."
-              NUGET_API_KEY=$(gcloud secrets versions access latest --project lsports-tooling --secret="_aws_devopsr_nuget_publish_token")
+              NUGET_API_KEY=$(gcloud secrets versions access latest --project lsports-tooling --secret="_infra_devopsr_nuget_publish_token")
               # Set the API key as a secret variable
               echo "##vso[task.setvariable variable=nugetApiKey;issecret=true]$NUGET_API_KEY"
               # Print safe message

@@ -1,0 +1,31 @@
+name: ci.trade360-dotnet-sdk
+on:
+  push:
+    branches:
+    - main
+    - feature*
+    - feature/**
+    - release*
+    - release/**
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+  packages: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name != 'push' || github.ref_name != 'main' }}
+jobs:
+  ci:
+    uses: lsportsltd/devops-pipeline-templates/.github/workflows/ci-docker.yml@main
+    with:
+      group: trd
+      product: stm
+      domain: trade360-sdk
+      team: guns-n-roses
+      service_name: trade360-dotnet-sdk
+      docker_ut: true
+      cloud: gcp
+      multiArchBuild: true
+    secrets: inherit

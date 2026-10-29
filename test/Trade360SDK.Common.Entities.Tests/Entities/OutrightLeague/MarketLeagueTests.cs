@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.OutrightLeague;
 using Trade360SDK.Common.Entities.Markets;
 using Xunit;
@@ -28,13 +30,15 @@ namespace Trade360SDK.Common.Tests
                 Name = "LeagueName",
                 Bets = bets,
                 ProviderMarkets = providerMarkets,
-                MainLine = "2.5"
+                MainLine = "2.5",
+                Status = MarketStatus.Suspended
             };
             Assert.Equal(10, league.Id);
             Assert.Equal("LeagueName", league.Name);
             Assert.Equal(bets, league.Bets);
             Assert.Equal(providerMarkets, league.ProviderMarkets);
             Assert.Equal("2.5", league.MainLine);
+            Assert.Equal(MarketStatus.Suspended, league.Status);
         }
 
         [Fact]
@@ -45,6 +49,29 @@ namespace Trade360SDK.Common.Tests
             Assert.Null(league.Bets);
             Assert.Null(league.ProviderMarkets);
             Assert.Null(league.MainLine);
+            Assert.Equal(MarketStatus.NotSet, league.Status);
+        }
+
+        [Fact]
+        public void DeserializeMarketStatusFromJson_MapsStatusProperty()
+        {
+            var market = JsonSerializer.Deserialize<MarketLeague>(
+                "{\"Id\":590,\"Name\":\"To Be Relegated\",\"Status\":2,\"Bets\":[]}");
+
+            Assert.NotNull(market);
+            Assert.Equal(590, market!.Id);
+            Assert.Equal("To Be Relegated", market.Name);
+            Assert.Equal(MarketStatus.Suspended, market.Status);
+        }
+
+        [Fact]
+        public void DeserializeClosedMarketStatusFromJson_MapsStatusProperty()
+        {
+            var market = JsonSerializer.Deserialize<MarketLeague>(
+                "{\"Id\":590,\"Name\":\"To Be Relegated\",\"Status\":4,\"Bets\":[]}");
+
+            Assert.NotNull(market);
+            Assert.Equal(MarketStatus.Closed, market!.Status);
         }
     }
 } 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using FluentAssertions;
+using Trade360SDK.Common.Entities.Enums;
 using Trade360SDK.Common.Entities.MessageTypes;
 using Trade360SDK.Common.Entities.OutrightLeague;
 using Xunit;
@@ -63,6 +64,7 @@ namespace Trade360SDK.Common.Tests.Entities.MessageTypes
             var market = marketEvent.Markets!.Single();
             market.Id.Should().Be(274);
             market.Name.Should().Be("Outright Winner");
+            market.Status.Should().Be(MarketStatus.Suspended);
             market.Bets.Should().HaveCount(2);
             market.Bets!.First().Name.Should().Be("Not Simply Simon");
             market.Bets.First().ParticipantId.Should().Be(51523593);

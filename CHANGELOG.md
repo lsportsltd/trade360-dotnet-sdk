@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.15]
+
+### [Trade360SDK.Common.Entities - v2.3.15]
+
+#### Added
+
+- **`MarketLeague.Status`**: outright league market messages and `GetOutrightLeagueMarkets` now expose `Markets[].Status` (`MarketStatus`) (TRGN-5114).
+
+### Backward Compatibility (v2.5.15)
+
+All changes are backward compatible. Payloads without `Markets[].Status` leave `MarketLeague.Status` at `NotSet`.
+
+---
+
 ## [Release Version 2.5.14]
 
 ### [Trade360SDK.Common.Entities - v2.3.14]

@@ -18,6 +18,7 @@
               {
                 "Id": 274,
                 "Name": "Outright Winner",
+                "Status": 2,
                 "Bets": [
                   {
                     "Probability": -1.0,

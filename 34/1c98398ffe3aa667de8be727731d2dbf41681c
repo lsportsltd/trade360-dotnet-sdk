@@ -1,0 +1,33 @@
+test/Trade360SDK.Common.Entities.Tests/Fixtures/outright-league-market-update-type40.json
+  s_7e1e2f177afea8::t_5ff922e3b40b7e 21
+test/Trade360SDK.Common.Entities.Tests/Entities/OutrightLeague/MarketLeagueTests.cs
+  s_7e1e2f177afea8::t_2b1752e3a7c991 33-34,41
+  s_7e1e2f177afea8::t_d8330838e8cc1c 3-4
+  s_7e1e2f177afea8::t_c7f06f5f5d9b30 52-74
+src/Trade360SDK.Common.Entities/Trade360SDK.Common.csproj
+  s_7e1e2f177afea8::t_8413b3e13baa24 6
+  s_7e1e2f177afea8::t_fcca628eebcc87 35
+CHANGELOG.md
+  s_7e1e2f177afea8::t_f338e4682baeb0 20-33
+src/Trade360SDK.Common.Entities/Entities/OutrightLeague/MarketLeague.cs
+  s_7e1e2f177afea8::t_5832b0aff4773a 2-3,19-21
+test/Trade360SDK.Common.Entities.Tests/Entities/MessageTypes/OutrightLeagueMarketUpdateTests.cs
+  s_7e1e2f177afea8::t_561479f340e944 6
+  s_7e1e2f177afea8::t_16d84c22cbbd4d 67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "341c98398ffe3aa667de8be727731d2dbf41681c",
+  "prompts": {},
+  "sessions": {
+    "s_7e1e2f177afea8": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dcf3e531-9f0f-447a-9164-60e7d1a91638",
+        "model": "grok-4.7"
+      },
+      "human_author": "shir.b <shir.b@lsports.eu>"
+    }
+  }
+}

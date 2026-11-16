@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Release Version 2.5.16]
+
+### [Trade360SDK.Common.Entities - v2.3.16]
+
+#### Added
+
+- **`Clock.StoppageTimeSeconds`**: optional announced stoppage time on the livescore clock. Feed updates and snapshot `GetLivescore` / `GetEvents` use the same `Livescore.Scoreboard.Clock`. The field is omitted when null.
+
+### Backward Compatibility (v2.5.16)
+
+Payloads without `Clock.StoppageTimeSeconds` leave the property null. Existing `Status` and `Seconds` behavior is unchanged.
+
+---
+
 ## [Release Version 2.5.15]
 
 ### [Trade360SDK.Common.Entities - v2.3.15]

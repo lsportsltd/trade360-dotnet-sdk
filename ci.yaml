@@ -29,20 +29,26 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: DotNetCoreCLI@2
-            displayName: "Restore Packages"
-            inputs:
-              command: 'restore'
-              projects: '$(project)'
-              feedsToUse: 'config'
-              nugetConfigPath: '$(nugetconfig)'
-
-          - task: DotNetCoreCLI@2
-            displayName: 'Build'
-            inputs:
-              command: 'build'
-              projects: '$(project)'
-              arguments: '--no-restore --configuration "$(releaseconfig)" /p:Version=$(version)'
+          - script: |
+              set -euo pipefail
+              dotnet restore trade360-dotnet-sdk.sln --configfile "$(nugetconfig)"
+              # PackageVersion in each csproj is the published version. Do not pass /p:Version.
+              projects=(
+                src/Trade360SDK.Common.Entities/Trade360SDK.Common.csproj
+                src/Trade360SDK.Feed/Trade360SDK.Feed.csproj
+                src/Trade360SDK.Feed.RabbitMQ/Trade360SDK.Feed.RabbitMQ.csproj
+                src/Trade360SDK.SnapshotApi/Trade360SDK.SnapshotApi.csproj
+                src/Trade360SDK.CustomersApi/Trade360SDK.CustomersApi.csproj
+                src/Trade360SDK.Microsoft.DependencyInjection/Trade360SDK.Microsoft.DependencyInjection.csproj
+              )
+              for project in "${projects[@]}"; do
+                echo "Packing $project"
+                dotnet pack "$project" \
+                  --no-restore \
+                  --configuration "$(releaseconfig)" \
+                  --output "$(Build.ArtifactStagingDirectory)"
+              done
+            displayName: 'Pack SDK packages from PackageVersion'
 
           - script: |
               # Turn off command echoing to prevent secrets from appearing in logs
@@ -55,14 +61,6 @@ stages:
               # Print safe message
               echo "##[section]Successfully retrieved and set all credentials"
             displayName: 'Get GCP credentials and NuGet API key'
-          - task: DotNetCoreCLI@2
-            displayName: 'Pack NuGet Package'
-            inputs:
-              command: 'pack'
-              packagesToPush: '$(project)'
-              arguments: '--configuration "$(releaseconfig)" /p:Version=$(version) /p:PackageDescription="$(description)" /p:Authors="$(authors)" /p:Company="$(company)" /p:PackageTags="$(tags)"'
-              outputDir: '$(Build.ArtifactStagingDirectory)'
-
           - script: |
               echo "Pushing NuGet packages to nuget.org..."
               # Set the API key as an environment variable

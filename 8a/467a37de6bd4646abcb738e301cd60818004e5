@@ -1,0 +1,21 @@
+ci.yaml
+  s_73bc53e8d56a73::t_12135344033f02 32-51
+variables.yml
+  s_73bc53e8d56a73::t_0e91f949bf6a74 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8a467a37de6bd4646abcb738e301cd60818004e5",
+  "prompts": {},
+  "sessions": {
+    "s_73bc53e8d56a73": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "09eb0df2-0066-45f2-82e1-f14a61fcaf0c",
+        "model": "grok-4.7"
+      },
+      "human_author": "shir.b <shir.b@lsports.eu>"
+    }
+  }
+}

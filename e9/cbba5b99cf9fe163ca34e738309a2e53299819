@@ -1,0 +1,21 @@
+src/Trade360SDK.Common.Entities/Entities/Livescore/Clock.cs
+  s_73bc53e8d56a73::t_e2999b134e2a0c 1,11-13
+test/Trade360SDK.Common.Entities.Tests/Entities/Livescore/ClockTests.cs
+  s_73bc53e8d56a73::t_aabcf328bfac3f 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e9cbba5b99cf9fe163ca34e738309a2e53299819",
+  "prompts": {},
+  "sessions": {
+    "s_73bc53e8d56a73": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "09eb0df2-0066-45f2-82e1-f14a61fcaf0c",
+        "model": "grok-4.7"
+      },
+      "human_author": "shir.b <shir.b@lsports.eu>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+src/Trade360SDK.Common.Entities/Trade360SDK.Common.csproj
+  s_73bc53e8d56a73::t_e23b10c324c4f1 36
+  s_73bc53e8d56a73::t_aaac87f8bf079f 6
+test/Trade360SDK.SnapshotApi.Tests/Entities/Responses/GetLiveScoreResponseTests.cs
+  s_73bc53e8d56a73::t_ca678741a94e15 1
+  s_73bc53e8d56a73::t_f27b16e985514e 23-41
+CHANGELOG.md
+  s_73bc53e8d56a73::t_2ff52cae08c7c8 20-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8a8088e4240078338c27f480b2ad22add33d2ad5",
+  "prompts": {},
+  "sessions": {
+    "s_73bc53e8d56a73": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "09eb0df2-0066-45f2-82e1-f14a61fcaf0c",
+        "model": "grok-4.7"
+      },
+      "human_author": "shir.b <shir.b@lsports.eu>"
+    }
+  }
+}
